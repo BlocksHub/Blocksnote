@@ -1,0 +1,40 @@
+{
+  "name": "blocksnote",
+  "version": "0.0.1",
+  "description": "A perfect wrapper for interacting with PRONOTE instances.",
+  "author": "Raphaël <raphckrman> (https://github.com/raphckrman)",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlocksHub/Blocksnote.git"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "pronote",
+    "api",
+    "wrapper",
+    "index-education",
+    "student",
+    "France"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/bun": "latest",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
+    "tsdown": "^0.15.6",
+    "typescript-eslint": "^8.45.0"
+  }
+}
