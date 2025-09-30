@@ -39,5 +39,9 @@
     "globals": "^16.4.0",
     "tsdown": "^0.15.6",
     "typescript-eslint": "^8.45.0"
+  },
+  "dependencies": {
+    "@noble/ciphers": "^2.0.1",
+    "@noble/hashes": "^2.0.1"
   }
 }
