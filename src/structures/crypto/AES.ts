@@ -1,11 +1,12 @@
 import { CryptographicError } from "../errors/CryptographicError.ts";
 import { md5 } from "@noble/hashes/legacy.js";
 import { cbc } from "@noble/ciphers/aes.js";
-import { type CipherWithOutput, utf8ToBytes, bytesToHex } from "@noble/ciphers/utils.js";
+import {type CipherWithOutput, utf8ToBytes, bytesToHex, bytesToUtf8} from "@noble/ciphers/utils.js";
+import {hexToBytes} from "@noble/hashes/utils.js";
 
 export class AES {
-    private key: Uint8Array<ArrayBuffer> = new Uint8Array(0);
-    private iv: Uint8Array<ArrayBuffer> = new Uint8Array(0);
+    private key: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+    private iv: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
     private _dK = this._derivativeKey()
     private _dIV = this._derivativeIv()
 
@@ -20,7 +21,13 @@ export class AES {
         return bytesToHex(encrypted);
     }
 
-    public updateKey(key: Uint8Array<ArrayBuffer>) {
+    public decrypt(hex: string) {
+        const cipher: CipherWithOutput = cbc(this._dK, this._dIV);
+        const decrypted = cipher.decrypt(hexToBytes(hex));
+        return bytesToUtf8(decrypted);
+    }
+
+    public updateKey(key: Uint8Array<ArrayBufferLike>) {
         if (key.length !== 32) {
             throw new CryptographicError(
                 `AES-256-CBC requires a 32-byte key (256 bits), but you provided a ${key.length}-byte key (${key.length * 8} bits). ` +
@@ -28,9 +35,10 @@ export class AES {
             );
         }
         this.key = key;
+        this._dK = this._derivativeKey();
     }
 
-    public updateIv(iv: Uint8Array<ArrayBuffer>) {
+    public updateIv(iv: Uint8Array<ArrayBufferLike>) {
         if (iv.length !== 16) {
             throw new CryptographicError(
                 `AES-256-CBC requires a 16-byte initialization vector (128 bits), but you provided a ${iv.length}-byte initialization vector (${iv.length * 8} bits). ` +
@@ -38,6 +46,7 @@ export class AES {
             );
         }
         this.iv = iv;
+        this._dIV = this._derivativeIv();
     }
 
     public resetKey() {
