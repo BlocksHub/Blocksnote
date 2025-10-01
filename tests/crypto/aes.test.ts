@@ -62,3 +62,10 @@ test("should correctly decrypt previously encrypted data", () => {
     const decrypted = aes.decrypt(encrypted);
     expect(decrypted).toBe("hello, world!")
 });
+
+test("should reset key and iv", async () => {
+    aes.resetKey()
+    aes.resetIv()
+    const result = aes.encrypt("1")
+    expect(result).toBe("3fa959b13967e0ef176069e01e23c8d7");
+});
