@@ -51,10 +51,12 @@ export class AES {
 
     public resetKey() {
         this.key = new Uint8Array(0);
+        this._dK = this._derivativeKey();
     }
 
     public resetIv() {
         this.iv = new Uint8Array(0);
+        this._dIV = this._derivativeIv();
     }
 
     protected _derivativeKey() {
