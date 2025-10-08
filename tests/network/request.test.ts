@@ -50,7 +50,7 @@ test("should update method", async () => {
 
 test("should update payload", async () => {
     const request = new Request()
-        .setPayload(245934, "Blocksnote", "UpdatePayload", {});
+        .setPronotePayload(245934, "Blocksnote", "UpdatePayload", {});
 
     expect(JSON.stringify(request.payload)).toBe("{\"session\":245934,\"no\":\"Blocksnote\",\"id\":\"UpdatePayload\",\"dataSec\":{}}")
 })
