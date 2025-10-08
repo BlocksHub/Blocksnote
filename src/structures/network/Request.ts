@@ -1,6 +1,7 @@
 import { USER_AGENT } from "../../utils/constants.ts";
 import {NetworkError} from "../errors/NetworkError.ts";
 import {isExecutedWithBun} from "../../utils/bun.ts";
+import { Response } from "./Response.ts";
 
 export class Request {
     public headers: Record<string, string> = {
@@ -40,9 +41,9 @@ export class Request {
         return this;
     }
 
-    public async send<T>(): Promise<T> {
+    public async send<T>(): Promise<Response<T>> {
         if (!this.endpoint) {
-            throw new NetworkError("Unable to send the request due to missing parameters...");
+            throw new NetworkError("Unable to send the request due to missing parameters...", 400);
         }
 
         const requester =
@@ -71,9 +72,9 @@ export class Request {
         const text = await response.text();
 
         try {
-            return JSON.parse(text) as T;
+            return new Response(Object.fromEntries(response.headers.entries()), response.status, JSON.parse(text) as T);
         } catch {
-            return text as unknown as T;
+            return new Response(Object.fromEntries(response.headers.entries()), response.status, text as T)
         }
     }
 }
