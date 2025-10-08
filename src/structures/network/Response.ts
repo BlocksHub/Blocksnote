@@ -6,7 +6,9 @@ export class Response<T> {
     public status: number,
     public data: T
   ){
-    this.data = Parser.parse(data);
+    if (typeof data === "object") {
+      this.data = Parser.parse(data);
+    }
   }
   
   public header(key: string): string | undefined {
