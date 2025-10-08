@@ -1,6 +1,9 @@
 export class NetworkError extends Error {
-    constructor(message: string) {
+    public readonly code: number;
+
+    constructor(message: string, code: number) {
         super(message);
         this.name = "NetworkError";
+        this.code = code
     }
 }
