@@ -48,6 +48,13 @@ test("should update method", async () => {
     expect(request.method).toBe("POST")
 })
 
+test("should update body", async () => {
+    const request = new Request()
+        .setBody("hello, world!");
+
+    expect(request.payload).toBe("hello, world!")
+})
+
 test("should update payload", async () => {
     const request = new Request()
         .setPronotePayload(245934, "Blocksnote", "UpdatePayload", {});
