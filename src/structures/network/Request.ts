@@ -1,6 +1,6 @@
 import { USER_AGENT } from "../../utils/constants.ts";
 import {NetworkError} from "../errors/NetworkError.ts";
-import {isExecutedWithBun} from "../../utils/bun.ts";
+import {isExecutedWithBun} from "../../utils/runtime.ts";
 import { Response } from "./Response.ts";
 
 export class Request {
@@ -31,7 +31,12 @@ export class Request {
         return this;
     }
 
-    setPayload(session: number, no: string, id: string, data: unknown): Request {
+    setBody(body: unknown): Request {
+        this.payload = body
+        return this;
+    }
+
+    setPronotePayload(session: number, no: string, id: string, data: unknown): Request {
         this.payload = {
             session,
             no,
