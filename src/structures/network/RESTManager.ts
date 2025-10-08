@@ -1,11 +1,12 @@
 import {Request} from "./Request.ts";
+import { Response } from "./Response.ts";
 
 export class RESTManager {
     public requestNumber: number = 0;
-    private queue: Array<() => Promise<any>> = [];
+    private queue: Array<() => Promise<unknown>> = [];
     private isProcessingQueue: boolean = false;
 
-    public enqueueRequest<T>(request: Request): Promise<T> {
+    public enqueueRequest<T>(request: Request): Promise<Response<T>> {
         return new Promise((resolve, reject) => {
             this.queue.push(async () => {
                 try {
