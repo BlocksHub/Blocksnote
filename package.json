@@ -9,7 +9,8 @@
     "url": "git+https://github.com/BlocksHub/Blocksnote.git"
   },
   "scripts": {
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "build": "bun build src/index.ts --outfile=dist/index.js --format=esm --minify --production"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
