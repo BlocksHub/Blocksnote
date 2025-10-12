@@ -8,7 +8,7 @@ const manager = new RESTManager();
 const server = Bun.serve({
     fetch(req) {
         count++;
-        return new Response(JSON.stringify(req.headers), { status: 200, headers: {"X-Request-Count": String(count)} });
+        return new Response(JSON.stringify(req.headers), { status: 200, headers: {"X-Request-Count": String(count), "Content-Type": "application/json"} });
     }
 })
 

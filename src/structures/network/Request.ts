@@ -74,12 +74,14 @@ export class Request {
 
         const response = await requester(this.endpoint, init);
 
+        const headers = Object.fromEntries(response.headers.entries());
+        const contentType = headers["content-type"]
         const text = await response.text();
 
-        try {
-            return new Response(Object.fromEntries(response.headers.entries()), response.status, JSON.parse(text) as T);
-        } catch {
-            return new Response(Object.fromEntries(response.headers.entries()), response.status, text as T)
+        if (contentType?.includes("json")) {
+            return new Response(headers, response.status, JSON.parse(text) as T);
+        } else {
+            return new Response(headers, response.status, text as T)
         }
     }
 }
