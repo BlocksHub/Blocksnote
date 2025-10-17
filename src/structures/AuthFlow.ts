@@ -1,8 +1,10 @@
 import { NOTSpace, type CAS, type InfoMobileResponse, type Workspace } from "../types/authflow";
+import { AuthenticationError } from "./errors/AuthenticationError";
 import { Request } from "./network/Request";
 
 export class AuthFlow {
-  public availableWorkspaces : Workspace[] = [];
+  public currentWorkspace: NOTSpace = NOTSpace.STUDENT
+  public availableWorkspaces: Workspace[] = [];
   public version: number[] = [];
   public cas?: CAS;
 
@@ -10,6 +12,15 @@ export class AuthFlow {
     public source: string | URL,
   ){
     this.source = AuthFlow.cleanUrl(source)
+  }
+
+  public setWorkspace(space: NOTSpace): AuthFlow {
+    if (this.availableWorkspaces.some(item => item.type === space)) {
+      this.currentWorkspace = space
+    } else {
+      throw new AuthenticationError("This instance doesn't provide support for this Workspace.")
+    }
+    return this;
   }
 
   public static async createFromURL(source: string | URL) {
@@ -22,7 +33,7 @@ export class AuthFlow {
     flow.availableWorkspaces = data.espaces.map((raw) => ({
       delegated: raw.avecDelegation ?? false,
       name: raw.nom,
-      type: NOTSpace[raw.genreEspace as unknown as keyof typeof NOTSpace],
+      type: raw.genreEspace as NOTSpace,
     })).filter(workspace => workspace.type !== undefined);
 
     flow.version = data.version
@@ -32,6 +43,8 @@ export class AuthFlow {
         token: data.CAS.jetonCAS
       }
     }
+
+    flow.currentWorkspace = flow.availableWorkspaces[0]?.type ?? NOTSpace.STUDENT
 
     return flow;
   }

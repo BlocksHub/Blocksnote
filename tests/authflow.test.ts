@@ -1,5 +1,6 @@
 import { test, expect } from "bun:test";
 import { AuthFlow } from "../src/structures/AuthFlow";
+import { NOTSpace } from "../src";
 
 test.each([
   "https://demo.index-education.net/pronote/eleve.html",
@@ -23,13 +24,18 @@ test.each([
   expect(AuthFlow.cleanUrl(input)).toBeOneOf(["https://demo.index-education.net/pronote/", "http://demo.index-education.net/pronote/", "https://demo.index-education.net/"])
 })
 
-test("should initialize the auth flow", async () => {
-  const result = await AuthFlow.createFromURL("demo.index-education.net/pronote")
+const instance = await AuthFlow.createFromURL("demo.index-education.net/pronote")
 
+test("should initialize the auth flow", async () => {
   expect(
-    result.source === "https://demo.index-education.net/pronote/"
-    && result.availableWorkspaces.every(item => item.delegated === false)
-    && result.version.length > 0
-    && !result.cas
+    instance.source === "https://demo.index-education.net/pronote/"
+    && instance.availableWorkspaces.every(item => item.delegated === false)
+    && instance.version.length > 0
+    && !instance.cas
   ).toBe(true)
+})
+
+test("should update the selected workspace", async () => {
+  instance.setWorkspace(NOTSpace.DIRECTION)
+  expect(instance.currentWorkspace === NOTSpace.DIRECTION).toBe(true)
 })
