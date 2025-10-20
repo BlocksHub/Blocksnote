@@ -2,6 +2,7 @@ import { USER_AGENT } from "../../utils/constants.ts";
 import {NetworkError} from "../errors/NetworkError.ts";
 import {isExecutedWithBun} from "../../utils/runtime.ts";
 import { Response } from "./Response.ts";
+import type { Session } from "../Session.ts";
 
 export class Request {
     public headers: Record<string, string> = {
@@ -36,12 +37,16 @@ export class Request {
         return this;
     }
 
-    setPronotePayload(session: number, no: string, id: string, data: unknown): Request {
+    setPronotePayload(session: Session, fName: string, data: unknown): Request {
+        const encryptedNumber = session.aes.encrypt(String(session.manager.requestNumber + 1));
+
+        this.method = "POST";
+        this.endpoint = session.source + ["appelfonction", session.workspace.type, session.id, encryptedNumber].join("/")
         this.payload = {
-            session,
-            no,
-            id,
-            dataSec: data
+            session: Number(session.id),
+            no: encryptedNumber,
+            id: fName,
+            dataSec: { data: data }
         }
         return this;
     }
@@ -79,7 +84,7 @@ export class Request {
         const text = await response.text();
 
         if (contentType?.includes("json")) {
-            return new Response(headers, response.status, JSON.parse(text) as T);
+            return new Response(headers, response.status, this.endpoint.includes("appelfonction") ? JSON.parse(text).dataSec.data : JSON.parse(text) as T);
         } else {
             return new Response(headers, response.status, text as T)
         }
