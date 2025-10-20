@@ -58,7 +58,7 @@ test("should update body", async () => {
 })
 
 test("should update payload", async () => {
-    const session = await Session.initialize("https://demo.index-education.net/pronote/", { url: "mobile.eleve.html", type: NOTSpace.STUDENT, delegated: false, name: "Blocks" });
+    const session = await Session.createSession("https://demo.index-education.net/pronote/", { url: "mobile.eleve.html", type: NOTSpace.STUDENT, delegated: false, name: "Blocks" });
     const request = new Request()
         .setPronotePayload(session, "Blocksnote", {});
 
