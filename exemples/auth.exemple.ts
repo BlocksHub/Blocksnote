@@ -30,6 +30,8 @@ import { AuthFlow } from '../src/structures/AuthFlow';
       },
   });
 
+  flow.setWorkspace(selectedWorkspace)
+
   if (selectedWorkspace.delegated) {
     console.log(chalk.magenta("\n🔑 CAS is enabled on this workspace, a token is required to complete the process."));
   }
