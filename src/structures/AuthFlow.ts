@@ -1,9 +1,9 @@
-import { NOTSpace, type CAS, type InfoMobileResponse, type Workspace } from "../types/authflow";
-import { AuthenticationError } from "./errors/AuthenticationError";
+import { NOTSpace, type CAS, type Workspace } from "../types/authflow";
+import type { InfoMobileResponse } from "../types/network/authflow";
 import { Request } from "./network/Request";
 
 export class AuthFlow {
-  public currentWorkspace: NOTSpace = NOTSpace.STUDENT
+  public currentWorkspace?: Workspace
   public availableWorkspaces: Workspace[] = [];
   public version: number[] = [];
   public cas?: CAS;
@@ -14,12 +14,8 @@ export class AuthFlow {
     this.source = AuthFlow.cleanUrl(source)
   }
 
-  public setWorkspace(space: NOTSpace): AuthFlow {
-    if (this.availableWorkspaces.some(item => item.type === space)) {
-      this.currentWorkspace = space
-    } else {
-      throw new AuthenticationError("This instance doesn't provide support for this Workspace.")
-    }
+  public setWorkspace(space: Workspace): AuthFlow {
+    this.currentWorkspace = space
     return this;
   }
 
@@ -32,6 +28,7 @@ export class AuthFlow {
     
     flow.availableWorkspaces = data.espaces.map((raw) => ({
       delegated: raw.avecDelegation ?? false,
+      url: raw.URL,
       name: raw.nom,
       type: raw.genreEspace as NOTSpace,
     })).filter(workspace => workspace.type !== undefined);
@@ -44,7 +41,7 @@ export class AuthFlow {
       }
     }
 
-    flow.currentWorkspace = flow.availableWorkspaces[0]?.type ?? NOTSpace.STUDENT
+    flow.currentWorkspace = flow.availableWorkspaces[0]
 
     return flow;
   }
