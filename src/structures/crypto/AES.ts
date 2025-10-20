@@ -11,8 +11,8 @@ export class AES {
     private _dIV = this._derivativeIv()
 
     constructor(key?: Uint8Array<ArrayBuffer>, iv?: Uint8Array<ArrayBuffer> ) {
-        if (key) this.key = key;
-        if (iv) this.iv = iv;
+        if (key) { this.key = key; this._dK = this._derivativeKey() };
+        if (iv) { this.iv = iv; this._dIV = this._derivativeIv() };
     }
 
     public encrypt(utf8: string) {
