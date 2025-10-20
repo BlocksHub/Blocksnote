@@ -1,5 +1,6 @@
 import { ParsingError } from "../errors/ParsingError";
 import { DateParser } from "./DateParser";
+import { NumberSet } from "./NumberSet";
 
 export class Parser {
   static parse<T>(obj: unknown): T {
@@ -45,16 +46,19 @@ export class Parser {
 
   static handleType(t: number, v: unknown): unknown {
     switch (t) {
-      case 26: {
-        const parsed = JSON.parse(v as string);
-        return this.parse(parsed);
-      }
+      case 10:
+        return Number(v);
+      case 26:
+      case 11:
+      case 8:
+        return NumberSet.parse(v as string);
       case 7:
         return DateParser.parse(v as string);
       case 24:
-      case 10:
       case 25:
       case 21:
+      case 23:
+      case 27:
         return this.parse(v);
       default:
         throw new ParsingError(t, v);
