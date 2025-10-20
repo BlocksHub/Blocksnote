@@ -2,7 +2,7 @@ import { randomBytes } from "@noble/hashes/utils.js";
 import { RSA } from "../structures/crypto/RSA";
 import { Request } from "../structures/network/Request";
 import { Session } from "../structures/Session";
-import type { FonctionsParametresRawResponse } from "../types/network/instance";
+import type { FonctionsParametresRawResponse } from "../types/responses/instance";
 import { Instance } from "../structures/Instance";
 import type { Language } from "../types/instance";
 

@@ -1,5 +1,5 @@
 import { NOTSpace, type CAS, type Workspace } from "../types/authflow";
-import type { InfoMobileResponse } from "../types/network/authflow";
+import type { InfoMobileResponse } from "../types/responses/authflow";
 import { Request } from "./network/Request";
 
 export class AuthFlow {
