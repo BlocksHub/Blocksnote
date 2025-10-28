@@ -15,25 +15,23 @@ export class AES {
         if (iv) { this.iv = iv; this._dIV = this._derivativeIv() };
     }
 
-    public encrypt(utf8: string) {
+    public encrypt(hex: Uint8Array | string, inBytes: true): Uint8Array;
+    public encrypt(hex: Uint8Array | string, inBytes?: false): string;
+    public encrypt(str: Uint8Array | string, inBytes = false) {
         const cipher: CipherWithOutput = cbc(this._dK, this._dIV);
-        const encrypted = cipher.encrypt(utf8ToBytes(utf8));
-        return bytesToHex(encrypted);
+        const encrypted = cipher.encrypt((str instanceof Uint8Array) ? str : utf8ToBytes(str));
+        return inBytes ? encrypted : bytesToHex(encrypted);
     }
 
-    public decrypt(hex: string) {
+    public decrypt(hex: string, inBytes: true): Uint8Array;
+    public decrypt(hex: string, inBytes?: false): string;
+    public decrypt(hex: string, inBytes = false) {
         const cipher: CipherWithOutput = cbc(this._dK, this._dIV);
         const decrypted = cipher.decrypt(hexToBytes(hex));
-        return bytesToUtf8(decrypted);
+        return inBytes ? decrypted : bytesToUtf8(decrypted);
     }
 
     public updateKey(key: Uint8Array<ArrayBufferLike>) {
-        if (key.length !== 32) {
-            throw new CryptographicError(
-                `AES-256-CBC requires a 32-byte key (256 bits), but you provided a ${key.length}-byte key (${key.length * 8} bits). ` +
-                `If you intend to reset the current AES key, please use the resetKey() method instead.`
-            );
-        }
         this.key = key;
         this._dK = this._derivativeKey();
     }
