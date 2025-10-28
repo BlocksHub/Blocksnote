@@ -16,4 +16,3 @@ export * from "./structures/parsing/Parser.ts";
 
 export * from "./routes/endpoints.ts";
 export * from "./routes/geolocation.ts";
-export * from "./routes/instance.ts"
