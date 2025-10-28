@@ -19,3 +19,24 @@ export interface InfoMobileSpace {
   avecDelegation: boolean,
   protocole: string
 }
+
+export interface IdentificationResponse {
+  alea?: string,
+  modeCompMdp: number,
+  modeCompLog: number,
+  challenge: string
+}
+
+export interface AuthentificationResponse {
+  Acces?: number,
+  libelleUtil?: string,
+  modeSecurisationParDefaut?: number,
+  cle?: string,
+  derniereConnexion?: Date,
+  regleSaisieMDP?: {
+    min: number,
+    max: number,
+    regles: number[]
+  },
+  codePINFixe?: boolean
+}
