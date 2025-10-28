@@ -2,7 +2,7 @@ import { input } from '@inquirer/prompts';
 import search from '@inquirer/search';
 import { School } from '../src/structures/School';
 import chalk from 'chalk';
-import { AuthFlow } from '../src/structures/AuthFlow';
+import { AuthFlow } from '../src/structures/Authenticator';
 
 (async () => {
   const latitude = await input({ message: "Enter the school's latitude:", required: true, default: "48.866667" })
