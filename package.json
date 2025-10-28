@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint src --ext .ts",
-    "build": "bun build src/index.ts --outfile=dist/index.js --minify-syntax --minify-whitespace --minify-identifiers --emit-dce-annotations --packages=external --external=@noble/* --production"
+    "build": "bun build src/index.ts --outfile=dist/index.js --minify-syntax --minify-whitespace --minify-identifiers --emit-dce-annotations --packages=external --production"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -47,6 +47,7 @@
   "dependencies": {
     "@noble/ciphers": "^2.0.1",
     "@noble/hashes": "^2.0.1",
+    "fflate": "^0.8.2",
     "micro-rsa-dsa-dh": "^0.2.3"
   }
 }
