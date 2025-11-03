@@ -29,6 +29,7 @@ export interface IdentificationResponse {
 
 export interface AuthentificationResponse {
   Acces?: number,
+  actionsDoubleAuth?: number[],
   libelleUtil?: string,
   modeSecurisationParDefaut?: number,
   cle?: string,
