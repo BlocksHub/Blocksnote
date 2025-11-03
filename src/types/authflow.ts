@@ -19,3 +19,10 @@ export interface CAS {
   url: string,
   token: string
 }
+
+export enum LoginState {
+  NOT_LOGGED_IN,
+  SHOULD_CUSTOM_PASSWORD,
+  DOUBLE_AUTH_REQUIRED,
+  LOGGED_IN
+}
