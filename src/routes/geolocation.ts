@@ -11,7 +11,6 @@ export async function searchSchoolsWithGeo(lat: number, lon: number, limit = 20)
   const request = new Request()
     .setHeaders({
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      "Origin": "domainecef://localhost"
     })
     .setMethod("POST")
     .setBody("data=" + encodeURIComponent(JSON.stringify({
