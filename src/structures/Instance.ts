@@ -133,7 +133,7 @@ export class Instance {
         securityTutorialVideo: g.urlTutoVideoSecurite,
         registerDevicesTutorial: g.urlTutoEnregistrerAppareils,
         canope: g.urlCanope,
-        accessibilityDeclaration: g.urlDeclarationAccessibilite
+        accessibilityDeclaration: session.source + g.urlDeclarationAccessibilite
       }
     )
   }
