@@ -1,24 +1,26 @@
 import { utf8ToBytes } from "@noble/hashes/utils.js";
-import { LoginState, NOTSpace, type CAS, type Workspace } from "../types/authflow";
-import type { AuthentificationResponse, InfoMobileResponse } from "../types/responses/authflow";
+import { type LoginState, NOTSpace, type CAS, type Workspace } from "../types/authentication";
+import { type AuthentificationResponse, type InfoMobileResponse } from "../types/responses/authentication";
 import { Request } from "./network/Request";
 import { Session } from "./Session";
 import { AuthenticationError } from "./errors/AuthenticationError";
 import { Challenge } from "./Challenge";
+import { AccountSecurity } from "./AccountSecurity";
+import { DoubleAuthMode } from "../utils/constants";
 
 export class Authenticator {
-  public state: LoginState = LoginState.NOT_LOGGED_IN;
+  public state: LoginState = { type: "WORKSPACE_SELECTION", available: [] };
+  private security?: AccountSecurity;
   private challenge?: Challenge;
+  public session?: Session
 
-  public currentWorkspace?: Workspace;
-  public availableWorkspaces: Workspace[] = [];
-  public version: number[] = [];
-  public session?: Session;
-  public cas?: CAS;
-
-  constructor(public source: string | URL) {
-    this.source = Authenticator.cleanUrl(source);
-  }
+  constructor(
+    public source: string,
+    public availableWorkspaces: Workspace[] = [],
+    public currentWorkspace: Workspace | undefined = availableWorkspaces[0],
+    public version: number[] = [],
+    public cas?: CAS
+  ){}
 
   public setWorkspace(space: Workspace): this {
     this.currentWorkspace = space;
@@ -40,6 +42,8 @@ export class Authenticator {
     if (!this.challenge) {
       throw new AuthenticationError("Unable to solve challenge: no challenge was retrieved.");
     }
+    
+    const tempKey = this.challenge.generateTempKey(password);
     const challenge = this.challenge.solveChallenge(session, password);
     const request = new Request().setPronotePayload(session, "Authentification", {
       challenge,
@@ -49,27 +53,40 @@ export class Authenticator {
 
     const response = (await session.manager.enqueueRequest<AuthentificationResponse>(request)).data;
     if (!response.cle) throw new AuthenticationError("Bad Credentials");
-    session.aes.updateKey(utf8ToBytes(response.cle));
 
+    session.aes.updateKey(utf8ToBytes(tempKey));
+    const decrypted = session.aes.decrypt(response.cle)
+    const key = new Uint8Array(decrypted.split(',').map(Number));
+    session.aes.updateKey(key);
+    
     const actions = response.actionsDoubleAuth ?? [];
+    this.security = new AccountSecurity(
+      session, 
+      response.reglesSaisieMDP?.min, 
+      response.reglesSaisieMDP?.max, 
+      response.reglesSaisieMDP?.regles, 
+      response.modesPossibles,
+      response.modeSecurisationParDefaut ?? 0,
+      response.actionsDoubleAuth?.includes(DoubleAuthMode.PIN) ?? false
+    )
     if (actions.length === 0) {
-      this.state = LoginState.LOGGED_IN
+      this.state = { type: "LOGGED_IN", session }
     } else if (actions.includes(0)) {
-      this.state = LoginState.SHOULD_CUSTOM_PASSWORD
+      this.state = { type: "PASSWORD_CHANGE", security: this.security}
     } else if (actions.some(a => [1, 3, 5].includes(a))) {
-      this.state = LoginState.DOUBLE_AUTH_REQUIRED
+      this.state = { type: "DOUBLE_AUTH", security: this.security}
     }
 
     return session;
   }
 
   public static async createFromURL(source: string | URL): Promise<Authenticator> {
-    const flow = new Authenticator(source);
+    source = this.cleanUrl(source);
     const { data } = await new Request()
-      .setEndpoint(`${flow.source}InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4`)
+      .setEndpoint(`${source}InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4`)
       .send<InfoMobileResponse>();
 
-    flow.availableWorkspaces = data.espaces
+    const availableWorkspaces = data.espaces
       .filter(raw => raw.genreEspace !== undefined)
       .map(raw => ({
         delegated: raw.avecDelegation ?? false,
@@ -78,18 +95,18 @@ export class Authenticator {
         type: raw.genreEspace as NOTSpace,
       }));
 
-    flow.version = data.version;
+    const version = data.version;
+    let cas: CAS | undefined;
 
     if (data.CAS.actif) {
-      flow.cas = { url: data.CAS.casURL, token: data.CAS.jetonCAS };
+      cas = { url: data.CAS.casURL, token: data.CAS.jetonCAS };
     }
 
-    flow.currentWorkspace = flow.availableWorkspaces[0];
-    return flow;
+    return new Authenticator(source, availableWorkspaces, undefined, version, cas);
   }
 
   public static cleanUrl(source: string | URL): string {
-    const url = source instanceof URL ? source : new URL(source.startsWith("http") ? source : "https://" + source);
+    const url = source instanceof URL ? source : new URL(source.trim().startsWith("http") ? source : "https://" + source);
     const pathSegments = url.pathname.split("/").filter(Boolean);
 
     while (pathSegments.at(-1)?.toLowerCase().endsWith(".html")) {
