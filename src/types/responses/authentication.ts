@@ -30,11 +30,12 @@ export interface IdentificationResponse {
 export interface AuthentificationResponse {
   Acces?: number,
   actionsDoubleAuth?: number[],
+  modesPossibles?: number[],
   libelleUtil?: string,
   modeSecurisationParDefaut?: number,
   cle?: string,
   derniereConnexion?: Date,
-  regleSaisieMDP?: {
+  reglesSaisieMDP?: {
     min: number,
     max: number,
     regles: number[]

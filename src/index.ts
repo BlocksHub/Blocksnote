@@ -1,7 +1,7 @@
 export * from "./utils/runtime.ts";
 export * from "./utils/constants.ts";
 
-export * from "./types/authflow.ts";
+export * from "./types/authentication.ts";
 export * from "./types/geolocation.ts";
 
 export * from "./structures/crypto/AES.ts";
