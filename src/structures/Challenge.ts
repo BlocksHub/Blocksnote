@@ -1,6 +1,6 @@
 import type { Session } from "./Session";
 import { Request } from "./network/Request";
-import type { IdentificationResponse } from "../types/responses/authflow";
+import type { IdentificationResponse } from "../types/responses/authentication";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 
@@ -32,7 +32,7 @@ export class Challenge {
   }
 
   public solveChallenge(session: Session, password: string): string {
-    const tempKey = this._generateTempKey(password);
+    const tempKey = this.generateTempKey(password);
     session.aes.updateKey(utf8ToBytes(tempKey));
 
     const decrypted = session.aes.decrypt(this.challenge);
@@ -50,7 +50,7 @@ export class Challenge {
       .join("");
   }
 
-  private _generateTempKey(password: string): string {
+  public generateTempKey(password: string): string {
     const hash = sha256
       .create()
       .update(utf8ToBytes(this.seed ?? ""))
