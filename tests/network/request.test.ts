@@ -1,9 +1,11 @@
 import { test, expect } from "bun:test";
 import { Request } from "../../src/structures/network/Request.ts";
-import { RESTManager } from "../../src/structures/network/RESTManager.ts";
+import { RequestManager } from "../../src/structures/network/RequestManager.ts";
+import { Session } from "../../src/structures/Session.ts";
+import { NOTSpace } from "../../src/index.ts";
 
 let count = 0
-const manager = new RESTManager();
+const manager = new RequestManager();
 
 const server = Bun.serve({
     fetch(req) {
@@ -56,10 +58,11 @@ test("should update body", async () => {
 })
 
 test("should update payload", async () => {
+    const session = await Session.createSession("https://demo.index-education.net/pronote/", { url: "mobile.eleve.html", type: NOTSpace.STUDENT, delegated: false, name: "Blocks" });
     const request = new Request()
-        .setPronotePayload(245934, "Blocksnote", "UpdatePayload", {});
+        .setPronotePayload(session, "Blocksnote", {});
 
-    expect(JSON.stringify(request.payload)).toBe("{\"session\":245934,\"no\":\"Blocksnote\",\"id\":\"UpdatePayload\",\"dataSec\":{}}")
+    expect(request.endpoint?.includes("appelfonction") && request.endpoint?.includes(session.id)).toBe(true);
 })
 
 test("should serialize requests", async () => {

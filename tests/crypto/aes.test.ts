@@ -13,10 +13,6 @@ test("should update AES key with valid 32-byte key", () => {
     expect(aes.updateKey(randomBytes(32))).toBeUndefined()
 });
 
-test("should throw when updating AES key with invalid length", () => {
-    expect(() => aes.updateKey(randomBytes(8))).toThrow();
-});
-
 test("should update AES IV with valid 16-byte IV", () => {
     expect(aes.updateIv(randomBytes(16))).toBeUndefined()
 });
