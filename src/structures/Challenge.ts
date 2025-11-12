@@ -3,6 +3,7 @@ import { Request } from "./network/Request";
 import type { IdentificationResponse } from "../types/responses/authentication";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { sha256 } from "@noble/hashes/sha2.js";
+import { AuthenticationError } from "./errors/AuthenticationError";
 
 export class Challenge {
   constructor(
@@ -32,15 +33,19 @@ export class Challenge {
   }
 
   public solveChallenge(session: Session, password: string): string {
-    const tempKey = this.generateTempKey(password);
-    session.aes.updateKey(utf8ToBytes(tempKey));
+    try {
+      const tempKey = this.generateTempKey(password);
+      session.aes.updateKey(utf8ToBytes(tempKey));
 
-    const decrypted = session.aes.decrypt(this.challenge);
-    const decoded = this.decodeChallenge(decrypted);
-    const encrypted = session.aes.encrypt(decoded);
+      const decrypted = session.aes.decrypt(this.challenge);
+      const decoded = this.decodeChallenge(decrypted);
+      const encrypted = session.aes.encrypt(decoded);
 
-    session.aes.resetKey();
-    return encrypted;
+      session.aes.resetKey();
+      return encrypted;
+    } catch {
+      throw new AuthenticationError("Unable to solve the challenge, please ensure that you provided the correct credentials.")
+    }
   }
 
   private decodeChallenge(challenge: string): string {
