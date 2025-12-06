@@ -4,6 +4,7 @@ import type {
   EvaluationSettings, 
   GradingSettings, 
   Language, 
+  Period, 
   Permissions, 
   PublicationSettings, 
   Ressources, 
@@ -30,7 +31,8 @@ export class Instance {
     public schedule: ScheduleSettings,
     public evaluation: EvaluationSettings,
     public permissions: Permissions,
-    public ressources?: Ressources
+    public ressources?: Ressources,
+    public periods?: Period[]
   ) {}
 
   public static async load(session: Session): Promise<Instance> {
@@ -134,7 +136,13 @@ export class Instance {
         registerDevicesTutorial: g.urlTutoEnregistrerAppareils,
         canope: g.urlCanope,
         accessibilityDeclaration: session.source + g.urlDeclarationAccessibilite
-      }
+      },
+      g.ListePeriodes.map(period => ({
+        label: period.label,
+        startDate: period.dateDebut,
+        endDate: period.dateFin,
+        id: period.id
+      }))
     )
   }
 }
