@@ -1,8 +1,9 @@
+import { FileType } from "../types/attachments";
 import type { Period } from "../types/instance";
 import type { ClasseHistorique, CoordonneesEtablissement, InformationsEtablissements, Label, ListeOngletItem, ListePeriode, NumeroUtile, ParametresUtilisateurResponse, ParametresUtilisateurRessource } from "../types/responses/user";
 import type { Class, Coordinates, Establishment, HarassmentPolicy, Mail, PhoneNumber } from "../types/user";
 import type { TabType } from "../utils/constants";
-import { Attachment, FileType } from "./Attachment";
+import { Attachment } from "./Attachment";
 import { Request } from "./network/Request";
 import type { Session } from "./Session";
 
