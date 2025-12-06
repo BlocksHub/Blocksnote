@@ -70,8 +70,8 @@ export type FonctionsParametresRawResponse = {
     }>,
     ListePeriodes: Array<{
       periodeNotation: number,
-      dateDebut: string,
-      dateFin: string,
+      dateDebut: Date,
+      dateFin: Date,
       label: string,
       id: string
     }>,
