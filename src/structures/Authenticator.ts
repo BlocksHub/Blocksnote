@@ -6,13 +6,13 @@ import { Session } from "./Session";
 import { AuthenticationError } from "./errors/AuthenticationError";
 import { Challenge } from "./Challenge";
 import { AccountSecurity } from "./AccountSecurity";
-import { DoubleAuthMode } from "../utils/constants";
+import { DoubleAuthModes } from "../utils/constants";
+import { User } from "./users/User";
 
 export class Authenticator {
   public state: LoginState = { type: "WORKSPACE_SELECTION", available: [] };
   private security?: AccountSecurity;
   private challenge?: Challenge;
-  public session?: Session
 
   constructor(
     public source: string,
@@ -20,11 +20,16 @@ export class Authenticator {
     public currentWorkspace: Workspace | undefined = availableWorkspaces[0],
     public version: number[] = [],
     public cas?: CAS
-  ){}
+  ) { }
 
   public setWorkspace(space: Workspace): this {
     this.currentWorkspace = space;
     return this;
+  }
+
+  public async finalize(): Promise<User> {
+    if (this.state.type !== "LOGGED_IN") throw new AuthenticationError("This session is not ready yet.");
+    return await User.load(this.state.session);
   }
 
   public async initializeLoginWithCredentials(username: string, password: string): Promise<Session> {
@@ -42,7 +47,7 @@ export class Authenticator {
     if (!this.challenge) {
       throw new AuthenticationError("Unable to solve challenge: no challenge was retrieved.");
     }
-    
+
     const tempKey = this.challenge.generateTempKey(password);
     const challenge = this.challenge.solveChallenge(session, password);
     const request = new Request().setPronotePayload(session, "Authentification", {
@@ -58,23 +63,23 @@ export class Authenticator {
     const decrypted = session.aes.decrypt(response.cle)
     const key = new Uint8Array(decrypted.split(',').map(Number));
     session.aes.updateKey(key);
-    
+
     const actions = response.actionsDoubleAuth ?? [];
     this.security = new AccountSecurity(
-      session, 
-      response.reglesSaisieMDP?.min, 
-      response.reglesSaisieMDP?.max, 
-      response.reglesSaisieMDP?.regles, 
+      session,
+      response.reglesSaisieMDP?.min,
+      response.reglesSaisieMDP?.max,
+      response.reglesSaisieMDP?.regles,
       response.modesPossibles,
       response.modeSecurisationParDefaut ?? 0,
-      response.actionsDoubleAuth?.includes(DoubleAuthMode.PIN) ?? false
+      response.actionsDoubleAuth?.includes(DoubleAuthModes.PIN) ?? false
     )
     if (actions.length === 0) {
       this.state = { type: "LOGGED_IN", session }
     } else if (actions.includes(0)) {
-      this.state = { type: "PASSWORD_CHANGE", security: this.security}
+      this.state = { type: "PASSWORD_CHANGE", security: this.security }
     } else if (actions.some(a => [1, 3, 5].includes(a))) {
-      this.state = { type: "DOUBLE_AUTH", security: this.security}
+      this.state = { type: "DOUBLE_AUTH", security: this.security }
     }
 
     return session;
