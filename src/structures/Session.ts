@@ -11,7 +11,6 @@ export class Session {
   public aes = new AES();
 
   public instance?: Instance;
-  
 
   constructor(
     public id: string,
