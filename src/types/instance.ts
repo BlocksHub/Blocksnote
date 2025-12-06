@@ -1,22 +1,22 @@
-export interface SchoolInfo {
+export type SchoolInfo = {
   longName: string;
   shortName: string;
   logoUrl?: string;
 }
 
-export interface PublicationSettings {
+export type PublicationSettings = {
   defaultDelayDays: number;
   parentDelayDays: number;
   hasDelayedGradePublication: boolean;
   hasDelayedEvalPublication: boolean;
 }
 
-export interface GradingSettings {
+export type GradingSettings = {
   scale: number;
   maxGrade: number;
 }
 
-export interface EnvironmentSettings {
+export type EnvironmentSettings = {
   serverDate: Date;
   isShowedInENT: boolean;
   isAccessibilityCompliant: boolean;
@@ -24,7 +24,7 @@ export interface EnvironmentSettings {
   isHostedInFrance: boolean;
 }
 
-export interface Permissions {
+export type Permissions = {
   parentCanChangePassword: boolean;
   allowConnectionInfoRecovery: boolean;
   isForumEnabled: boolean;
@@ -33,7 +33,7 @@ export interface Permissions {
   isExcellencePathwayManagementEnabled: boolean;
 }
 
-export interface ScheduleSettings {
+export type ScheduleSettings = {
   seatsPerDay: number;
   seatsPerHour: number;
   sequenceDuration: number;
@@ -48,42 +48,43 @@ export interface ScheduleSettings {
   publicHolidays: PublicHoliday[];
 }
 
-export interface PublicHoliday {
+export type PublicHoliday = {
   label: string,
   from: Date,
   to: Date
 }
 
-export interface Recreation {
+export type Recreation = {
   seat: number,
   label: string
 }
 
-export interface EvaluationSettings {
+export type EvaluationSettings = {
   acquisitionLevels: AcquisitionLevel[];
   hasEvaluationHistory: boolean;
   qcm: QCMSettings;
 }
 
-export interface QCMSettings {
+export type QCMSettings = {
   minScore: number;
   maxScore: number;
   maxPoints: number;
   maxLevel: number;
 }
 
-export interface Language {
+export type Language = {
   id: number;
   label: string;
 }
 
-export interface Period {
+export type Period = {
   label: string;
   startDate: Date;
   endDate: Date;
+  id: string;
 }
 
-export interface AcquisitionLevel {
+export type AcquisitionLevel = {
   label: string;
   abbreviation?: string;
   color?: string;
@@ -93,7 +94,7 @@ export interface AcquisitionLevel {
   pointsForBrevet?: number;
 }
 
-export interface Ressources {
+export type Ressources = {
   confidentialityPolicy?: string;
   indexEducationWebsite?: string;
   hostingInfo?: string;
