@@ -14,7 +14,34 @@ export enum PasswordRules {
   MAXIMUM_CHARACTERS
 }
 
-export enum DoubleAuthMode {
-  DISABLED = 1,
-  PIN = 3
+export const DoubleAuthModes = {
+  DISABLED: 1,
+  PIN: 3
 }
+
+export const TabTypes = {
+  HOME: 7,
+  NEWS: 8,
+  MENU: 10,
+  SUMMARY: 12,
+  GRADEBOOK: 13,
+  TIMETABLE: 16,
+  NOTEBOOK: 19,
+  CLASS_REPORT: 41,
+  ACCOUNT: 49,
+  ASSIGNMENTS: 88,
+  RESOURCES: 89,
+  PEDAGOGICAL_RESOURCES: 99,
+  PERIOD_REPORT: 100,
+  MY_PROFILE: 111,
+  CHATS: 131,
+  GRADES: 198,
+  EVALUATIONS: 201,
+  SUBJECT_SKILL_LEVELS: 216,
+  CLASS_PERIOD_SUMMARY: 219,
+  DIFFICULTIES: 277,
+  SUBJECT_SKILL_REPORT: 278
+}
+
+export type TabType = typeof TabTypes[keyof typeof TabTypes];
+export type DoubleAuthMode = typeof DoubleAuthModes[keyof typeof DoubleAuthModes];
