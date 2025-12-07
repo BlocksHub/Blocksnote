@@ -66,6 +66,7 @@ export class Authenticator {
 
     const actions = response.actionsDoubleAuth ?? [];
     this.security = new AccountSecurity(
+      this,
       session,
       response.reglesSaisieMDP?.min,
       response.reglesSaisieMDP?.max,

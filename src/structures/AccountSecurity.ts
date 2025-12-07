@@ -1,5 +1,6 @@
 import type { LoginState } from "../types/authentication";
 import { DoubleAuthModes, type DoubleAuthMode, PasswordRules } from "../utils/constants";
+import type { Authenticator } from "./Authenticator";
 import { AuthenticationError } from "./errors/AuthenticationError";
 import { DoubleAuthError } from "./errors/DoubleAuthError";
 import { Request } from "./network/Request";
@@ -7,6 +8,7 @@ import { Session } from "./Session";
 
 export class AccountSecurity {
   constructor(
+    public authenticator: Authenticator,
     public session: Session,
     public minPasswordLength = 0,
     public maxPasswordLength = 0,
@@ -45,7 +47,8 @@ export class AccountSecurity {
       }))
     )
 
-    return { type: "LOGGED_IN", session: this.session };
+    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
+    return this.authenticator.state;
   }
 
   public async submitPin(pin: string, deviceName: string): Promise<LoginState> {
@@ -61,7 +64,8 @@ export class AccountSecurity {
       .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 3, mode: DoubleAuthModes.PIN, pin: encrypted, deviceName }))
     )
 
-    return { type: "LOGGED_IN", session: this.session };
+    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
+    return this.authenticator.state;
   }
 
   public validatePassword(password: string): boolean {
