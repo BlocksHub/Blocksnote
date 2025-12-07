@@ -92,7 +92,7 @@ export class AccountSecurity {
         message: `Password must be at least ${this.minPasswordLength} characters long`
       },
       [PasswordRules.MAXIMUM_CHARACTERS]: {
-        test: () => password.length <= this.minPasswordLength,
+        test: () => password.length <= this.maxPasswordLength,
         message: `Password must not exceed ${this.maxPasswordLength} characters`
       }
     };
@@ -151,10 +151,6 @@ export class AccountSecurity {
     const deviceName = name.slice(0, 30)
     await this.session.manager.enqueueRequest(new Request()
       .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 2, deviceName }))
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", {
-        action: 2,
-        libelle: deviceName
-      })
     )
   }
 }
