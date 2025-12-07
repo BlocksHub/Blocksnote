@@ -7,8 +7,11 @@ export class User extends UserSettings {
       settings.establishment,
       settings.groups,
       settings.classes,
+      settings.hasBrevetExam,
+      settings.permissions,
       settings.profilePicture,
-      settings.hasBrevetExam
+      settings.availableTabs,
+      settings.tabPeriods
     );
   }
 

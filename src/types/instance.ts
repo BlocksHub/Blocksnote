@@ -25,12 +25,26 @@ export type EnvironmentSettings = {
 }
 
 export type Permissions = {
-  parentCanChangePassword: boolean;
-  allowConnectionInfoRecovery: boolean;
-  isForumEnabled: boolean;
-  isParentMessagingEnabled: boolean;
-  isBlogEnabled: boolean;
-  isExcellencePathwayManagementEnabled: boolean;
+  parentCanChangePassword?: boolean;
+  allowConnectionInfoRecovery?: boolean;
+  isForumEnabled?: boolean;
+  isParentMessagingEnabled?: boolean;
+  isBlogEnabled?: boolean;
+  isExcellencePathwayManagementEnabled?: boolean;
+  canChat?: boolean;
+  isChatDisabledBySchedule?: boolean;
+  canChatWithStaff?: boolean;
+  canChatWithTeachers?: boolean;
+  canEnterParentsObservations?: boolean;
+  canViewPersonalData?: boolean;
+  canViewAdministrativeDataFromOtherStudents?: boolean;
+  canUpdateCredentials?: boolean;
+  canPrintBrevetReport?: boolean;
+  maxEstablishmentAttachmentSize?: number;
+  maxStudentHomeworkUploadSize?: number;
+  maxHomeworkTextLength?: number;
+  maxCircumstanceTextLength?: number;
+  maxCommentTextLength?: number;
 }
 
 export type ScheduleSettings = {

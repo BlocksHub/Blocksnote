@@ -1,6 +1,6 @@
 import { FileType } from "../types/attachments";
-import type { Period } from "../types/instance";
-import type { ClasseHistorique, CoordonneesEtablissement, InformationsEtablissements, Label, ListeOngletItem, ListePeriode, NumeroUtile, ParametresUtilisateurResponse, ParametresUtilisateurRessource } from "../types/responses/user";
+import type { Period, Permissions } from "../types/instance";
+import type { ClasseHistorique, CoordonneesEtablissement, InformationsEtablissements, Label, ListeAutorisation, ListeOngletItem, ListePeriode, NumeroUtile, ParametresUtilisateurResponse, ParametresUtilisateurRessource } from "../types/responses/user";
 import type { Class, Coordinates, Establishment, HarassmentPolicy, Mail, PhoneNumber } from "../types/user";
 import type { TabType } from "../utils/constants";
 import { Attachment } from "./Attachment";
@@ -12,10 +12,11 @@ export class UserSettings {
     public establishment: Establishment,
     public groups: Label[] = [],
     public classes: Class[] = [],
-    public profilePicture?: string,
     public hasBrevetExam: boolean = false,
+    public permissions: Permissions,
+    public profilePicture?: string,
     public availableTabs: Set<TabType | number> = new Set(),
-    public tabPeriods: Map<TabType, Period[]> = new Map()
+    public tabPeriods: Map<TabType, Period[]> = new Map(),
   ) {}
 
   public static async load(session: Session): Promise<UserSettings> {
@@ -34,8 +35,9 @@ export class UserSettings {
       this.buildEstablishment(session, establishment, ressource),
       ressource.listeGroupes,
       this.buildClasses(ressource.listeClassesHistoriques),
-      ressource.avecPhoto ? response.ressources!.fichiers![ressource.photoBase64] : undefined,
       ressource.passeLeBrevet,
+      this.buildPermissions(session, response.data.autorisations),
+      ressource.avecPhoto ? response.ressources!.fichiers![ressource.photoBase64] : undefined,
       availableTabs,
       tabPeriods
     )
@@ -47,6 +49,26 @@ export class UserSettings {
 
   public getTabPeriods(tabId: TabType | number): Period[] | undefined {
     return this.tabPeriods.get(tabId);
+  }
+
+  private static buildPermissions(session: Session, permissions: ListeAutorisation) : Permissions {
+    return {
+      ...(session.instance?.permissions ?? {}),
+      canChat: permissions.AvecDiscussion,
+      isChatDisabledBySchedule: permissions.discussionDesactiveeSelonHoraire,
+      canChatWithStaff: permissions.AvecDiscussionPersonnels,
+      canChatWithTeachers: permissions.AvecDiscussionProfesseurs,
+      canEnterParentsObservations: permissions.AvecSaisieObservationsParents,
+      canViewPersonalData: permissions.compte.avecInformationsPersonnelles,
+      canViewAdministrativeDataFromOtherStudents: permissions.consulterDonneesAdministrativesAutresEleves,
+      canUpdateCredentials: permissions.compte.avecSaisieMotDePasse,
+      canPrintBrevetReport: permissions.autoriserImpressionBulletinReleveBrevet,
+      maxEstablishmentAttachmentSize: permissions.tailleMaxDocJointEtablissement,
+      maxStudentHomeworkUploadSize: permissions.tailleMaxRenduTafEleve,
+      maxHomeworkTextLength: permissions.tailleTravailAFaire,
+      maxCircumstanceTextLength: permissions.tailleCirconstance,
+      maxCommentTextLength: permissions.tailleCommentaire
+    }
   }
 
   private static buildTabs(

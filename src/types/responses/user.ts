@@ -1,7 +1,30 @@
 export interface ParametresUtilisateurResponse {
   ressource: ParametresUtilisateurRessource,
   listeInformationsEtablissements: InformationsEtablissements[],
+  autorisations: ListeAutorisation,
   listeOnglets: ListeOngletItem[]
+}
+
+export interface ListeAutorisation {
+    AvecDiscussion:                              boolean;
+    discussionDesactiveeSelonHoraire:            boolean;
+    messageDiscussionDesactiveeSelonHoraire:     boolean;
+    AvecDiscussionPersonnels:                    boolean;
+    AvecDiscussionProfesseurs:                   boolean;
+    AvecSaisieObservationsParents:               boolean;
+    tailleMaxDocJointEtablissement:              number;
+    tailleMaxRenduTafEleve:                      number;
+    tailleTravailAFaire:                         number;
+    tailleCirconstance:                          number;
+    tailleCommentaire:                           number;
+    consulterDonneesAdministrativesAutresEleves: boolean;
+    compte:                                      Compte;
+    autoriserImpressionBulletinReleveBrevet:     boolean;
+}
+
+export interface Compte {
+    avecSaisieMotDePasse:         boolean;
+    avecInformationsPersonnelles: boolean;
 }
 
 export interface ListeOngletItem {
