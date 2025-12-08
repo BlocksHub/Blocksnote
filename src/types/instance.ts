@@ -45,6 +45,38 @@ export type Permissions = {
   maxHomeworkTextLength?: number;
   maxCircumstanceTextLength?: number;
   maxCommentTextLength?: number;
+
+  allowCommunicationsAllClasses?: boolean;
+  hasAdvancedDiscussion?: boolean;
+  hasParentDiscussion?: boolean;
+  canEnterNews?: boolean;
+  canEnterAgenda?: boolean;
+  canViewGuardiansSheets?: boolean;
+  canViewStudentIdentity?: boolean;
+  canViewStudentPhotos?: boolean;
+  canViewAllStudents?: boolean;
+  hasMessagingDisconnectRight?: boolean;
+  hasInstantMessaging?: boolean;
+  canPublishOnSchoolPage?: boolean;
+  canUploadDocumentsForStaff?: boolean;
+  canUploadDocumentsForGuardians?: boolean;
+  intendance?: IntendancePermissions;
+  canTriggerPPMSAlerts?: boolean;
+  canViewTeacherAbsencesAndReplacements?: boolean;
+}
+
+export type IntendancePermissions = {
+  withOrderRequests?: boolean;
+  withITTaskRequests?: boolean;
+  withSecretariatTaskRequests?: boolean;
+  withMaintenanceTaskRequests?: boolean;
+  withOrderExecution?: boolean;
+  withITTaskExecution?: boolean;
+  withSecretariatTaskExecution?: boolean;
+  withMaintenanceTaskExecution?: boolean;
+  withOrderManagement?: boolean;
+  withITTaskManagement?: boolean;
+  withMaintenanceTaskManagement?: boolean;
 }
 
 export type ScheduleSettings = {

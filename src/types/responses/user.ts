@@ -2,7 +2,14 @@ export interface ParametresUtilisateurResponse {
   ressource: ParametresUtilisateurRessource,
   listeInformationsEtablissements: InformationsEtablissements[],
   autorisations: ListeAutorisation,
-  listeOnglets: ListeOngletItem[]
+  listeOnglets: ListeOngletItem[],
+  listeClasses: ListeClasse[]
+}
+
+export interface ListeClasse extends Label {
+  estResponsable?: boolean;
+  enseigne?: boolean;
+  niveau?: Label;
 }
 
 export interface ListeAutorisation {
@@ -20,11 +27,45 @@ export interface ListeAutorisation {
     consulterDonneesAdministrativesAutresEleves: boolean;
     compte:                                      Compte;
     autoriserImpressionBulletinReleveBrevet:     boolean;
+    
+    AutoriserCommunicationsToutesClasses?: boolean;
+    AvecDiscussionAvancee?: boolean;
+    AvecDiscussionParents?: boolean;
+    AvecSaisieActualite?: boolean;
+    AvecSaisieAgenda?: boolean;
+    ConsulterFichesResponsables?: boolean;
+    ConsulterIdentiteEleve?: boolean;
+    ConsulterPhotosEleves?: boolean;
+    VoirTousLesEleves?: boolean;
+    avecDroitDeconnexionMessagerie?: boolean;
+    avecMessageInstantane?: boolean;
+    avecPublicationPageEtablissement?: boolean;
+    avecSaisieDocumentsCasiersIntervenant?: boolean;
+    avecSaisieDocumentsCasiersResponsable?: boolean;
+    intendance: IntendanceAutorisation;
+    lancerAlertesPPMS?: boolean;
+    voirAbsencesEtRemplacementsProfs?: boolean;
+}
+
+export interface IntendanceAutorisation {
+  avecDemandeCommandes?: boolean;
+  avecDemandeTachesInformatique?: boolean;
+  avecDemandeTachesSecretariat?: boolean;
+  avecDemandeTravauxIntendance?: boolean;
+  avecExecutionCommandes?: boolean;
+  avecExecutionTachesInformatique?: boolean;
+  avecExecutionTachesSecretariat?: boolean;
+  avecExecutionTravauxIntendance?: boolean;
+  avecGestionCommandes?: boolean;
+  avecGestionTachesInformatique?: boolean;
+  avecGestionTravauxIntendance?: boolean;
 }
 
 export interface Compte {
     avecSaisieMotDePasse:         boolean;
     avecInformationsPersonnelles: boolean;
+    avecSaisieInfosPersoAutorisations?: boolean;
+    avecSaisieInfosPersoCoordonnees: boolean;
 }
 
 export interface ListeOngletItem {

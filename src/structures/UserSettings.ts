@@ -1,6 +1,6 @@
 import { FileType } from "../types/attachments";
 import type { Period, Permissions } from "../types/instance";
-import type { ClasseHistorique, CoordonneesEtablissement, InformationsEtablissements, Label, ListeAutorisation, ListeOngletItem, ListePeriode, NumeroUtile, ParametresUtilisateurResponse, ParametresUtilisateurRessource } from "../types/responses/user";
+import type { ClasseHistorique, CoordonneesEtablissement, InformationsEtablissements, Label, ListeAutorisation, ListeClasse, ListeOngletItem, ListePeriode, NumeroUtile, ParametresUtilisateurResponse, ParametresUtilisateurRessource } from "../types/responses/user";
 import type { Class, Coordinates, Establishment, HarassmentPolicy, Mail, PhoneNumber } from "../types/user";
 import type { TabType } from "../utils/constants";
 import { Attachment } from "./Attachment";
@@ -16,7 +16,7 @@ export class UserSettings {
     public permissions: Permissions,
     public profilePicture?: string,
     public availableTabs: Set<TabType | number> = new Set(),
-    public tabPeriods: Map<TabType, Period[]> = new Map(),
+    public tabPeriods: Map<TabType, Period[]> = new Map()
   ) {}
 
   public static async load(session: Session): Promise<UserSettings> {
@@ -25,6 +25,7 @@ export class UserSettings {
 
     const ressource = response.data.ressource
     const establishment = response.data.listeInformationsEtablissements[0]!
+    const classes = this.buildClasses(ressource.listeClassesHistoriques, response.data.listeClasses)
     const { availableTabs, tabPeriods } = this.buildTabs(
       session, 
       response.data.listeOnglets, 
@@ -34,7 +35,7 @@ export class UserSettings {
     return new UserSettings(
       this.buildEstablishment(session, establishment, ressource),
       ressource.listeGroupes,
-      this.buildClasses(ressource.listeClassesHistoriques),
+      classes,
       ressource.passeLeBrevet,
       this.buildPermissions(session, response.data.autorisations),
       ressource.avecPhoto ? response.ressources!.fichiers![ressource.photoBase64] : undefined,
@@ -67,7 +68,35 @@ export class UserSettings {
       maxStudentHomeworkUploadSize: permissions.tailleMaxRenduTafEleve,
       maxHomeworkTextLength: permissions.tailleTravailAFaire,
       maxCircumstanceTextLength: permissions.tailleCirconstance,
-      maxCommentTextLength: permissions.tailleCommentaire
+      maxCommentTextLength: permissions.tailleCommentaire,
+      allowCommunicationsAllClasses: permissions.AutoriserCommunicationsToutesClasses,
+      hasAdvancedDiscussion: permissions.AvecDiscussionAvancee,
+      hasParentDiscussion: permissions.AvecDiscussionParents,
+      canEnterNews: permissions.AvecSaisieActualite,
+      canEnterAgenda: permissions.AvecSaisieAgenda,
+      canViewGuardiansSheets: permissions.ConsulterFichesResponsables,
+      canViewStudentIdentity: permissions.ConsulterIdentiteEleve,
+      canViewStudentPhotos: permissions.ConsulterPhotosEleves,
+      canViewAllStudents: permissions.VoirTousLesEleves,
+      hasMessagingDisconnectRight: permissions.avecDroitDeconnexionMessagerie,
+      canPublishOnSchoolPage: permissions.avecPublicationPageEtablissement,
+      canUploadDocumentsForGuardians: permissions.avecSaisieDocumentsCasiersIntervenant,
+      canUploadDocumentsForStaff: permissions.avecSaisieDocumentsCasiersResponsable,
+      intendance: {
+        withOrderRequests: permissions.intendance.avecDemandeCommandes,
+        withITTaskRequests: permissions.intendance.avecDemandeTachesInformatique,
+        withSecretariatTaskRequests: permissions.intendance.avecDemandeTachesSecretariat,
+        withMaintenanceTaskRequests: permissions.intendance.avecDemandeTravauxIntendance,
+        withOrderExecution: permissions.intendance.avecExecutionCommandes,
+        withITTaskExecution: permissions.intendance.avecExecutionTachesInformatique,
+        withSecretariatTaskExecution: permissions.intendance.avecExecutionTachesSecretariat,
+        withMaintenanceTaskExecution: permissions.intendance.avecExecutionTravauxIntendance,
+        withOrderManagement: permissions.intendance.avecGestionCommandes,
+        withITTaskManagement: permissions.intendance.avecGestionTachesInformatique,
+        withMaintenanceTaskManagement: permissions.intendance.avecGestionTravauxIntendance
+      },
+      canTriggerPPMSAlerts: permissions.lancerAlertesPPMS,
+      canViewTeacherAbsencesAndReplacements: permissions.voirAbsencesEtRemplacementsProfs
     }
   }
 
@@ -115,13 +144,20 @@ export class UserSettings {
       .filter((period): period is Period => period !== undefined);
   }
 
-  private static buildClasses(history: ClasseHistorique[] = []) {
-    return history.map(item => ({
-      current: item.courant,
-      withGrades: item.AvecNote,
-      withFiliere: item.AvecFiliere,
-      label: item.label
-    }))
+  private static buildClasses(history: ClasseHistorique[] = [], list: ListeClasse[] = []) {
+    return [
+      history.map(item => ({
+        current: item.courant,
+        withGrades: item.AvecNote,
+        withFiliere: item.AvecFiliere,
+        shortLabel: item.label
+      })),
+      list.map(item => ({
+        shortLabel: item.label,
+        longLabel: item.niveau?.label,
+        current: (item.estResponsable || item.enseigne) ?? false,
+      }))
+    ].flat()
   }
 
   private static buildEstablishment(session: Session, establishment: InformationsEtablissements, ressource: ParametresUtilisateurRessource): Establishment {
@@ -157,12 +193,14 @@ export class UserSettings {
   }
 
   private static buildMails(coordinates: CoordonneesEtablissement): Mail[] {
-    return [coordinates.EMailPersonnalise1, coordinates.EMailPersonnalise2]
-    .filter(item => item?.Mail)
-    .map(item => ({
-      label: item?.NomPersonnalise ?? "",
-      mail: item?.Mail ?? ""
-    }))
+    const mailFields = [coordinates.EMailPersonnalise1, coordinates.EMailPersonnalise2];
+    
+    return mailFields
+      .filter((item): item is NonNullable<typeof item> => !!item?.Mail)
+      .map(item => ({
+        label: item.NomPersonnalise ?? "",
+        mail: item.Mail
+      }));
   }
 
   private static buildPhoneNumbers(coordinates: CoordonneesEtablissement): PhoneNumber[] {
@@ -177,11 +215,9 @@ export class UserSettings {
   private static buildHarassmentPolicy(establishment: InformationsEtablissements, phoneNumber?: NumeroUtile): HarassmentPolicy {
     return {
       referents: establishment.listeReferentsHarcelement.map(item => {
-        const parts = item.label.split(" ");
         return {
           canChatWith: item.avecDiscussion,
-          name: parts[0] ?? "",
-          role: parts.slice(1).join(" ").replace(/[()]/g, "")
+          ...this.parseReferentName(item.label)
         };
       }),
       supportNumber: phoneNumber ? {
@@ -189,5 +225,15 @@ export class UserSettings {
         number: phoneNumber.numeroTelBrut
       } : undefined
     }
+  }
+
+  private static parseReferentName(label: string): { name: string; role: string } {
+    const match = label.match(/^(\S+)\s*(.*)$/);
+    if (!match) return { name: label, role: "" };
+    
+    return {
+      name: match[1] ?? "",
+      role: match[2]?.replace(/[()]/g, "").trim() ?? ""
+    };
   }
 }

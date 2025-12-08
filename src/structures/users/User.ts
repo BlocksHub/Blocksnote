@@ -17,7 +17,6 @@ export class User extends UserSettings {
 
   public static override async load(session: Session): Promise<User> {
     const settings = await UserSettings.load(session);
-    console.log(settings);
     return new User(settings);
   }
 }

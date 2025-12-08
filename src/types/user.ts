@@ -3,9 +3,10 @@ import type { Period } from "./instance"
 
 export type Class = {
   current: boolean,
-  withGrades: boolean,
-  withFiliere: boolean,
-  label: string
+  withGrades?: boolean,
+  withFiliere?: boolean,
+  shortLabel: string,
+  longLabel?: string
 }
 
 export type Tab = {
