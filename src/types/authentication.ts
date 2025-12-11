@@ -1,4 +1,4 @@
-import type { AccountSecurity } from "../structures/AccountSecurity"
+import type { AccountSecurity } from "../structures/authentication/AccountSecurity"
 import type { Session } from "../structures/Session"
 
 export enum NOTSpace {
@@ -27,5 +27,5 @@ export type LoginState =
   | { type: "WORKSPACE_SELECTION", available: Workspace[] }
   | { type: "WAITING_CREDENTIALS" }
   | { type: "DOUBLE_AUTH", security: AccountSecurity }
-  | { type: "PASSWORD_CHANGE", security: AccountSecurity }
+  | { type: "CREDENTIALS_CHANGE", security: AccountSecurity }
   | { type: "LOGGED_IN", session: Session }
