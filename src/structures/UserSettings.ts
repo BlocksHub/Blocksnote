@@ -6,6 +6,7 @@ import type { TabType } from "../utils/constants";
 import { Attachment } from "./Attachment";
 import { Request } from "./network/Request";
 import type { Session } from "./Session";
+import type { Settings } from "./Settings";
 
 export class UserSettings {
   constructor(
@@ -19,7 +20,7 @@ export class UserSettings {
     public tabPeriods: Map<TabType, Period[]> = new Map()
   ) {}
 
-  public static async load(session: Session): Promise<UserSettings> {
+  public static async load(session: Session, settings: Settings): Promise<UserSettings> {
     const request = new Request().setPronotePayload(session, "ParametresUtilisateur", {})
     const response = (await session.manager.enqueueRequest<ParametresUtilisateurResponse>(request))
 
@@ -27,7 +28,7 @@ export class UserSettings {
     const establishment = response.data.listeInformationsEtablissements[0]!
     const classes = this.buildClasses(ressource.listeClassesHistoriques, response.data.listeClasses)
     const { availableTabs, tabPeriods } = this.buildTabs(
-      session, 
+      settings, 
       response.data.listeOnglets, 
       ressource.listeOngletsPourPeriodes ?? []
     );
@@ -37,7 +38,7 @@ export class UserSettings {
       ressource.listeGroupes,
       classes,
       ressource.passeLeBrevet,
-      this.buildPermissions(session, response.data.autorisations),
+      this.buildPermissions(settings, response.data.autorisations),
       ressource.avecPhoto ? response.ressources!.fichiers![ressource.photoBase64] : undefined,
       availableTabs,
       tabPeriods
@@ -52,9 +53,9 @@ export class UserSettings {
     return this.tabPeriods.get(tabId);
   }
 
-  private static buildPermissions(session: Session, permissions: ListeAutorisation) : Permissions {
+  private static buildPermissions(settings: Settings, permissions: ListeAutorisation) : Permissions {
     return {
-      ...(session.instance?.permissions ?? {}),
+      ...(settings.permissions ?? {}),
       canChat: permissions.AvecDiscussion,
       isChatDisabledBySchedule: permissions.discussionDesactiveeSelonHoraire,
       canChatWithStaff: permissions.AvecDiscussionPersonnels,
@@ -101,7 +102,7 @@ export class UserSettings {
   }
 
   private static buildTabs(
-    session: Session,
+    settings: Settings,
     activeTabs: ListeOngletItem[],
     periods: ListePeriode[]
   ): { availableTabs: Set<TabType | number>, tabPeriods: Map<TabType, Period[]> } {
@@ -113,14 +114,14 @@ export class UserSettings {
 
       const hasPeriods = periods.some(period => period.G === tab.G);
       if (hasPeriods) {
-        const builtPeriods = this.buildPeriods(session, periods, tab.G);
+        const builtPeriods = this.buildPeriods(settings, periods, tab.G);
         if (builtPeriods.length > 0) {
           tabPeriods.set(tab.G, builtPeriods);
         }
       }
 
       if (tab.Onglet) {
-        const nested = this.buildTabs(session, tab.Onglet, periods);
+        const nested = this.buildTabs(settings, tab.Onglet, periods);
         nested.availableTabs.forEach(id => availableTabs.add(id));
         nested.tabPeriods.forEach((periods, id) => tabPeriods.set(id, periods));
       }
@@ -130,17 +131,16 @@ export class UserSettings {
   }
 
   private static buildPeriods(
-    session: Session,
+    settings: Settings,
     periods: ListePeriode[],
     tab: TabType | number
   ): Period[] {
     const matchingTab = periods.find(period => period.G === tab);
-    if (!matchingTab?.listePeriodes || !session.instance) {
+    if (!matchingTab?.listePeriodes || settings.periods) {
       return [];
     }
-
     return matchingTab.listePeriodes
-      .map(period => session.instance!.periods?.find(p => p.id === period.id))
+      .map(period => settings.periods?.find(p => p.id === period.id))
       .filter((period): period is Period => period !== undefined);
   }
 

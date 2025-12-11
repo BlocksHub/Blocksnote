@@ -1,148 +1,49 @@
-import { randomBytes } from "@noble/hashes/utils.js";
-import type { 
-  EnvironmentSettings, 
-  EvaluationSettings, 
-  GradingSettings, 
-  Language, 
-  Period, 
-  Permissions, 
-  PublicationSettings, 
-  Ressources, 
-  ScheduleSettings, 
-  SchoolInfo
-} from "../types/instance";
-import type { Session } from "./Session";
-import { RSA } from "../structures/crypto/RSA";
-import { Request } from "../structures/network/Request";
-import type { FonctionsParametresRawResponse } from "../types/responses/instance";
+import { NOTSpace, type CAS, type Workspace } from "../types/authentication";
+import { type InfoMobileResponse } from "../types/responses/authentication";
+import { Request } from "./network/Request";
 
 export class Instance {
   constructor(
-    public productName: string,
-    public version: number[],
-    public isDemo: boolean,
-    public school: SchoolInfo,
-    public schoolYear: number[],
-    public publication: PublicationSettings,
-    public grading: GradingSettings,
-    public availableLanguages: Language[],
-    public currentLanguage: Language,
-    public environment: EnvironmentSettings,
-    public schedule: ScheduleSettings,
-    public evaluation: EvaluationSettings,
-    public permissions: Permissions,
-    public ressources?: Ressources,
-    public periods?: Period[]
+    public source: string,
+    public workspaces: Workspace[] = [],
+    public version: number[] = [],
+    public cas?: CAS
   ) {}
 
-  public static async load(session: Session): Promise<Instance> {
-    const nextIv = randomBytes(16);
-    const uuid = session.useHttps ? nextIv.toBase64() : RSA.encrypt1024(nextIv);
-  
-    const request = new Request()
-      .setPronotePayload(session, "FonctionParametres", {
-        Uuid: uuid,
-        identifiantNav: null
-      });
-    session.aes.updateIv(nextIv);
-  
-    const response = (await session.manager.enqueueRequest<FonctionsParametresRawResponse>(request))
-      .data;
-  
-    const g = response.General;
-    const languages: Language[] = g.listeLangues.map(l => ({ id: l.langID, label: l.description }));
-    const currentLang = languages.find(l => l.id === +g.langID) ?? languages[0];
-  
-    return new Instance(
-      g.nomProduit,
-      response.tableauVersion,
-      !!response.DateDemo,
-      {
-        longName: g.NomEtablissementConnexion,
-        shortName: g.NomEtablissement,
-        logoUrl: g.urlLogo
-      },
-      g.AnneeScolaire.split("-").map(Number),
-      {
-        defaultDelayDays: g.NbJDecalageDatePublicationParDefaut,
-        parentDelayDays: g.NbJDecalagePublicationAuxParents,
-        hasDelayedEvalPublication: g.AvecAffichageDecalagePublicationEvalsAuxParents,
-        hasDelayedGradePublication: g.AvecAffichageDecalagePublicationNotesAuxParents
-      },
-      {
-        scale: g.BaremeNotation,
-        maxGrade: g.BaremeMaxDevoirs
-      },
-      languages,
-      currentLang!,
-      {
-        serverDate: new Date(response.DateServeurHttp),
-        isShowedInENT: response.estAfficheDansENT,
-        isAccessibilityCompliant: !!g.accessibiliteNonConforme,
-        isForNewCaledonia: response.pourNouvelleCaledonie,
-        isHostedInFrance: g.estHebergeEnFrance
-      },
-      {
-        seatsPerDay: g.PlacesParJour,
-        seatsPerHour: g.PlacesParHeure,
-        sequenceDuration: g.DureeSequence,
-        hasFullAfternoonHours: g.AvecHeuresPleinesApresMidi,
-        nextOpenDay: new Date(g.JourOuvre),
-        openDaysPerCycle: g.joursOuvresParCycle,
-        firstWeek: g.premierJourSemaine,
-        firstMonday: new Date(g.PremierLundi),
-        firstDate: new Date(g.PremiereDate),
-        lastDate: new Date(g.DerniereDate),
-        recreations: g.recreations.map(r => ({ seat: r.place, label: r.label })),
-        publicHolidays: g.listeJoursFeries.map(j => ({
-          label: j.label,
-          from: new Date(j.dateDebut),
-          to: new Date(j.dateFin)
-        }))
-      },
-      {
-        acquisitionLevels: g.ListeNiveauxDAcquisitions.map(l => ({
-          label: l.label,
-          abbreviation: l.abbreviation,
-          color: l.couleur,
-          weight: l.positionJauge,
-          isAcquired: l.estAcqui,
-          countForSuccessRateCalculation: l.estNotantPourTxReussite,
-          pointsForBrevet: l.nombrePointsBrevet
-        })),
-        hasEvaluationHistory: g.AvecEvaluationHistorique,
-        qcm: {
-          minScore: g.minBaremeQuestionQCM,
-          maxScore: g.maxBaremeQuestionQCM,
-          maxPoints: g.maxNbPointQCM,
-          maxLevel: g.maxNiveauQCM
-        }
-      },
-      {
-        parentCanChangePassword: g.parentAutoriseChangerMDP,
-        allowConnectionInfoRecovery: g.AvecRecuperationInfosConnexion,
-        isBlogEnabled: g.activerBlog,
-        isForumEnabled: g.avecForum,
-        isParentMessagingEnabled: g.ActivationMessagerieEntreParents,
-        isExcellencePathwayManagementEnabled: g.GestionParcoursExcellence
-      },
-      {
-        confidentialityPolicy: response.urlConfidentialite,
-        indexEducationWebsite: g.urlSiteIndexEducation,
-        hostingInfo: g.urlSiteInfosHebergement,
-        support: g.UrlAide,
-        faqTwoFactorRegistration: g.urlFAQEnregistrementDoubleAuth,
-        securityTutorialVideo: g.urlTutoVideoSecurite,
-        registerDevicesTutorial: g.urlTutoEnregistrerAppareils,
-        canope: g.urlCanope,
-        accessibilityDeclaration: session.source + g.urlDeclarationAccessibilite
-      },
-      g.ListePeriodes.map(period => ({
-        label: period.label,
-        startDate: period.dateDebut,
-        endDate: period.dateFin,
-        id: period.id
-      }))
-    )
+  public static async createFromURL(source: string | URL): Promise<Instance> {
+    source = this.cleanUrl(source);
+    const { data } = await new Request()
+      .setEndpoint(`${source}InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4`)
+      .send<InfoMobileResponse>();
+
+    const availableWorkspaces = data.espaces
+      .filter(raw => raw.genreEspace !== undefined)
+      .map(raw => ({
+        delegated: raw.avecDelegation ?? false,
+        url: raw.URL,
+        name: raw.nom,
+        type: raw.genreEspace as NOTSpace,
+      }));
+
+    const version = data.version;
+    let cas: CAS | undefined;
+
+    if (data.CAS.actif) {
+      cas = { url: data.CAS.casURL, token: data.CAS.jetonCAS };
+    }
+
+    return new Instance(source, availableWorkspaces, version, cas);
+  }
+
+  public static cleanUrl(source: string | URL): string {
+    const url = source instanceof URL ? source : new URL(source.trim().startsWith("http") ? source : "https://" + source);
+    const pathSegments = url.pathname.split("/").filter(Boolean);
+
+    while (pathSegments.at(-1)?.toLowerCase().endsWith(".html")) {
+      pathSegments.pop();
+    }
+
+    const basePath = pathSegments.join("/");
+    return `${url.protocol}//${url.host}/${basePath ? basePath + "/" : ""}`.toLowerCase();
   }
 }

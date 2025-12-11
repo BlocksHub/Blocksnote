@@ -1,10 +1,10 @@
-import type { LoginState } from "../types/authentication";
-import { DoubleAuthModes, type DoubleAuthMode, PasswordRules } from "../utils/constants";
+import type { LoginState } from "../../types/authentication";
+import { DoubleAuthModes, type DoubleAuthMode, PasswordRules } from "../../utils/constants";
 import type { Authenticator } from "./Authenticator";
-import { AuthenticationError } from "./errors/AuthenticationError";
-import { DoubleAuthError } from "./errors/DoubleAuthError";
-import { Request } from "./network/Request";
-import { Session } from "./Session";
+import { AuthenticationError } from "../errors/AuthenticationError";
+import { DoubleAuthError } from "../errors/DoubleAuthError";
+import { Request } from "../network/Request";
+import { Session } from "../Session";
 
 export class AccountSecurity {
   constructor(
@@ -19,7 +19,7 @@ export class AccountSecurity {
     public canUpdatePin: boolean = !this.requirePin,
     public remainingRetry: number = 3,
   ) {
-    this.canUpdatePin = this.availableModes.includes(DoubleAuthModes.PIN);
+    this.canUpdatePin = requirePin ? false : this.availableModes.includes(DoubleAuthModes.PIN);
   }
 
   public setAuthMode(mode: DoubleAuthMode): AccountSecurity {
