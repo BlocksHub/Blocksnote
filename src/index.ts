@@ -13,8 +13,12 @@ export * from "./structures/network/Request.ts";
 export * from "./structures/network/Response.ts";
 export * from "./structures/parsing/DateParser.ts";
 export * from "./structures/parsing/Parser.ts";
-export * from "./structures/UserSettings.ts";
 export * from "./structures/Attachment.ts";
+export * from "./structures/users/Student.ts";
+export * from "./structures/authentication/StudentAuthenticator.ts"
+export * from "./structures/ParametresUtilisateurs/Common.ts"
+export * from "./structures/ParametresUtilisateurs/Student.ts"
+export * from "./structures/Instance.ts"
 
 export * from "./structures/users/User.ts"
 export * from "./structures/users/Student.ts"
