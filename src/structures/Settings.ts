@@ -37,7 +37,7 @@ export class Settings {
 
   public static async load(session: Session): Promise<Settings> {
     const nextIv = randomBytes(16);
-    const uuid = session.useHttps ? nextIv.toBase64() : RSA.encrypt1024(nextIv);
+    const uuid = session.useHttps ? Buffer.from(nextIv).toString('base64') : RSA.encrypt1024(nextIv);
   
     const request = new Request()
       .setPronotePayload(session, "FonctionParametres", {
