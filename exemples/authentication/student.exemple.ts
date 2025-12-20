@@ -2,6 +2,7 @@ import { input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Instance } from '../../src/structures/Instance';
 import { StudentAuthenticator } from '../../src/structures/authentication/StudentAuthenticator';
+import { TabsType } from '../../src';
 
 (async () => {
   const url = await input({ message: "Enter the school's instance URL:", required: true, default: "https://demo.index-education.net/pronote/" })
@@ -54,5 +55,5 @@ import { StudentAuthenticator } from '../../src/structures/authentication/Studen
   }
 
   const student = await authenticator.finalize()
-  console.log(student);
+  console.log(student.user.tab(TabsType.GRADES));
 })()
