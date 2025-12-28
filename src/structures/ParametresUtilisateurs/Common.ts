@@ -1,5 +1,7 @@
 import { FileType, type FileTypeValue } from "../../types/attachments";
 import type { Period } from "../../types/instance";
+import type { InformationsEtablissement, MailEtablissement, NumeroEtablissement, ParametresUtilisateurResponse, PronoteOnglet } from "../../types/responses/user";
+import type { CommonPermissions, Cycle, Establishment, EstablishmentContact, HarassmentPolicy, Location, Tab, TabType } from "../../types/user";
 import { Attachment } from "../Attachment";
 import { Request } from "../network/Request";
 import { Response } from "../network/Response";
@@ -86,6 +88,25 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     })) ?? [];
 
     return { periods, cycle };
+  }
+
+  public get permissions(): CommonPermissions {
+    const authorizations = this.raw.data.autorisations
+
+    return {
+      canChat: authorizations.AvecDiscussion,
+      canChatWithStaff: authorizations.AvecDiscussionPersonnels,
+      canChatWithTeachers: authorizations.AvecDiscussionProfesseurs,
+      canPrintGradesReport: authorizations.autoriserImpressionBulletinReleveBrevet,
+      canViewAdministrativeDataFromStudents: authorizations.consulterDonneesAdministrativesAutresEleves,
+      sizes: {
+        circumstancesMaxSize: authorizations.tailleCirconstance,
+        commentMaxSize: authorizations.tailleCommentaire,
+        establishmentAttachmentMaxSize: authorizations.tailleMaxDocJointEtablissement,
+        homeworkMaxSize: authorizations.tailleTravailAFaire
+      },
+      canViewPersonnalData: authorizations.compte.avecInformationsPersonnelles
+    }
   }
 
   public get firstName(): string {
@@ -199,220 +220,4 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
 
     return this._establishment;
   }
-}
-
-export type Establishment = {
-  label: string,
-  shortLabel: string,
-  rules?: Attachment,
-  charter?: Attachment,
-  location?: Location,
-  contacts: EstablishmentContact,
-  harassmentPolicy?: HarassmentPolicy,
-}
-
-export type HarassmentPolicy = {
-  supportWebsite?: URL,
-  supportNumber?: PhoneNumber,
-  referents: HarassmentReferent[]
-}
-
-export type HarassmentReferent = {
-  name: string,
-  role: string,
-  canChatWith: boolean
-}
-
-export type EstablishmentContact = {
-  mails: Mail[],
-  phoneNumbers: PhoneNumber[]
-}
-
-export type Mail = {
-  label: string,
-  address: string
-}
-
-export type PhoneNumber = {
-  label: string,
-  number: string
-}
-
-export type Location = {
-  postalCode: string,
-  city: string,
-  province: string,
-  address: string
-}
-
-export type Base64<imageType extends string> = `data:image/${imageType};base64,${string}`
-
-export type CommonClass = {
-  label: string
-}
-
-export type StudentClass = CommonClass & {
-  withGrades: boolean,
-  withSectors: boolean,
-  current: boolean
-}
-
-export type Class = CommonClass | StudentClass
-
-export type Tab = {
-  periods: Period[],
-  cycle: Cycle[]
-}
-
-export type Cycle = {
-  label: string,
-  skills: Skill[]
-}
-
-export type Skill = {
-  label: string,
-  position: number,
-  inCommonBase: boolean,
-  isForeignLanguage: boolean
-}
-
-export const TabsType = {
-  SUMMARY: 12,
-  REPORT_CARD: 13,
-  GRADES: 198,
-  NOTEBOOK: 19,
-  PERIOD_REPORT: 100,
-  CLASS_PERIOD_SUMMARY: 219,
-  CLASS_REPORT: 41,
-  PROFILE: 111,
-  PEDAGOGICAL_RESOURCES: 99,
-  ASSESSMENTS: 201,
-  DIFFICULTIES: 277,
-  SUBJECT_SKILL_REPORT: 278
-}
-
-export type TabType = typeof TabsType[keyof typeof TabsType]
-
-// Raw Pronote Types, only dev, not included in production build
-
-export type CommunParametresUtilisateurResponse = {
-  ressource: CommunParametresUtilisateurRessource,
-  listeInformationsEtablissements?: InformationsEtablissement[],
-  listeOnglets: PronoteOnglet[]
-}
-
-export type EleveParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
-  ressource: EleveParametresUtilisateurRessource
-}
-
-export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse | EleveParametresUtilisateurResponse
-
-export type CommunParametresUtilisateurRessource = PronoteLabel & {
-  Etablissement: PronoteLabel
-  listeNumerosUtiles: (PronoteLabel & NumeroUtile)[]
-  avecPhoto: boolean
-  photoBase64?: number,
-  listeOngletsPourPeriodes?: PeriodeOnglet[]
-  listeOngletsPourPiliers?: PilierOnglet[]
-}
-
-export type EleveParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
-  classeDEleve: PronoteLabel
-  listeClassesHistoriques: PronoteClasse[]
-  listeGroupes: PronoteLabel[]
-}
-
-export type PronoteOnglet = PronoteType & {
-  Onglet?: PronoteType[]
-}
-
-export type PronoteType = {
-  G: number
-}
-
-export type PilierOnglet =  PronoteType & {
-  listePaliers: PronotePalier[]
-}
-
-export type PronotePalier = PronoteLabel & {
-  listePiliers: PronotePilier[]
-}
-
-export type PronotePilier = PronoteLabel & PronoteType & {
-  estPilierLVE: boolean,
-  estSocleCommun: boolean
-}
-
-export type PeriodeOnglet = PronoteType & {
-  listePeriodes: PronotePeriode[],
-  periodeParDefaut: PronoteLabel
-}
-
-export type PronotePeriode = PronoteLabel & {
-  A: boolean,
-  GenreNotation: number
-}
-
-export type PronoteClasse = PronoteLabel & {
-  AvecFiliere: boolean,
-  AvecNote: boolean,
-  courant: boolean
-}
-
-export type ParametresUtilisateurRessource = CommunParametresUtilisateurRessource | EleveParametresUtilisateurRessource
-
-export type NumeroUtile = {
-  commentaire: string,
-  estNrHarcelement: boolean,
-  numeroTelBrut: string,
-  numeroTelFormate: string,
-  url: string
-}
-
-export type PronoteLabel = {
-  label: string,
-  id: string
-}
-
-export type InformationsEtablissement = PronoteLabel & {
-  Coordonnees?: Coordonnees
-  LibelleFichierCU?: string,
-  LibelleFichierRI?: string,
-  avecFichierCU?: boolean,
-  avecFichierRI?: boolean,
-  avecInformations?: boolean,
-  avecReferentsHarcelementPublie?: boolean,
-  listeReferentsHarcelement: ReferentHarcelement[]
-}
-
-export type Coordonnees = {
-  Adresse1: string,
-  Adresse2: string,
-  Adresse3: string,
-  Adresse4: string,
-  CodePostal: string,
-  EMailPersonnalise1?: MailEtablissement,
-  EMailPersonnalise2?: MailEtablissement,
-  LibellePostal: string,
-  LibelleVille: string,
-  NumPersonnalise1?: NumeroEtablissement,
-  NumPersonnalise2?: NumeroEtablissement,
-  NumPersonnalise3?: NumeroEtablissement,
-  Pays: string,
-  Province: string,
-  SiteInternet: string
-}
-
-export type NumeroEtablissement = {
-  NomPersonnalise: string,
-  Numero: string
-}
-
-export type MailEtablissement = {
-  Mail: string,
-  NomPersonnalise: string
-}
-
-export type ReferentHarcelement = PronoteLabel & {
-  avecDiscussion: boolean
 }

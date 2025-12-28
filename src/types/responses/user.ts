@@ -1,161 +1,171 @@
-export interface ParametresUtilisateurResponse {
-  ressource: ParametresUtilisateurRessource,
-  listeInformationsEtablissements: InformationsEtablissements[],
-  autorisations: ListeAutorisation,
-  listeOnglets: ListeOngletItem[],
-  listeClasses: ListeClasse[]
+export type CommunParametresUtilisateurResponse = {
+  ressource: CommunParametresUtilisateurRessource,
+  listeInformationsEtablissements?: InformationsEtablissement[],
+  listeOnglets: PronoteOnglet[],
+  autorisations: CommunAutorisations,
 }
 
-export interface ListeClasse extends Label {
-  estResponsable?: boolean;
-  enseigne?: boolean;
-  niveau?: Label;
+export type CommunCompteAutorisation = {
+  avecInformationsPersonnelles: boolean
 }
 
-export interface ListeAutorisation {
-    AvecDiscussion:                              boolean;
-    discussionDesactiveeSelonHoraire:            boolean;
-    messageDiscussionDesactiveeSelonHoraire:     boolean;
-    AvecDiscussionPersonnels:                    boolean;
-    AvecDiscussionProfesseurs:                   boolean;
-    AvecSaisieObservationsParents:               boolean;
-    tailleMaxDocJointEtablissement:              number;
-    tailleMaxRenduTafEleve:                      number;
-    tailleTravailAFaire:                         number;
-    tailleCirconstance:                          number;
-    tailleCommentaire:                           number;
-    consulterDonneesAdministrativesAutresEleves: boolean;
-    compte:                                      Compte;
-    autoriserImpressionBulletinReleveBrevet:     boolean;
-    
-    AutoriserCommunicationsToutesClasses?: boolean;
-    AvecDiscussionAvancee?: boolean;
-    AvecDiscussionParents?: boolean;
-    AvecSaisieActualite?: boolean;
-    AvecSaisieAgenda?: boolean;
-    ConsulterFichesResponsables?: boolean;
-    ConsulterIdentiteEleve?: boolean;
-    ConsulterPhotosEleves?: boolean;
-    VoirTousLesEleves?: boolean;
-    avecDroitDeconnexionMessagerie?: boolean;
-    avecMessageInstantane?: boolean;
-    avecPublicationPageEtablissement?: boolean;
-    avecSaisieDocumentsCasiersIntervenant?: boolean;
-    avecSaisieDocumentsCasiersResponsable?: boolean;
-    intendance: IntendanceAutorisation;
-    lancerAlertesPPMS?: boolean;
-    voirAbsencesEtRemplacementsProfs?: boolean;
+export type ParentCompteAutorisation = CommunCompteAutorisation & {
+  avecSaisieInfosPersoAutorisations: boolean,
+  avecSaisieInfosPersoCoordonnees: boolean
 }
 
-export interface IntendanceAutorisation {
-  avecDemandeCommandes?: boolean;
-  avecDemandeTachesInformatique?: boolean;
-  avecDemandeTachesSecretariat?: boolean;
-  avecDemandeTravauxIntendance?: boolean;
-  avecExecutionCommandes?: boolean;
-  avecExecutionTachesInformatique?: boolean;
-  avecExecutionTachesSecretariat?: boolean;
-  avecExecutionTravauxIntendance?: boolean;
-  avecGestionCommandes?: boolean;
-  avecGestionTachesInformatique?: boolean;
-  avecGestionTravauxIntendance?: boolean;
+export type CompteAutorisation= CommunCompteAutorisation | ParentCompteAutorisation
+
+export type CommunAutorisations = {
+  AvecDiscussion: boolean,
+  AvecDiscussionPersonnels: boolean,
+  AvecDiscussionProfesseurs: boolean,
+  autoriserImpressionBulletinReleveBrevet: boolean,
+  compte: CommunCompteAutorisation,
+  consulterDonneesAdministrativesAutresEleves: boolean,
+  tailleCirconstance: number,
+  tailleCommentaire: number,
+  tailleMaxDocJointEtablissement: number,
+  tailleTravailAFaire: number
 }
 
-export interface Compte {
-    avecSaisieMotDePasse:         boolean;
-    avecInformationsPersonnelles: boolean;
-    avecSaisieInfosPersoAutorisations?: boolean;
-    avecSaisieInfosPersoCoordonnees: boolean;
+export type ParentAutorisations = CommunAutorisations & {
+  AvecDeclarerDispenseLongue: boolean,
+  AvecDeclarerDispensePonctuelle: boolean,
+  AvecDeclarerUneAbsence: boolean,
+  AvecDiscussionParents: boolean,
+  accesDecrochage: boolean,
+  autoriserImpressionBulletinReleveBrevet: boolean,
+  compte: ParentCompteAutorisation
 }
 
-export interface ListeOngletItem {
-  G: number,
-  Onglet?: ListeOngletItem[]
+export type EleveAutorisations = CommunAutorisations & {
+  tailleMaxRenduTafEleve: number,
 }
 
-export interface InformationsEtablissements extends Label {
-  urlLogo: string,
-  avecInformations: boolean,
-  avecFichierCU: boolean,
-  avecFichierRI: boolean,
-  LibelleFichierCU: string,
-  LibelleFichierRI: string,
-  Coordonnees: CoordonneesEtablissement,
-  listeReferentsHarcelement: EtablissementReferentHarcelement[]
+export type EleveParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  ressource: EleveParametresUtilisateurRessource,
+  autorisations: EleveAutorisations,
 }
 
-interface EtablissementReferentHarcelement {
-  avecDiscussion: boolean,
+export type ParentParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  ressource: ParentParametresUtilisateurRessource,
+  autorisations: ParentAutorisations,
+}
+
+export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse | EleveParametresUtilisateurResponse | ParentParametresUtilisateurResponse
+
+export type CommunParametresUtilisateurRessource = PronoteLabel & {
+  Etablissement: PronoteLabel
+  listeNumerosUtiles: (PronoteLabel & NumeroUtile)[]
+  avecPhoto: boolean
+  photoBase64?: number,
+  listeOngletsPourPeriodes?: PeriodeOnglet[]
+  listeOngletsPourPiliers?: PilierOnglet[]
+}
+
+export type EleveParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
+  classeDEleve: PronoteLabel
+  listeClassesHistoriques: PronoteClasse[]
+  listeGroupes: PronoteLabel[]
+}
+
+export type ParentParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
+  listeClassesDelegue: PronoteLabel[],
+  listeRessources: EleveParametresUtilisateurRessource[]
+}
+
+export type PronoteOnglet = PronoteType & {
+  Onglet?: PronoteType[]
+}
+
+export type PronoteType = {
+  G: number
+}
+
+export type PilierOnglet =  PronoteType & {
+  listePaliers: PronotePalier[]
+}
+
+export type PronotePalier = PronoteLabel & {
+  listePiliers: PronotePilier[]
+}
+
+export type PronotePilier = PronoteLabel & PronoteType & {
+  estPilierLVE: boolean,
+  estSocleCommun: boolean
+}
+
+export type PeriodeOnglet = PronoteType & {
+  listePeriodes: PronotePeriode[],
+  periodeParDefaut: PronoteLabel
+}
+
+export type PronotePeriode = PronoteLabel & {
+  A: boolean,
+  GenreNotation: number
+}
+
+export type PronoteClasse = PronoteLabel & {
+  AvecFiliere: boolean,
+  AvecNote: boolean,
+  courant: boolean
+}
+
+export type ParametresUtilisateurRessource = CommunParametresUtilisateurRessource | EleveParametresUtilisateurRessource
+
+export type NumeroUtile = {
+  commentaire: string,
+  estNrHarcelement: boolean,
+  numeroTelBrut: string,
+  numeroTelFormate: string,
+  url: string
+}
+
+export type PronoteLabel = {
   label: string,
   id: string
 }
 
-export interface CoordonneesEtablissement {
+export type InformationsEtablissement = PronoteLabel & {
+  Coordonnees?: Coordonnees
+  LibelleFichierCU?: string,
+  LibelleFichierRI?: string,
+  avecFichierCU?: boolean,
+  avecFichierRI?: boolean,
+  avecInformations?: boolean,
+  avecReferentsHarcelementPublie?: boolean,
+  listeReferentsHarcelement: ReferentHarcelement[]
+}
+
+export type Coordonnees = {
   Adresse1: string,
   Adresse2: string,
   Adresse3: string,
   Adresse4: string,
   CodePostal: string,
+  EMailPersonnalise1?: MailEtablissement,
+  EMailPersonnalise2?: MailEtablissement,
   LibellePostal: string,
   LibelleVille: string,
+  NumPersonnalise1?: NumeroEtablissement,
+  NumPersonnalise2?: NumeroEtablissement,
+  NumPersonnalise3?: NumeroEtablissement,
   Pays: string,
   Province: string,
-  SiteInternet: string,
-  EMailPersonnalise1?: MailCoordonnees,
-  EMailPersonnalise2?: MailCoordonnees,
-  NumPersonnalise1?: NumeroCoordonnees,
-  NumPersonnalise2?: NumeroCoordonnees,
-  NumPersonnalise3?: NumeroCoordonnees
+  SiteInternet: string
 }
 
-export interface MailCoordonnees {
+export type NumeroEtablissement = {
   NomPersonnalise: string,
-  Mail: string
+  Numero: string
 }
 
-interface NumeroCoordonnees {
-  estNrHarcelement: unknown
-  NomPersonnalise: string,
-  Numero: string,
+export type MailEtablissement = {
+  Mail: string,
+  NomPersonnalise: string
 }
 
-export interface NumeroUtile {
-  numeroTelBrut: string,
-  numeroTelFormate: string,
-  estNrHarcelement: boolean,
-  url: string,
-  label: string
-}
-
-export interface ClasseHistorique extends Label {
-  courant: boolean,
-  AvecNote: boolean,
-  AvecFiliere: boolean,
-}
-
-export interface ParametresUtilisateurRessource {
-  Etablissement: Label,
-  avecPhoto?: boolean,
-  photoBase64: number,
-  listeGroupes?: Label[],
-  listeClassesHistoriques?: ClasseHistorique[],
-  listeNumerosUtiles?: Array<NumeroUtile>,
-  listeOngletsPourPeriodes?: ListePeriode[]
-  passeLeBrevet: boolean
-}
-
-export interface ListePeriode {
-  G: number
-  listePeriodes: Array<{
-    G: number;
-    A: boolean;
-    GenreNotation: number;
-    label: string;
-    id: string;
-  }>
-}
-
-export interface Label {
-  label: string,
-  id: string,
+export type ReferentHarcelement = PronoteLabel & {
+  avecDiscussion: boolean
 }
