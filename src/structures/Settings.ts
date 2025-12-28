@@ -5,7 +5,7 @@ import type {
   GradingSettings, 
   Language, 
   Period, 
-  Permissions, 
+  InstancePermissions, 
   PublicationSettings, 
   Ressources, 
   ScheduleSettings, 
@@ -30,7 +30,7 @@ export class Settings {
     public environment: EnvironmentSettings,
     public schedule: ScheduleSettings,
     public evaluation: EvaluationSettings,
-    public permissions: Permissions,
+    public permissions: InstancePermissions,
     public ressources?: Ressources,
     public periods?: Period[]
   ) {}

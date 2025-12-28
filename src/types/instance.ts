@@ -24,7 +24,7 @@ export type EnvironmentSettings = {
   isHostedInFrance: boolean;
 }
 
-export type Permissions = {
+export type InstancePermissions = {
   parentCanChangePassword?: boolean;
   allowConnectionInfoRecovery?: boolean;
   isForumEnabled?: boolean;
