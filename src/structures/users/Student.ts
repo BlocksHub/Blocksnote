@@ -18,6 +18,6 @@ export class Student extends User {
 
   public static override async load(session: Session, settings: Settings, instance: Instance): Promise<Student> {
     const user = await StudentUserSettings.load<StudentUserSettings>(session, settings);
-    return new Student(session, user, instance, settings);
+    return new this(session, user, instance, settings);
   }
 }
