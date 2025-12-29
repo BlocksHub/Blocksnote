@@ -1,22 +1,22 @@
-export interface SchoolInfo {
+export type SchoolInfo = {
   longName: string;
   shortName: string;
   logoUrl?: string;
 }
 
-export interface PublicationSettings {
+export type PublicationSettings = {
   defaultDelayDays: number;
   parentDelayDays: number;
   hasDelayedGradePublication: boolean;
   hasDelayedEvalPublication: boolean;
 }
 
-export interface GradingSettings {
+export type GradingSettings = {
   scale: number;
   maxGrade: number;
 }
 
-export interface EnvironmentSettings {
+export type EnvironmentSettings = {
   serverDate: Date;
   isShowedInENT: boolean;
   isAccessibilityCompliant: boolean;
@@ -24,16 +24,62 @@ export interface EnvironmentSettings {
   isHostedInFrance: boolean;
 }
 
-export interface Permissions {
-  parentCanChangePassword: boolean;
-  allowConnectionInfoRecovery: boolean;
-  isForumEnabled: boolean;
-  isParentMessagingEnabled: boolean;
-  isBlogEnabled: boolean;
-  isExcellencePathwayManagementEnabled: boolean;
+export type InstancePermissions = {
+  parentCanChangePassword?: boolean;
+  allowConnectionInfoRecovery?: boolean;
+  isForumEnabled?: boolean;
+  isParentMessagingEnabled?: boolean;
+  isBlogEnabled?: boolean;
+  isExcellencePathwayManagementEnabled?: boolean;
+  canChat?: boolean;
+  isChatDisabledBySchedule?: boolean;
+  canChatWithStaff?: boolean;
+  canChatWithTeachers?: boolean;
+  canEnterParentsObservations?: boolean;
+  canViewPersonalData?: boolean;
+  canViewAdministrativeDataFromOtherStudents?: boolean;
+  canUpdateCredentials?: boolean;
+  canPrintBrevetReport?: boolean;
+  maxEstablishmentAttachmentSize?: number;
+  maxStudentHomeworkUploadSize?: number;
+  maxHomeworkTextLength?: number;
+  maxCircumstanceTextLength?: number;
+  maxCommentTextLength?: number;
+
+  allowCommunicationsAllClasses?: boolean;
+  hasAdvancedDiscussion?: boolean;
+  hasParentDiscussion?: boolean;
+  canEnterNews?: boolean;
+  canEnterAgenda?: boolean;
+  canViewGuardiansSheets?: boolean;
+  canViewStudentIdentity?: boolean;
+  canViewStudentPhotos?: boolean;
+  canViewAllStudents?: boolean;
+  hasMessagingDisconnectRight?: boolean;
+  hasInstantMessaging?: boolean;
+  canPublishOnSchoolPage?: boolean;
+  canUploadDocumentsForStaff?: boolean;
+  canUploadDocumentsForGuardians?: boolean;
+  intendance?: IntendancePermissions;
+  canTriggerPPMSAlerts?: boolean;
+  canViewTeacherAbsencesAndReplacements?: boolean;
 }
 
-export interface ScheduleSettings {
+export type IntendancePermissions = {
+  withOrderRequests?: boolean;
+  withITTaskRequests?: boolean;
+  withSecretariatTaskRequests?: boolean;
+  withMaintenanceTaskRequests?: boolean;
+  withOrderExecution?: boolean;
+  withITTaskExecution?: boolean;
+  withSecretariatTaskExecution?: boolean;
+  withMaintenanceTaskExecution?: boolean;
+  withOrderManagement?: boolean;
+  withITTaskManagement?: boolean;
+  withMaintenanceTaskManagement?: boolean;
+}
+
+export type ScheduleSettings = {
   seatsPerDay: number;
   seatsPerHour: number;
   sequenceDuration: number;
@@ -48,42 +94,43 @@ export interface ScheduleSettings {
   publicHolidays: PublicHoliday[];
 }
 
-export interface PublicHoliday {
+export type PublicHoliday = {
   label: string,
   from: Date,
   to: Date
 }
 
-export interface Recreation {
+export type Recreation = {
   seat: number,
   label: string
 }
 
-export interface EvaluationSettings {
+export type EvaluationSettings = {
   acquisitionLevels: AcquisitionLevel[];
   hasEvaluationHistory: boolean;
   qcm: QCMSettings;
 }
 
-export interface QCMSettings {
+export type QCMSettings = {
   minScore: number;
   maxScore: number;
   maxPoints: number;
   maxLevel: number;
 }
 
-export interface Language {
+export type Language = {
   id: number;
   label: string;
 }
 
-export interface Period {
+export type Period = {
   label: string;
   startDate: Date;
   endDate: Date;
+  id: string;
 }
 
-export interface AcquisitionLevel {
+export type AcquisitionLevel = {
   label: string;
   abbreviation?: string;
   color?: string;
@@ -93,7 +140,7 @@ export interface AcquisitionLevel {
   pointsForBrevet?: number;
 }
 
-export interface Ressources {
+export type Ressources = {
   confidentialityPolicy?: string;
   indexEducationWebsite?: string;
   hostingInfo?: string;

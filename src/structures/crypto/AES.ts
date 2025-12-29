@@ -15,8 +15,8 @@ export class AES {
         if (iv) { this.iv = iv; this._dIV = this._derivativeIv() };
     }
 
-    public encrypt(hex: Uint8Array | string, inBytes: true): Uint8Array;
-    public encrypt(hex: Uint8Array | string, inBytes?: false): string;
+    public encrypt(str: Uint8Array | string, inBytes: true): Uint8Array;
+    public encrypt(str: Uint8Array | string, inBytes?: false): string;
     public encrypt(str: Uint8Array | string, inBytes = false) {
         const cipher: CipherWithOutput = cbc(this._dK, this._dIV);
         const encrypted = cipher.encrypt((str instanceof Uint8Array) ? str : utf8ToBytes(str));

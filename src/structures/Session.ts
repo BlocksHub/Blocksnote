@@ -2,17 +2,12 @@ import { type Workspace } from "../types/authentication";
 import { BYPASS_ID } from "../utils/constants";
 import { AES } from "./crypto/AES";
 import { AuthenticationError } from "./errors/AuthenticationError";
-import { Instance } from "./Instance";
 import { Request } from "./network/Request";
 import { RequestManager } from "./network/RequestManager";
 
 export class Session {
   public manager = new RequestManager();
   public aes = new AES();
-
-  public instance?: Instance;
-  
-
   constructor(
     public id: string,
     public source: string,
@@ -40,8 +35,6 @@ export class Session {
     }
 
     const session = new Session(sessionId, source, workspace, hasCoA, hasCrA, useHttps);
-    const instance = await Instance.load(session)
-    session.instance = instance
     return  session
   }
 }

@@ -1,5 +1,5 @@
-import type { PasswordRules } from "../../types/responses/authentication";
-import type { AccountSecurity } from "../AccountSecurity";
+import type { PasswordRules } from "../../utils/constants";
+import type { AccountSecurity } from "../authentication/AccountSecurity";
 
 export class DoubleAuthError extends Error {
     public readonly context;

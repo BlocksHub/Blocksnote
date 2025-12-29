@@ -1,11 +1,14 @@
-import { DoubleAuthMode, PasswordRules } from "../utils/constants";
-import { AuthenticationError } from "./errors/AuthenticationError";
-import { DoubleAuthError } from "./errors/DoubleAuthError";
-import { Request } from "./network/Request";
-import { Session } from "./Session";
+import type { LoginState } from "../../types/authentication";
+import { DoubleAuthModes, type DoubleAuthMode, PasswordRules } from "../../utils/constants";
+import type { Authenticator } from "./Authenticator";
+import { AuthenticationError } from "../errors/AuthenticationError";
+import { DoubleAuthError } from "../errors/DoubleAuthError";
+import { Request } from "../network/Request";
+import { Session } from "../Session";
 
 export class AccountSecurity {
   constructor(
+    public authenticator: Authenticator,
     public session: Session,
     public minPasswordLength = 0,
     public maxPasswordLength = 0,
@@ -15,8 +18,8 @@ export class AccountSecurity {
     public requirePin: boolean,
     public canUpdatePin: boolean = !this.requirePin,
     public remainingRetry: number = 3,
-  ){
-    this.canUpdatePin = requirePin ? false : this.availableModes.includes(DoubleAuthMode.PIN);
+  ) {
+    this.canUpdatePin = requirePin ? false : this.availableModes.includes(DoubleAuthModes.PIN);
   }
 
   public setAuthMode(mode: DoubleAuthMode): AccountSecurity {
@@ -24,11 +27,11 @@ export class AccountSecurity {
     return this;
   }
 
-  public async updatePassword(password: string, options?: { deviceName: string, pin: string }): Promise<Session> {
+  public async updatePassword(password: string, options?: { deviceName: string, pin: string }): Promise<LoginState> {
     this.validatePassword(password)
-    
+
     const encrypted = this.session.aes.encrypt(password)
-    if (!this.requirePin) {
+    if (this.requirePin) {
       if (!options?.pin) throw new DoubleAuthError("A PIN is required to update password in this mode.", this);
       await this._validePin(options.pin);
     }
@@ -36,31 +39,33 @@ export class AccountSecurity {
     if (options) await this._registerDevice(options.deviceName);
 
     await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ 
+      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({
         action: 3,
-        password: encrypted, 
+        password: encrypted,
         pin: options?.pin ? this.session.aes.encrypt(options?.pin) : undefined,
-        deviceName: options?.deviceName 
+        deviceName: options?.deviceName
       }))
     )
 
-    return this.session;
+    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
+    return this.authenticator.state;
   }
-  
-  public async submitPin(pin: string, deviceName: string): Promise<Session> {
+
+  public async submitPin(pin: string, deviceName: string): Promise<LoginState> {
     if (pin.length < 4) throw new DoubleAuthError("You PIN must be at least 4 characters", this, { pin });
     if (this.remainingRetry <= 0) throw new AuthenticationError("This session is no longer active");
-    
+
     const encrypted = this.session.aes.encrypt(pin);
     await this._validePin(pin);
 
     await this._registerDevice(deviceName);
 
     await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 3, mode: DoubleAuthMode.PIN, pin: encrypted, deviceName }))
+      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 3, mode: DoubleAuthModes.PIN, pin: encrypted, deviceName }))
     )
 
-    return this.session;
+    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
+    return this.authenticator.state;
   }
 
   public validatePassword(password: string): boolean {
@@ -87,7 +92,7 @@ export class AccountSecurity {
         message: `Password must be at least ${this.minPasswordLength} characters long`
       },
       [PasswordRules.MAXIMUM_CHARACTERS]: {
-        test: () => password.length <= this.minPasswordLength,
+        test: () => password.length <= this.maxPasswordLength,
         message: `Password must not exceed ${this.maxPasswordLength} characters`
       }
     };
@@ -106,17 +111,17 @@ export class AccountSecurity {
     return true;
   }
 
-  private _buildPayloadAuth(options: { action: number, mode?: number, password?: string, pin?: string, deviceName?: string  }) {
-    const payload: { 
-      action: number, 
-      mode?: number, 
-      nouveauMDP?: string, 
-      codePin?: string, 
-      avecIdentification?: boolean, 
-      strIdentification?: string, 
-      libelle?: string 
+  private _buildPayloadAuth(options: { action: number, mode?: number, password?: string, pin?: string, deviceName?: string }) {
+    const payload: {
+      action: number,
+      mode?: number,
+      nouveauMDP?: string,
+      codePin?: string,
+      avecIdentification?: boolean,
+      strIdentification?: string,
+      libelle?: string
     } = { action: options.action };
-    if (this.availableModes.length > 1 || options.mode || this.currentMode !== DoubleAuthMode.DISABLED) payload.mode = options.mode ?? this.currentMode;
+    if (this.availableModes.length > 1 || options.mode || this.currentMode !== DoubleAuthModes.DISABLED) payload.mode = options.mode ?? this.currentMode;
     if (options.password) payload.nouveauMDP = options.password;
     if (options.pin) payload.codePin = options.pin;
     if (options.deviceName && options.pin) {
@@ -141,15 +146,11 @@ export class AccountSecurity {
   }
 
   private async _registerDevice(name: string) {
-    if (!this.availableModes.includes(DoubleAuthMode.PIN)) throw new Error("You doesn't have the rights to register a new device.")
+    if (!this.availableModes.includes(DoubleAuthModes.PIN)) throw new Error("You doesn't have the rights to register a new device.")
 
-    const deviceName = name.slice(0,30)
+    const deviceName = name.slice(0, 30)
     await this.session.manager.enqueueRequest(new Request()
       .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 2, deviceName }))
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", {
-        action: 2,
-        libelle: deviceName
-      })
     )
   }
 }

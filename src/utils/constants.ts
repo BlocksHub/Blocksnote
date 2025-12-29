@@ -14,7 +14,9 @@ export enum PasswordRules {
   MAXIMUM_CHARACTERS
 }
 
-export enum DoubleAuthMode {
-  DISABLED = 1,
-  PIN = 3
+export const DoubleAuthModes = {
+  DISABLED: 1,
+  PIN: 3
 }
+
+export type DoubleAuthMode = typeof DoubleAuthModes[keyof typeof DoubleAuthModes];

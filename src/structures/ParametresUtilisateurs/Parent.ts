@@ -1,0 +1,54 @@
+import { CommonUserSettings } from "./Common";
+import { Response } from "../network/Response";
+import type { Session } from "../Session";
+import type { Settings } from "../Settings";
+import { StudentUserSettings } from "./Student";
+import type { EleveParametresUtilisateurResponse, ParentParametresUtilisateurResponse } from "../../types/responses/user";
+import type { Base64, CommonClass, ParentPermissions } from "../../types/user";
+
+export class ParentUserSettings extends CommonUserSettings<ParentParametresUtilisateurResponse> {
+  constructor(
+    session: Session,
+    raw: Response<ParentParametresUtilisateurResponse>,
+    ressource: ParentParametresUtilisateurResponse['ressource'],
+    settings: Settings
+  ){
+    super(session, raw, ressource, settings)
+  }
+
+  public override get permissions(): ParentPermissions {
+    const common = super.permissions
+    const authorizations = this.raw.data.autorisations as ParentParametresUtilisateurResponse["autorisations"]
+
+    return {
+      ...common,
+      canEditPersonalInfoAuthorizations: authorizations.compte.avecSaisieInfosPersoAutorisations,
+      canEditPersonalInfoCoordinates: authorizations.compte.avecSaisieInfosPersoCoordonnees,
+      canChatWithParents: authorizations.AvecDiscussionParents
+    }
+  }
+
+  public get classes(): CommonClass[] {
+    return this.ressource.listeClassesDelegue.map(i => ({
+      label: i.label
+    }))
+  }
+  
+  public get profilePicture(): Base64<'png'> | undefined {
+    const key = this.ressource.photoBase64;
+    const file = key !== undefined ? this.raw.ressources?.fichiers?.[key] : undefined;
+
+    return ["data:image/png;base64", file].join(",") as Base64<'png'>
+  }
+
+  public get childrens(): StudentUserSettings[] {
+    return this.ressource.listeRessources.map(children => 
+      new StudentUserSettings(
+        this.session,
+        { ...this.raw, data: { ressource: children } } as Response<EleveParametresUtilisateurResponse>,
+        children,
+        this.settings
+      )
+    )
+  }
+}
