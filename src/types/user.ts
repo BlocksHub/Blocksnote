@@ -57,7 +57,27 @@ export type StudentClass = CommonClass & {
   current: boolean
 }
 
-export type Class = CommonClass | StudentClass
+export type TeacherClass = CommonClass & {
+  isTaught: boolean,
+  isEndOfCycle: boolean,
+  isHeadTeacher: boolean,
+  level?: string
+}
+
+export type Class = CommonClass | StudentClass | TeacherClass
+
+export type Subject = {
+  label: string,
+  shortLabel: string,
+  isTaught: boolean,
+  isUsed: boolean,
+  color: string
+}
+
+export type Level = {
+  label: string,
+  isTaught: boolean
+}
 
 export type Tab = {
   periods: Period[],
@@ -124,6 +144,90 @@ export type ParentPermissions = CommonPermissions & {
   canEditPersonalInfoAuthorizations: boolean,
   canEditPersonalInfoCoordinates: boolean,
   canChatWithParents: boolean
+}
+
+export type TeacherPermissions = StudentPermissions & ParentPermissions & {
+  canCommunicateWithAllClasses: boolean,
+  canViewDefaultNotebook: boolean,
+  canContactSchoolLife: boolean,
+  canUseAdvancedDiscussion: boolean,
+  canDiscussWithStudents: boolean,
+  canPublishPunishments: boolean,
+  canRecordAbsence: boolean,
+  canRecordNews: boolean,
+  canRecordAgenda: boolean,
+  canRecordAttendanceAndSchoolLife: boolean,
+  canRecordCertificates: boolean,
+  canRecordLessons: boolean,
+  canRecordDefaultNotebook: boolean,
+  canRecordHomework: boolean,
+  canRecordEncouragements: boolean,
+  canRecordExclusion: boolean,
+  canRecordOutOfClass: boolean,
+  canRecordLatenessReason: boolean,
+  canRecordObservation: boolean,
+  canRecordParentObservations: boolean,
+  canRecordNurseVisit: boolean,
+  canRecordIndividualProject: boolean,
+  canRecordPunishment: boolean,
+  canRecordLateness: boolean,
+  canRecordOnGrid: boolean,
+  canViewGuardianFiles: boolean,
+  canViewStudentIdentity: boolean,
+  canViewStudentMemos: boolean,
+  canViewStudentPhotos: boolean,
+  canRecordMemos: boolean,
+  canPrintReportCardAndCertificate: boolean,
+  canAccessStudentDocumentList: boolean,
+  canAccessTeacherReplacements: boolean,
+  canAccessOldAttendanceSheets: boolean,
+  canCreateForumTopics: boolean,
+  canDisconnectMessaging: boolean,
+  canUseInstantMessaging: boolean,
+  canModifyForumAfterPosting: boolean,
+  canPublishToMailingList: boolean,
+  canPublishToSchoolPage: boolean,
+  canRecordClassNotebook: boolean,
+  canRecordExemption: boolean,
+  canRecordStaffCaseDocuments: boolean,
+  canRecordGuardianCaseDocuments: boolean,
+  canRecordClassNotebookAttachments: boolean,
+  canCollectDocsFromStudents: boolean,
+  canCollectDocsFromGuardians: boolean,
+  isChatRecipient: boolean,
+  canManageDocumentCollection: boolean,
+  canLaunchPPMSAlerts: boolean,
+  canVolunteerForReplacement: boolean,
+  canViewTeacherAbsencesAndReplacements: boolean,
+  course: TeacherCoursePermissions,
+  bursar: TeacherBursarPermissions
+}
+
+export type TeacherCoursePermissions = {
+  canDisplayDetachedStudentsInCourse: boolean,
+  canAccessMaterials: boolean,
+  canModifyDetachedStudentsOnMovedCourse: boolean,
+  scheduleViewDomains: number[],
+}
+
+export type TeacherIncidentPermissions = {
+  canAccess: boolean,
+  canRecord: boolean,
+  canPublish: boolean
+}
+
+export type TeacherServicePermissions = {
+  canCreateSubServices: boolean,
+  canModifyGeneralCoefficient: boolean
+}
+
+export type TeacherBursarPermissions = {
+  canRequestITTasks: boolean,
+  canRequestSecretariatTasks: boolean,
+  canExecuteITTasks: boolean,
+  canExecuteSecretariatTasks: boolean,
+  canManageITTasks: boolean,
+  onlyMySecretariatTasks: boolean
 }
 
 export type UserPermissions = CommonPermissions | StudentPermissions | ParentPermissions;

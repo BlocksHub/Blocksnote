@@ -4,7 +4,7 @@ import type { Session } from "../Session";
 import type { Settings } from "../Settings";
 import { StudentUserSettings } from "./Student";
 import type { EleveParametresUtilisateurResponse, ParentParametresUtilisateurResponse } from "../../types/responses/user";
-import type { Base64, CommonClass, ParentPermissions } from "../../types/user";
+import type { CommonClass, ParentPermissions } from "../../types/user";
 
 export class ParentUserSettings extends CommonUserSettings<ParentParametresUtilisateurResponse> {
   constructor(
@@ -32,13 +32,6 @@ export class ParentUserSettings extends CommonUserSettings<ParentParametresUtili
     return this.ressource.listeClassesDelegue.map(i => ({
       label: i.label
     }))
-  }
-  
-  public get profilePicture(): Base64<'png'> | undefined {
-    const key = this.ressource.photoBase64;
-    const file = key !== undefined ? this.raw.ressources?.fichiers?.[key] : undefined;
-
-    return ["data:image/png;base64", file].join(",") as Base64<'png'>
   }
 
   public get childrens(): StudentUserSettings[] {

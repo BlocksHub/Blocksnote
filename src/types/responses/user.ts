@@ -29,6 +29,66 @@ export type CommunAutorisations = {
   tailleTravailAFaire: number
 }
 
+export type ProfesseurAutorisations = EleveAutorisations & {
+  AvecDiscussionParents: boolean,
+  AutoriserCommunicationsToutesClasses: boolean,
+  AvecConsultationDefautCarnet: boolean,
+  AvecContactVS: boolean,
+  AvecDiscussionAvancee: boolean,
+  AvecDiscussionEleves: boolean,
+  AvecPublicationPunitions: boolean,
+  AvecSaisieAbsence: boolean,
+  AvecSaisieActualite: boolean,
+  AvecSaisieAgenda: boolean,
+  AvecSaisieAppelEtVS: boolean,
+  AvecSaisieAttestations: boolean,
+  AvecSaisieCours: boolean,
+  AvecSaisieDefautCarnet: boolean,
+  AvecSaisieDevoirs: boolean,
+  AvecSaisieEncouragements: boolean,
+  AvecSaisieEvaluations: boolean,
+  AvecSaisieExclusion: boolean,
+  AvecSaisieHorsCours: boolean,
+  AvecSaisieMotifRetard: boolean,
+  AvecSaisieObservation: boolean,
+  AvecSaisieObservationsParents: boolean,
+  AvecSaisiePassageInfirmerie: boolean,
+  AvecSaisieProjetIndividuel: boolean,
+  AvecSaisiePunition: boolean,
+  AvecSaisieRetard: boolean,
+  AvecSaisieSurGrille: boolean,
+  ConsulterFichesResponsables: boolean,
+  ConsulterIdentiteEleve: boolean,
+  ConsulterMemosEleve: boolean,
+  ConsulterPhotosEleves: boolean,
+  SaisirMemos: boolean,
+  autoriserImpressionBulletinReleveBrevet: boolean,
+  avecAccesALaListeDesDocumentEleve: boolean,
+  avecAccesRemplacementsProfs: boolean,
+  avecAnciennesFeuilleDAppel: boolean,
+  avecCreationSujetForum: boolean,
+  avecDroitDeconnexionMessagerie: boolean,
+  avecMessageInstantane: boolean,
+  avecModificationForumAPosteriori: boolean,
+  avecPublicationListeDiffusion: boolean,
+  avecPublicationPageEtablissement: boolean,
+  avecSaisieCahierDeTexte: boolean,
+  avecSaisieDispense: boolean,
+  avecSaisieDocumentsCasiersIntervenant: boolean,
+  avecSaisieDocumentsCasiersResponsable: boolean,
+  avecSaisiePieceJointeCahierDeTexte: boolean,
+  collecterDocsAupresDesEleves: boolean,
+  collecterDocsAupresDesResponsables: boolean
+  compte: ParentCompteAutorisation,
+  cours: ProfesseurCoursAutorisations,
+  estDestinataireChat: boolean,
+  gererLaCollecteDeDocuments: boolean,
+  intendance: ProfesseurIntendanceAutorisation,
+  lancerAlertesPPMS: boolean,
+  sePorterVolontaireRemplacement: boolean,
+  voirAbsencesEtRemplacementsProfs: boolean
+}
+
 export type ParentAutorisations = CommunAutorisations & {
   AvecDeclarerDispenseLongue: boolean,
   AvecDeclarerDispensePonctuelle: boolean,
@@ -43,6 +103,25 @@ export type EleveAutorisations = CommunAutorisations & {
   tailleMaxRenduTafEleve: number,
 }
 
+export type CommunCoursAutorisations = {
+  domaineConsultationEDT: number[]
+}
+
+export type ProfesseurCoursAutorisations = CommunCoursAutorisations & {
+  afficherElevesDetachesDansCours: boolean,
+  avecMateriel: boolean,
+  modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean,
+}
+
+export type ProfesseurIntendanceAutorisation = {
+  avecDemandeTachesInformatique: boolean,
+  avecDemandeTachesSecretariat: boolean,
+  avecExecutionTachesInformatique: boolean,
+  avecExecutionTachesSecretariat: boolean,
+  avecGestionTachesInformatique: boolean,
+  uniquementMesTachesSecretariat: boolean
+}
+
 export type EleveParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
   ressource: EleveParametresUtilisateurRessource,
   autorisations: EleveAutorisations,
@@ -53,11 +132,18 @@ export type ParentParametresUtilisateurResponse = CommunParametresUtilisateurRes
   autorisations: ParentAutorisations,
 }
 
-export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse | EleveParametresUtilisateurResponse | ParentParametresUtilisateurResponse
+export type ProfesseurParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  listeClasses: ProfesseurPronoteClasse[]
+  listeMatieres: PronoteMatiere[],
+  listeNiveaux: PronoteLevel[],
+  autorisations: ProfesseurAutorisations,
+}
+
+export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse | EleveParametresUtilisateurResponse | ParentParametresUtilisateurResponse | ProfesseurParametresUtilisateurResponse
 
 export type CommunParametresUtilisateurRessource = PronoteLabel & {
   Etablissement: PronoteLabel
-  listeNumerosUtiles: (PronoteLabel & NumeroUtile)[]
+  listeNumerosUtiles?: (PronoteLabel & NumeroUtile)[]
   avecPhoto: boolean
   photoBase64?: number,
   listeOngletsPourPeriodes?: PeriodeOnglet[]
@@ -66,13 +152,24 @@ export type CommunParametresUtilisateurRessource = PronoteLabel & {
 
 export type EleveParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
   classeDEleve: PronoteLabel
-  listeClassesHistoriques: PronoteClasse[]
+  listeClassesHistoriques: ElevePronoteClasse[]
   listeGroupes: PronoteLabel[]
 }
 
 export type ParentParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
   listeClassesDelegue: PronoteLabel[],
   listeRessources: EleveParametresUtilisateurRessource[]
+}
+
+export type PronoteLevel = PronoteLabel & {
+  estEnseignee: boolean
+}
+
+export type PronoteMatiere = PronoteLabel & {
+  code: string,
+  couleur: string,
+  estEnseignee: boolean,
+  estUtilise?: boolean
 }
 
 export type PronoteOnglet = PronoteType & {
@@ -106,10 +203,17 @@ export type PronotePeriode = PronoteLabel & {
   GenreNotation: number
 }
 
-export type PronoteClasse = PronoteLabel & {
+export type ElevePronoteClasse = PronoteLabel & {
   AvecFiliere: boolean,
   AvecNote: boolean,
   courant: boolean
+}
+
+export type ProfesseurPronoteClasse = PronoteLabel & {
+  enseigne?: boolean,
+  estFinDeCycle?: boolean,
+  niveau?: PronoteLabel,
+  estPrincipal?: boolean
 }
 
 export type ParametresUtilisateurRessource = CommunParametresUtilisateurRessource | EleveParametresUtilisateurRessource
