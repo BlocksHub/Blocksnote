@@ -163,7 +163,7 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     const info = listeInformationsEtablissements?.[0];
     const { label } = this.ressource.Etablissement;
     const coords = info?.Coordonnees;
-    const harassmentSupport = this.ressource.listeNumerosUtiles.find(
+    const harassmentSupport = this.ressource.listeNumerosUtiles?.find(
       s => s.estNrHarcelement
     );
 
