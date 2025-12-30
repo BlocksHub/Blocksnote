@@ -1,3 +1,3 @@
-<div style="display: flex; justify-content: center;">
+<p align="center">
   <img src="./assets/logo.svg" alt="Blocksnote Logo" style="width: 50%;" />
-</div>
+</p>
