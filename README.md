@@ -1,2 +1,1 @@
-# Blocksnote
-A perfect wrapper for interacting with PRONOTE instances.
+<img src="./assets/logo.svg" alt="Blocksnote Logo" style="max-width: 80%;" />
