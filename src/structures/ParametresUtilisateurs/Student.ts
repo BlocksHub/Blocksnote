@@ -30,7 +30,7 @@ export class StudentUserSettings extends CommonUserSettings<EleveParametresUtili
 
     return {
       ...common,
-      size: {
+      sizes: {
         ...common.sizes,
         studentHomeworkMaxSize: authorizations.tailleMaxRenduTafEleve
       }
