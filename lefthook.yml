@@ -4,12 +4,6 @@ pre-push:
       skip: false
 
 pre-commit:
-  parallel: true
   jobs:
-    - run: bun run eslint --fix "{staged_files}"
-      glob:
-        - "*.ts"
-        - "*.js"
-        - "*.tsx"
-        - "*.jsx"
-      stage_fixed: true
+    - name: linter
+      run: npm run lint
