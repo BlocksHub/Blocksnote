@@ -3,7 +3,7 @@ import { defineConfig } from "bunup";
 export default defineConfig({
   clean: true,
   dts: {
-    inferTypes: true
+    inferTypes: false
   },
   entry: [
     "src/index.ts"
