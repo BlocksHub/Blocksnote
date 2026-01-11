@@ -13,8 +13,8 @@ export enum NOTSpace {
 
 export interface Workspace {
   delegated: boolean;
-  name:      string;
   url:       string;
+  name:      string;
   type:      NOTSpace;
 }
 
