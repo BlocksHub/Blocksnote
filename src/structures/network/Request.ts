@@ -13,9 +13,13 @@ export class Request {
   public headers: Record<string, string> = {
     "User-Agent": USER_AGENT
   }
+
   public endpoint: string | undefined;
+
   public method: "GET" | "POST" = "GET";
+
   public payload: unknown;
+
   public session?: Session;
 
   setHeader(key: string, value: string): Request {
@@ -51,8 +55,8 @@ export class Request {
     this.endpoint = session.source + ["appelfonction", session.workspace.type, session.id, encryptedNumber].join("/")
     this.payload = {
       session: Number(session.id),
-      no: encryptedNumber,
-      id: fName,
+      no:      encryptedNumber,
+      id:      fName,
       dataSec: this._processPayload(session, { data })
     }
 
@@ -115,7 +119,7 @@ export class Request {
 
     const init: RequestInit = {
       headers: this.headers,
-      method: this.method,
+      method:  this.method
     };
 
     if (this.payload !== undefined) {

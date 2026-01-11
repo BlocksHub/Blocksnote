@@ -17,7 +17,7 @@ export class AccountSecurity {
     public currentMode: number,
     public requirePin: boolean,
     public canUpdatePin: boolean = !this.requirePin,
-    public remainingRetry: number = 3,
+    public remainingRetry: number = 3
   ) {
     this.canUpdatePin = requirePin ? false : this.availableModes.includes(DoubleAuthModes.PIN);
   }
@@ -27,7 +27,10 @@ export class AccountSecurity {
     return this;
   }
 
-  public async updatePassword(password: string, options?: { deviceName: string, pin: string }): Promise<LoginState> {
+  public async updatePassword(
+    password: string,
+    options?: { deviceName: string; pin: string }
+  ): Promise<LoginState> {
     this.validatePassword(password)
 
     const encrypted = this.session.aes.encrypt(password)
@@ -40,9 +43,9 @@ export class AccountSecurity {
 
     await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
       .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({
-        action: 3,
-        password: encrypted,
-        pin: options?.pin ? this.session.aes.encrypt(options?.pin) : undefined,
+        action:     3,
+        password:   encrypted,
+        pin:        options?.pin ? this.session.aes.encrypt(options?.pin) : undefined,
         deviceName: options?.deviceName
       }))
     )
@@ -72,27 +75,27 @@ export class AccountSecurity {
     const failedRules: PasswordRules[] = []
     const validators: Record<PasswordRules, { test: () => boolean; message: string }> = {
       [PasswordRules.LETTER]: {
-        test: () => /[a-z]/i.test(password),
+        test:    () => /[a-z]/i.test(password),
         message: "Password must contain at least one letter"
       },
       [PasswordRules.NUMBER]: {
-        test: () => /\d/.test(password),
+        test:    () => /\d/.test(password),
         message: "Password must contain at least one number"
       },
       [PasswordRules.UPPER_AND_LOWER_CASE]: {
-        test: () => /[a-z]/.test(password) && /[A-Z]/.test(password),
+        test:    () => /[a-z]/.test(password) && /[A-Z]/.test(password),
         message: "Password must contain both uppercase and lowercase letters"
       },
       [PasswordRules.SPECIAL_CHARACTER]: {
-        test: () => /[^a-z0-9]/i.test(password),
+        test:    () => /[^a-z0-9]/i.test(password),
         message: "Password must contain at least one special character"
       },
       [PasswordRules.MINIMUM_CHARACTERS]: {
-        test: () => password.length >= this.minPasswordLength,
+        test:    () => password.length >= this.minPasswordLength,
         message: `Password must be at least ${this.minPasswordLength} characters long`
       },
       [PasswordRules.MAXIMUM_CHARACTERS]: {
-        test: () => password.length <= this.maxPasswordLength,
+        test:    () => password.length <= this.maxPasswordLength,
         message: `Password must not exceed ${this.maxPasswordLength} characters`
       }
     };
@@ -105,23 +108,30 @@ export class AccountSecurity {
     }
 
     if (failedRules.length > 0) {
-      throw new DoubleAuthError(`The password does not meet the establishment's rules.`, this, { failedRules });
+      throw new DoubleAuthError("The password does not meet the establishment's rules.", this, { failedRules });
     }
 
     return true;
   }
 
-  private _buildPayloadAuth(options: { action: number, mode?: number, password?: string, pin?: string, deviceName?: string }) {
+  private _buildPayloadAuth(
+    options: { action: number; mode?: number; password?: string; pin?: string; deviceName?: string }
+  ) {
     const payload: {
-      action: number,
-      mode?: number,
-      nouveauMDP?: string,
-      codePin?: string,
-      avecIdentification?: boolean,
-      strIdentification?: string,
-      libelle?: string
+      action:              number;
+      mode?:               number;
+      nouveauMDP?:         string;
+      codePin?:            string;
+      avecIdentification?: boolean;
+      strIdentification?:  string;
+      libelle?:            string;
     } = { action: options.action };
-    if (this.availableModes.length > 1 || options.mode || this.currentMode !== DoubleAuthModes.DISABLED) payload.mode = options.mode ?? this.currentMode;
+    if (
+      this.availableModes.length > 1 || options.mode ||
+      this.currentMode !== DoubleAuthModes.DISABLED
+    ) {
+      payload.mode = options.mode ?? this.currentMode;
+    }
     if (options.password) payload.nouveauMDP = options.password;
     if (options.pin) payload.codePin = options.pin;
     if (options.deviceName && options.pin) {
@@ -135,9 +145,11 @@ export class AccountSecurity {
   }
 
   private async _validePin(pin: string) {
-    const verification = (await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 0, mode: this.currentMode, pin: this.session.aes.encrypt(pin) }))
-    )).data
+    const verification = (
+      await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
+        .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 0, mode: this.currentMode, pin: this.session.aes.encrypt(pin) }))
+      )
+    ).data
 
     if (!verification.result) {
       this.remainingRetry--

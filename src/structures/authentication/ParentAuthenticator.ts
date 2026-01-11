@@ -7,7 +7,7 @@ import { Authenticator } from "./Authenticator";
 export class ParentAuthenticator extends Authenticator {
   constructor(instance: Instance) {
     super(instance);
-    this.workspace = instance.workspaces.find(workspace => workspace.type === NOTSpace.PARENT);
+    this.workspace = instance.workspaces.find((workspace) => workspace.type === NOTSpace.PARENT);
   }
 
   public override async finalize(): Promise<Parent> {

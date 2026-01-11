@@ -1,14 +1,14 @@
 import { randomBytes } from "@noble/hashes/utils.js";
-import type { 
-  EnvironmentSettings, 
-  EvaluationSettings, 
-  GradingSettings, 
-  Language, 
-  Period, 
-  InstancePermissions, 
-  PublicationSettings, 
-  Ressources, 
-  ScheduleSettings, 
+import type {
+  EnvironmentSettings,
+  EvaluationSettings,
+  GradingSettings,
+  Language,
+  Period,
+  InstancePermissions,
+  PublicationSettings,
+  Ressources,
+  ScheduleSettings,
   SchoolInfo
 } from "../types/instance";
 import type { Session } from "./Session";
@@ -37,111 +37,113 @@ export class Settings {
 
   public static async load(session: Session): Promise<Settings> {
     const nextIv = randomBytes(16);
-    const uuid = session.useHttps ? Buffer.from(nextIv).toString('base64') : RSA.encrypt1024(nextIv);
-  
+    const uuid = session.useHttps ? Buffer.from(nextIv).toString("base64") : RSA.encrypt1024(nextIv);
+
     const request = new Request()
       .setPronotePayload(session, "FonctionParametres", {
-        Uuid: uuid,
+        Uuid:           uuid,
         identifiantNav: null
       });
     session.aes.updateIv(nextIv);
-  
+
     const response = (await session.manager.enqueueRequest<FonctionsParametresRawResponse>(request))
       .data;
-  
+
     const g = response.General;
-    const languages: Language[] = g.listeLangues.map(l => ({ id: l.langID, label: l.description }));
-    const currentLang = languages.find(l => l.id === +g.langID) ?? languages[0];
-  
+    const languages: Language[] = g.listeLangues.map((l) => (
+      { id: l.langID, label: l.description }
+    ));
+    const currentLang = languages.find((l) => l.id === +g.langID) ?? languages[0];
+
     return new Settings(
       g.nomProduit,
       response.tableauVersion,
       !!response.DateDemo,
       {
-        longName: g.NomEtablissementConnexion,
+        longName:  g.NomEtablissementConnexion,
         shortName: g.NomEtablissement,
-        logoUrl: g.urlLogo
+        logoUrl:   g.urlLogo
       },
       g.AnneeScolaire.split("-").map(Number),
       {
-        defaultDelayDays: g.NbJDecalageDatePublicationParDefaut,
-        parentDelayDays: g.NbJDecalagePublicationAuxParents,
-        hasDelayedEvalPublication: g.AvecAffichageDecalagePublicationEvalsAuxParents,
+        defaultDelayDays:           g.NbJDecalageDatePublicationParDefaut,
+        parentDelayDays:            g.NbJDecalagePublicationAuxParents,
+        hasDelayedEvalPublication:  g.AvecAffichageDecalagePublicationEvalsAuxParents,
         hasDelayedGradePublication: g.AvecAffichageDecalagePublicationNotesAuxParents
       },
       {
-        scale: g.BaremeNotation,
+        scale:    g.BaremeNotation,
         maxGrade: g.BaremeMaxDevoirs
       },
       languages,
       currentLang!,
       {
-        serverDate: new Date(response.DateServeurHttp),
-        isShowedInENT: response.estAfficheDansENT,
+        serverDate:               new Date(response.DateServeurHttp),
+        isShowedInENT:            response.estAfficheDansENT,
         isAccessibilityCompliant: !!g.accessibiliteNonConforme,
-        isForNewCaledonia: response.pourNouvelleCaledonie,
-        isHostedInFrance: g.estHebergeEnFrance
+        isForNewCaledonia:        response.pourNouvelleCaledonie,
+        isHostedInFrance:         g.estHebergeEnFrance
       },
       {
-        seatsPerDay: g.PlacesParJour,
-        seatsPerHour: g.PlacesParHeure,
-        sequenceDuration: g.DureeSequence,
+        seatsPerDay:           g.PlacesParJour,
+        seatsPerHour:          g.PlacesParHeure,
+        sequenceDuration:      g.DureeSequence,
         hasFullAfternoonHours: g.AvecHeuresPleinesApresMidi,
-        nextOpenDay: new Date(g.JourOuvre),
-        openDaysPerCycle: g.joursOuvresParCycle,
-        firstWeek: g.premierJourSemaine,
-        firstMonday: new Date(g.PremierLundi),
-        firstDate: new Date(g.PremiereDate),
-        lastDate: new Date(g.DerniereDate),
-        recreations: g.recreations.map(r => ({ seat: r.place, label: r.label })),
-        publicHolidays: g.listeJoursFeries.map(j => ({
+        nextOpenDay:           new Date(g.JourOuvre),
+        openDaysPerCycle:      g.joursOuvresParCycle,
+        firstWeek:             g.premierJourSemaine,
+        firstMonday:           new Date(g.PremierLundi),
+        firstDate:             new Date(g.PremiereDate),
+        lastDate:              new Date(g.DerniereDate),
+        recreations:           g.recreations.map((r) => ({ seat: r.place, label: r.label })),
+        publicHolidays:        g.listeJoursFeries.map((j) => ({
           label: j.label,
-          from: new Date(j.dateDebut),
-          to: new Date(j.dateFin)
+          from:  new Date(j.dateDebut),
+          to:    new Date(j.dateFin)
         }))
       },
       {
-        acquisitionLevels: g.ListeNiveauxDAcquisitions.map(l => ({
-          label: l.label,
-          abbreviation: l.abbreviation,
-          color: l.couleur,
-          weight: l.positionJauge,
-          isAcquired: l.estAcqui,
+        acquisitionLevels: g.ListeNiveauxDAcquisitions.map((l) => ({
+          label:                          l.label,
+          abbreviation:                   l.abbreviation,
+          color:                          l.couleur,
+          weight:                         l.positionJauge,
+          isAcquired:                     l.estAcqui,
           countForSuccessRateCalculation: l.estNotantPourTxReussite,
-          pointsForBrevet: l.nombrePointsBrevet
+          pointsForBrevet:                l.nombrePointsBrevet
         })),
         hasEvaluationHistory: g.AvecEvaluationHistorique,
-        qcm: {
-          minScore: g.minBaremeQuestionQCM,
-          maxScore: g.maxBaremeQuestionQCM,
+        qcm:                  {
+          minScore:  g.minBaremeQuestionQCM,
+          maxScore:  g.maxBaremeQuestionQCM,
           maxPoints: g.maxNbPointQCM,
-          maxLevel: g.maxNiveauQCM
+          maxLevel:  g.maxNiveauQCM
         }
       },
       {
-        parentCanChangePassword: g.parentAutoriseChangerMDP,
-        allowConnectionInfoRecovery: g.AvecRecuperationInfosConnexion,
-        isBlogEnabled: g.activerBlog,
-        isForumEnabled: g.avecForum,
-        isParentMessagingEnabled: g.ActivationMessagerieEntreParents,
+        parentCanChangePassword:              g.parentAutoriseChangerMDP,
+        allowConnectionInfoRecovery:          g.AvecRecuperationInfosConnexion,
+        isBlogEnabled:                        g.activerBlog,
+        isForumEnabled:                       g.avecForum,
+        isParentMessagingEnabled:             g.ActivationMessagerieEntreParents,
         isExcellencePathwayManagementEnabled: g.GestionParcoursExcellence
       },
       {
-        confidentialityPolicy: response.urlConfidentialite,
-        indexEducationWebsite: g.urlSiteIndexEducation,
-        hostingInfo: g.urlSiteInfosHebergement,
-        support: g.UrlAide,
+        confidentialityPolicy:    response.urlConfidentialite,
+        indexEducationWebsite:    g.urlSiteIndexEducation,
+        hostingInfo:              g.urlSiteInfosHebergement,
+        support:                  g.UrlAide,
         faqTwoFactorRegistration: g.urlFAQEnregistrementDoubleAuth,
-        securityTutorialVideo: g.urlTutoVideoSecurite,
-        registerDevicesTutorial: g.urlTutoEnregistrerAppareils,
-        canope: g.urlCanope,
+        securityTutorialVideo:    g.urlTutoVideoSecurite,
+        registerDevicesTutorial:  g.urlTutoEnregistrerAppareils,
+        canope:                   g.urlCanope,
         accessibilityDeclaration: session.source + g.urlDeclarationAccessibilite
       },
-      g.ListePeriodes.map(period => ({
-        label: period.label,
+      g.ListePeriodes.map((period) => ({
+        label:     period.label,
         startDate: period.dateDebut,
-        endDate: period.dateFin,
-        id: period.id
+        endDate:   period.dateFin,
+        id:        period.id
       }))
     )
   }

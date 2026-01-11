@@ -7,7 +7,9 @@ import { Authenticator } from "./Authenticator";
 export class SchoolLifeAuthenticator extends Authenticator {
   constructor(instance: Instance) {
     super(instance);
-    this.workspace = instance.workspaces.find(workspace => workspace.type === NOTSpace.SCHOOL_LIFE);
+    this.workspace = instance.workspaces.find(
+      (workspace) => workspace.type === NOTSpace.SCHOOL_LIFE
+    );
   }
 
   public override async finalize(): Promise<SchoolLife> {

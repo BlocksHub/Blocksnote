@@ -7,7 +7,10 @@ export class RSA {
 
   public static encrypt1024(str: string | Uint8Array): string {
     const pkcs = PKCS1_KEM;
-    const encrypted = pkcs.encrypt(RSA.publicKey1024, (str instanceof Uint8Array) ? str : utf8ToBytes(str));
-    return Buffer.from(encrypted).toString('base64');
+    const encrypted = pkcs.encrypt(
+      RSA.publicKey1024,
+      (str instanceof Uint8Array) ? str : utf8ToBytes(str)
+    );
+    return Buffer.from(encrypted).toString("base64");
   }
 }

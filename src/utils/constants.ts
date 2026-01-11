@@ -16,7 +16,7 @@ export enum PasswordRules {
 
 export const DoubleAuthModes = {
   DISABLED: 1,
-  PIN: 3
+  PIN:      3
 }
 
 export type DoubleAuthMode = typeof DoubleAuthModes[keyof typeof DoubleAuthModes];

@@ -1,1 +1,1 @@
-export const GEOLOCATION_SEARCH_SCHOOLS = () =>`https://www.index-education.com/swie/geoloc.php`;
+export const GEOLOCATION_SEARCH_SCHOOLS = () => "https://www.index-education.com/swie/geoloc.php";

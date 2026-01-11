@@ -9,23 +9,23 @@ export class Challenge {
   constructor(
     public username: string,
     private challenge: string,
-    private seed: string,
+    private seed: string
   ){}
 
   static async request(session: Session, username: string) {
     const request = new Request().setPronotePayload(session, "Identification", {
-      demandeConnexionAppliMobile: false,
+      demandeConnexionAppliMobile:      false,
       demandeConnexionAppliMobileJeton: false,
-      demandeConnexionAuto: false,
-      enConnexionAppliMobile: false,
-      enConnexionAuto: false,
-      genreConnexion: 0,
-      genreEspace: session.workspace.type,
-      identifiant: username,
-      informationsAppareil: null,
-      loginTokenSAV: "",
-      pourENT: false,
-      uuidAppliMobile: "",
+      demandeConnexionAuto:             false,
+      enConnexionAppliMobile:           false,
+      enConnexionAuto:                  false,
+      genreConnexion:                   0,
+      genreEspace:                      session.workspace.type,
+      identifiant:                      username,
+      informationsAppareil:             null,
+      loginTokenSAV:                    "",
+      pourENT:                          false,
+      uuidAppliMobile:                  ""
     });
 
     const response = (await session.manager.enqueueRequest<IdentificationResponse>(request)).data;

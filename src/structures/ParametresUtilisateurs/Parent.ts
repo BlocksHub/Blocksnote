@@ -10,7 +10,7 @@ export class ParentUserSettings extends CommonUserSettings<ParentParametresUtili
   constructor(
     session: Session,
     raw: Response<ParentParametresUtilisateurResponse>,
-    ressource: ParentParametresUtilisateurResponse['ressource'],
+    ressource: ParentParametresUtilisateurResponse["ressource"],
     settings: Settings
   ){
     super(session, raw, ressource, settings)
@@ -23,25 +23,27 @@ export class ParentUserSettings extends CommonUserSettings<ParentParametresUtili
     return {
       ...common,
       canEditPersonalInfoAuthorizations: authorizations.compte.avecSaisieInfosPersoAutorisations,
-      canEditPersonalInfoCoordinates: authorizations.compte.avecSaisieInfosPersoCoordonnees,
-      canChatWithParents: authorizations.AvecDiscussionParents
+      canEditPersonalInfoCoordinates:    authorizations.compte.avecSaisieInfosPersoCoordonnees,
+      canChatWithParents:                authorizations.AvecDiscussionParents
     }
   }
 
   public get classes(): CommonClass[] {
-    return this.ressource.listeClassesDelegue.map(i => ({
+    return this.ressource.listeClassesDelegue.map((i) => ({
       label: i.label
     }))
   }
 
   public get childrens(): StudentUserSettings[] {
-    return this.ressource.listeRessources.map(children => 
-      new StudentUserSettings(
-        this.session,
-        { ...this.raw, data: { ressource: children } } as Response<EleveParametresUtilisateurResponse>,
-        children,
-        this.settings
-      )
+    return this.ressource.listeRessources.map((children) => new StudentUserSettings(
+      this.session,
+      {
+        ...this.raw,
+        data: { ressource: children }
+      } as Response<EleveParametresUtilisateurResponse>,
+      children,
+      this.settings
+    )
     )
   }
 }

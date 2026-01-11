@@ -4,29 +4,29 @@ import { NumberSet } from "./NumberSet";
 
 export class Parser {
   static parse<T>(obj: unknown): T {
-    if (obj === null || typeof obj !== 'object') {
+    if (obj === null || typeof obj !== "object") {
       return obj as T;
     }
 
     const o = obj as Record<string, unknown>;
 
-    const hasType = Object.prototype.hasOwnProperty.call(o, '_T');
-    const hasLabel = Object.prototype.hasOwnProperty.call(o, 'L');
-    const hasId = Object.prototype.hasOwnProperty.call(o, 'N');
-    const hasValue = Object.prototype.hasOwnProperty.call(o, 'V');
+    const hasType = Object.prototype.hasOwnProperty.call(o, "_T");
+    const hasLabel = Object.prototype.hasOwnProperty.call(o, "L");
+    const hasId = Object.prototype.hasOwnProperty.call(o, "N");
+    const hasValue = Object.prototype.hasOwnProperty.call(o, "V");
 
     if (hasLabel) {
-        o['label'] = o['L']
-        delete o['L']
+      o["label"] = o["L"]
+      delete o["L"]
     }
 
     if (hasId) {
-        o['id'] = o['N']
-        delete o['N']
+      o["id"] = o["N"]
+      delete o["N"]
     }
 
     if (hasType && hasValue) {
-      const result = this.handleType(o['_T'] as number, o['V']);
+      const result = this.handleType(o["_T"] as number, o["V"]);
       return result as T;
     }
 

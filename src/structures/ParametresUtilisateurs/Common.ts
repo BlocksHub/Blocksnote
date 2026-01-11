@@ -10,14 +10,17 @@ import { Settings } from "../Settings";
 
 export class CommonUserSettings<T extends ParametresUtilisateurResponse = ParametresUtilisateurResponse> {
   private _tabs?: Partial<Record<TabType, Tab>>;
+
   private _establishment?: Establishment;
+
   private _firstName?: string;
+
   private _lastName?: string;
 
   constructor(
     protected readonly session: Session,
     protected readonly raw: Response<T>,
-    protected readonly ressource: T['ressource'],
+    protected readonly ressource: T["ressource"],
     protected readonly settings: Settings
   ) {}
 
@@ -33,24 +36,24 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
   protected getIdentity(str: string): { firstName: string; lastName: string } {
     const trimmed = str.trim();
     const match = trimmed.match(/[A-Z]{2,}(?:\s[A-Z]{2,})*/);
-    
+
     if (!match) {
       return { firstName: trimmed, lastName: "" };
     }
-    
+
     const { index } = match;
     const lastName = match[0];
     const firstName = (
-      trimmed.slice(0, index) + 
+      trimmed.slice(0, index) +
       trimmed.slice(index! + lastName.length)
     ).trim();
-    
+
     return { firstName, lastName };
   }
 
   protected createAttachment(
     info: InformationsEtablissement | undefined,
-    labelKey: 'LibelleFichierRI' | 'LibelleFichierCU',
+    labelKey: "LibelleFichierRI" | "LibelleFichierCU",
     fileType: FileTypeValue
   ): Attachment | undefined {
     const label = info?.[labelKey];
@@ -64,25 +67,25 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
 
   protected toTab(pronoteTab: PronoteOnglet): Tab {
     const tabPeriods = this.ressource.listeOngletsPourPeriodes?.find(
-      p => p.G === pronoteTab.G
+      (p) => p.G === pronoteTab.G
     );
-    
+
     const periods: Period[] = tabPeriods
       ? tabPeriods.listePeriodes
-          .map(p => this.settings.periods?.find(s => s.id === p.id))
-          .filter((p): p is Period => Boolean(p))
+        .map((p) => this.settings.periods?.find((s) => s.id === p.id))
+        .filter((p): p is Period => Boolean(p))
       : [];
 
     const tabCycle = this.ressource.listeOngletsPourPiliers?.find(
-      p => p.G === pronoteTab.G
+      (p) => p.G === pronoteTab.G
     );
-    
-    const cycle: Cycle[] = tabCycle?.listePaliers.map(palier => ({
-      label: palier.label,
-      skills: palier.listePiliers.map(pilier => ({
-        label: pilier.label,
-        position: pilier.G,
-        inCommonBase: pilier.estSocleCommun,
+
+    const cycle: Cycle[] = tabCycle?.listePaliers.map((palier) => ({
+      label:  palier.label,
+      skills: palier.listePiliers.map((pilier) => ({
+        label:             pilier.label,
+        position:          pilier.G,
+        inCommonBase:      pilier.estSocleCommun,
         isForeignLanguage: pilier.estPilierLVE
       }))
     })) ?? [];
@@ -94,16 +97,16 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     const authorizations = this.raw.data.autorisations
 
     return {
-      canChat: authorizations.AvecDiscussion,
-      canChatWithStaff: authorizations.AvecDiscussionPersonnels,
-      canChatWithTeachers: authorizations.AvecDiscussionProfesseurs,
-      canPrintGradesReport: authorizations.autoriserImpressionBulletinReleveBrevet,
+      canChat:                               authorizations.AvecDiscussion,
+      canChatWithStaff:                      authorizations.AvecDiscussionPersonnels,
+      canChatWithTeachers:                   authorizations.AvecDiscussionProfesseurs,
+      canPrintGradesReport:                  authorizations.autoriserImpressionBulletinReleveBrevet,
       canViewAdministrativeDataFromStudents: authorizations.consulterDonneesAdministrativesAutresEleves,
-      sizes: {
-        circumstancesMaxSize: authorizations.tailleCirconstance,
-        commentMaxSize: authorizations.tailleCommentaire,
+      sizes:                                 {
+        circumstancesMaxSize:           authorizations.tailleCirconstance,
+        commentMaxSize:                 authorizations.tailleCommentaire,
         establishmentAttachmentMaxSize: authorizations.tailleMaxDocJointEtablissement,
-        homeworkMaxSize: authorizations.tailleTravailAFaire
+        homeworkMaxSize:                authorizations.tailleTravailAFaire
       },
       canViewPersonnalData: authorizations.compte.avecInformationsPersonnelles
     }
@@ -133,7 +136,7 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     }
 
     const result: Partial<Record<TabType, Tab>> = {};
-    
+
     const processTab = (pronoteTab: PronoteOnglet): void => {
       if (pronoteTab.G) {
         result[pronoteTab.G] = this.toTab(pronoteTab);
@@ -145,8 +148,8 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     };
 
     this.raw.data.listeOnglets?.forEach(processTab);
-    
-    this.ressource.listeOngletsPourPiliers?.forEach(item => {
+
+    this.ressource.listeOngletsPourPiliers?.forEach((item) => {
       processTab(item as unknown as PronoteOnglet);
     });
 
@@ -164,18 +167,18 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     const { label } = this.ressource.Etablissement;
     const coords = info?.Coordonnees;
     const harassmentSupport = this.ressource.listeNumerosUtiles?.find(
-      s => s.estNrHarcelement
+      (s) => s.estNrHarcelement
     );
 
     const location: Location | undefined = coords ? {
       postalCode: coords.CodePostal,
-      city: coords.LibelleVille,
-      province: coords.Province,
-      address: [
+      city:       coords.LibelleVille,
+      province:   coords.Province,
+      address:    [
         coords.Adresse1,
         coords.Adresse2,
         coords.Adresse3,
-        coords.Adresse4,
+        coords.Adresse4
       ]
         .filter(Boolean)
         .join(" ")
@@ -184,38 +187,38 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     const contacts: EstablishmentContact = {
       mails: [coords?.EMailPersonnalise1, coords?.EMailPersonnalise2]
         .filter((m): m is MailEtablissement => Boolean(m))
-        .map(m => ({ label: m.NomPersonnalise, address: m.Mail })),
+        .map((m) => ({ label: m.NomPersonnalise, address: m.Mail })),
       phoneNumbers: [
         coords?.NumPersonnalise1,
         coords?.NumPersonnalise2,
         coords?.NumPersonnalise3
       ]
         .filter((n): n is NumeroEtablissement => Boolean(n))
-        .map(n => ({ label: n.NomPersonnalise, number: n.Numero })),
+        .map((n) => ({ label: n.NomPersonnalise, number: n.Numero }))
     };
 
     const harassmentPolicy: HarassmentPolicy = {
       supportWebsite: harassmentSupport ? new URL(harassmentSupport.url) : undefined,
-      supportNumber: harassmentSupport
+      supportNumber:  harassmentSupport
         ? { label: harassmentSupport.label, number: harassmentSupport.numeroTelBrut }
         : undefined,
       referents: info?.avecReferentsHarcelementPublie
-        ? info.listeReferentsHarcelement.map(referent => ({
-            name: referent.label,
-            role: this.getReferentRole(referent.label),
-            canChatWith: referent.avecDiscussion
-          }))
+        ? info.listeReferentsHarcelement.map((referent) => ({
+          name:        referent.label,
+          role:        this.getReferentRole(referent.label),
+          canChatWith: referent.avecDiscussion
+        }))
         : []
     };
 
     this._establishment = {
       label,
       shortLabel: label,
-      rules: this.createAttachment(info, 'LibelleFichierRI', FileType.SCHOOL_RULES),
-      charter: this.createAttachment(info, 'LibelleFichierCU', FileType.SCHOOL_CHARTER),
+      rules:      this.createAttachment(info, "LibelleFichierRI", FileType.SCHOOL_RULES),
+      charter:    this.createAttachment(info, "LibelleFichierCU", FileType.SCHOOL_CHARTER),
       location,
       contacts,
-      harassmentPolicy,
+      harassmentPolicy
     };
 
     return this._establishment;
