@@ -2,14 +2,16 @@ import { ParsingError } from "../errors/ParsingError";
 
 export class DateParser {
   private static readonly shortDateRegex = /^\w+\s\d{2}h\d{2}/;
+
   private static readonly shortPreciseDateRegex = /^\w+\s\d{2}\/\d{2}/;
+
   private static readonly frenchDays: Record<string, number> = {
-    lundi: 1,
-    mardi: 2,
+    lundi:    1,
+    mardi:    2,
     mercredi: 3,
-    jeudi: 4,
+    jeudi:    4,
     vendredi: 5,
-    samedi: 6,
+    samedi:   6,
     dimanche: 0
   };
 
@@ -54,23 +56,23 @@ export class DateParser {
   }
 
   static fullDate(v: string) {
-    const [daySegment, hourSegment] = v.split(' ');
+    const [daySegment, hourSegment] = v.split(" ");
 
     if (!daySegment) {
-        throw new ParsingError(7, v);
+      throw new ParsingError(7, v);
     }
 
-    const parsedDay = daySegment.split('/');
-    const parsedHour = hourSegment?.split(':') ?? ['0', '0', '0'];
+    const parsedDay = daySegment.split("/");
+    const parsedHour = hourSegment?.split(":") ?? ["0", "0", "0"];
 
     if (
-        !parsedDay[0]  ||
-        !parsedDay[1]  ||
-        !parsedDay[2]  ||
-        !parsedHour[0] ||
-        !parsedHour[1]
+      !parsedDay[0] ||
+      !parsedDay[1] ||
+      !parsedDay[2] ||
+      !parsedHour[0] ||
+      !parsedHour[1]
     ) {
-        throw new ParsingError(7, v);
+      throw new ParsingError(7, v);
     }
 
     const year = parseInt(parsedDay[2], 10);
@@ -78,10 +80,10 @@ export class DateParser {
     const day = parseInt(parsedDay[0], 10);
     const hour = parseInt(parsedHour[0], 10);
     const minutes = parseInt(parsedHour[1], 10);
-    const seconds = parseInt(parsedHour[2] ?? '0', 10);
+    const seconds = parseInt(parsedHour[2] ?? "0", 10);
 
-    if ([year, month, day, hour, minutes, seconds].some(n => isNaN(n))) {
-        throw new ParsingError(7, v);
+    if ([year, month, day, hour, minutes, seconds].some((n) => isNaN(n))) {
+      throw new ParsingError(7, v);
     }
 
     return new Date(year, month, day, hour, minutes, seconds);

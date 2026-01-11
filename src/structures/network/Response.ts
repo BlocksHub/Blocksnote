@@ -18,5 +18,5 @@ export class Response<T> {
 }
 
 export interface Ressources {
-  fichiers?: string[]
+  fichiers?: string[];
 }

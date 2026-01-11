@@ -11,7 +11,11 @@ export class User {
     public settings: Settings
   ) { }
 
-  public static async load(session: Session, settings: Settings, instance: Instance): Promise<User> {
+  public static async load(
+    session: Session,
+    settings: Settings,
+    instance: Instance
+  ): Promise<User> {
     const user = await CommonUserSettings.load(session, settings);
     return new this(session, user, instance, settings);
   }

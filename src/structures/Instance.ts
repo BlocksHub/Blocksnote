@@ -17,12 +17,12 @@ export class Instance {
       .send<InfoMobileResponse>();
 
     const availableWorkspaces = data.espaces
-      .filter(raw => raw.genreEspace !== undefined)
-      .map(raw => ({
+      .filter((raw) => raw.genreEspace !== undefined)
+      .map((raw) => ({
         delegated: raw.avecDelegation ?? false,
-        url: raw.URL,
-        name: raw.nom,
-        type: raw.genreEspace as NOTSpace,
+        url:       raw.URL,
+        name:      raw.nom,
+        type:      raw.genreEspace as NOTSpace
       }));
 
     const version = data.version;

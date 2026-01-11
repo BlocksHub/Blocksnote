@@ -16,7 +16,11 @@ export class Teacher extends User {
     super(session, user, instance, settings);
   }
 
-  public static override async load(session: Session, settings: Settings, instance: Instance): Promise<Teacher> {
+  public static override async load(
+    session: Session,
+    settings: Settings,
+    instance: Instance
+  ): Promise<Teacher> {
     const user = await TeacherUserSettings.load<TeacherUserSettings>(session, settings);
     return new this(session, user, instance, settings);
   }

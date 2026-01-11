@@ -7,7 +7,9 @@ import { RequestManager } from "./network/RequestManager";
 
 export class Session {
   public manager = new RequestManager();
+
   public aes = new AES();
+
   constructor(
     public id: string,
     public source: string,
@@ -35,6 +37,6 @@ export class Session {
     }
 
     const session = new Session(sessionId, source, workspace, hasCoA, hasCrA, useHttps);
-    return  session
+    return session
   }
 }

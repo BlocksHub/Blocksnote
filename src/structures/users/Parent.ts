@@ -16,7 +16,11 @@ export class Parent extends User {
     super(session, user, instance, settings);
   }
 
-  public static override async load(session: Session, settings: Settings, instance: Instance): Promise<Parent> {
+  public static override async load(
+    session: Session,
+    settings: Settings,
+    instance: Instance
+  ): Promise<Parent> {
     const user = await ParentUserSettings.load<ParentUserSettings>(session, settings);
     return new this(session, user, instance, settings);
   }

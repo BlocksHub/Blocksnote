@@ -1,3 +1,3 @@
 export function isExecutedWithBun() {
-    return typeof Bun !== "undefined";
+  return typeof Bun !== "undefined";
 }

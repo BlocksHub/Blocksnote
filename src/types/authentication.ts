@@ -12,20 +12,20 @@ export enum NOTSpace {
 }
 
 export interface Workspace {
-  delegated: boolean,
-  name: string,
-  url: string,
-  type: NOTSpace
+  delegated: boolean;
+  url:       string;
+  name:      string;
+  type:      NOTSpace;
 }
 
 export interface CAS {
-  url: string,
-  token: string
+  url:   string;
+  token: string;
 }
 
 export type LoginState =
-  | { type: "WORKSPACE_SELECTION", available: Workspace[] }
+  | { type: "WORKSPACE_SELECTION"; available: Workspace[] }
   | { type: "WAITING_CREDENTIALS" }
-  | { type: "DOUBLE_AUTH", security: AccountSecurity }
-  | { type: "CREDENTIALS_CHANGE", security: AccountSecurity }
-  | { type: "LOGGED_IN", session: Session }
+  | { type: "DOUBLE_AUTH"; security: AccountSecurity }
+  | { type: "CREDENTIALS_CHANGE"; security: AccountSecurity }
+  | { type: "LOGGED_IN"; session: Session }

@@ -15,6 +15,7 @@ export class Authenticator {
   public state: LoginState = { type: "WORKSPACE_SELECTION", available: [] };
 
   protected workspace?: Workspace;
+
   protected settings?: Settings;
 
   private challenge?: Challenge;
@@ -35,7 +36,10 @@ export class Authenticator {
     return this;
   }
 
-  public async initializeLoginWithCredentials(username: string, password: string): Promise<Session> {
+  public async initializeLoginWithCredentials(
+    username: string,
+    password: string
+  ): Promise<Session> {
     if (!this.workspace) {
       throw new AuthenticationError("The selected workspace is not available for this instance.");
     }
@@ -58,7 +62,7 @@ export class Authenticator {
     const request = new Request().setPronotePayload(session, "Authentification", {
       challenge,
       connexion: 0,
-      espace: session.workspace.type,
+      espace:    session.workspace.type
     });
 
     const response = (await session.manager.enqueueRequest<AuthentificationResponse>(request)).data;
@@ -66,7 +70,7 @@ export class Authenticator {
 
     session.aes.updateKey(utf8ToBytes(tempKey));
     const decrypted = session.aes.decrypt(response.cle)
-    const key = new Uint8Array(decrypted.split(',').map(Number));
+    const key = new Uint8Array(decrypted.split(",").map(Number));
     session.aes.updateKey(key);
 
     const actions = response.actionsDoubleAuth ?? [];
@@ -80,12 +84,12 @@ export class Authenticator {
       response.modeSecurisationParDefaut ?? 0,
       response.actionsDoubleAuth?.includes(DoubleAuthModes.PIN) ?? false
     )
-    
+
     if (actions.length === 0) {
       this.state = { type: "LOGGED_IN", session }
     } else if (actions.includes(0)) {
       this.state = { type: "CREDENTIALS_CHANGE", security: security }
-    } else if (actions.some(a => [1, 3, 5].includes(a))) {
+    } else if (actions.some((a) => [1, 3, 5].includes(a))) {
       this.state = { type: "DOUBLE_AUTH", security: security }
     }
 
