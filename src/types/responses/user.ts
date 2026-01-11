@@ -29,6 +29,18 @@ export type CommunAutorisations = {
   tailleTravailAFaire: number
 }
 
+export type VieScolaireAutorisations = ProfesseurAutorisations & {
+  AvecSaisieAbsenceRepas: boolean,
+  AvecSaisieAbsencesGrilleAbsencesInternat: boolean,
+  AvecSaisieAbsencesToutesPermanences: boolean,
+  AvecSaisieSurGrilleAppelProf: boolean,
+  DateSaisieAbsence: Date[],
+  avecSaisieDocumentsCasiersIntervenant: boolean,
+  discussionDesactiveeSelonHoraire: boolean,
+  messageDiscussionDesactiveeSelonHoraire: string,
+  intendance: VieScolaireIntendanceAutorisation,
+}
+
 export type ProfesseurAutorisations = EleveAutorisations & {
   AvecDiscussionParents: boolean,
   AutoriserCommunicationsToutesClasses: boolean,
@@ -107,16 +119,26 @@ export type CommunCoursAutorisations = {
   domaineConsultationEDT: number[]
 }
 
+export type VieScolaireCoursAutorisations = CommunCoursAutorisations & {
+  domaineModificationCours: number[],
+  modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean,
+}
+
 export type ProfesseurCoursAutorisations = CommunCoursAutorisations & {
   afficherElevesDetachesDansCours: boolean,
   avecMateriel: boolean,
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean,
 }
 
-export type ProfesseurIntendanceAutorisation = {
+export type VieScolaireIntendanceAutorisation = {
   avecDemandeTachesInformatique: boolean,
-  avecDemandeTachesSecretariat: boolean,
+  avecDemandeTravauxIntendance: boolean,
   avecExecutionTachesInformatique: boolean,
+  avecExecutionTravauxIntendance: boolean
+}
+
+export type ProfesseurIntendanceAutorisation = VieScolaireIntendanceAutorisation & {
+  avecDemandeTachesSecretariat: boolean,
   avecExecutionTachesSecretariat: boolean,
   avecGestionTachesInformatique: boolean,
   uniquementMesTachesSecretariat: boolean
@@ -137,6 +159,11 @@ export type ProfesseurParametresUtilisateurResponse = CommunParametresUtilisateu
   listeMatieres: PronoteMatiere[],
   listeNiveaux: PronoteLevel[],
   autorisations: ProfesseurAutorisations,
+}
+
+export type VieScolaireParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  listeClasses: VieScolairePronoteClasse[]
+  autorisations: VieScolaireAutorisations,
 }
 
 export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse | EleveParametresUtilisateurResponse | ParentParametresUtilisateurResponse | ProfesseurParametresUtilisateurResponse
@@ -214,6 +241,11 @@ export type ProfesseurPronoteClasse = PronoteLabel & {
   estFinDeCycle?: boolean,
   niveau?: PronoteLabel,
   estPrincipal?: boolean
+}
+
+export type VieScolairePronoteClasse = PronoteLabel & {
+  estResponsable?: boolean,
+  niveau?: PronoteLabel
 }
 
 export type ParametresUtilisateurRessource = CommunParametresUtilisateurRessource | EleveParametresUtilisateurRessource
