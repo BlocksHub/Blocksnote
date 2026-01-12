@@ -2,7 +2,7 @@ import type { AccountSecurity } from "../structures/authentication/AccountSecuri
 import type { Session } from "../structures/Session"
 
 export enum NOTSpace {
-  DIRECTION = 17,
+  ADMINISTRATOR = 17,
   SCHOOL_LIFE = 14,
   ACCOMPANYING = 26,
   ENTERPRISE = 39,

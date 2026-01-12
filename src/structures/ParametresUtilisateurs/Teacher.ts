@@ -2,9 +2,9 @@ import { CommonUserSettings } from "./Common";
 import { Response } from "../network/Response";
 import type { Session } from "../Session";
 import type { Settings } from "../Settings";
-import type { Base64, Level, Subject, TeacherClass, TeacherPermissions } from "../../types/user";
-import type { ProfesseurParametresUtilisateurResponse } from "../../types/responses/user";
-import { SchoolLifeUserSettings } from "./SchoolLife";
+import type { Base64, CommonPermissions, Level, Subject, TeacherClass, TeacherPermissions } from "../../types/user";
+import type { ProfesseurAutorisations, ProfesseurParametresUtilisateurResponse } from "../../types/responses/user";
+import { AdministratorUserSettings } from "./Administrator";
 
 export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametresUtilisateurResponse> {
   constructor(
@@ -16,10 +16,41 @@ export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametres
     super(session, raw, ressource, settings)
   }
 
+  public static toPermissions(common: CommonPermissions, authorizations: ProfesseurAutorisations) {
+    const adminPermissions = AdministratorUserSettings.toPermissions(common, authorizations)
+    return {
+      ...common,
+      ...adminPermissions,
+      sizes: {
+        ...common.sizes,
+        studentHomeworkMaxSize: 0
+      },
+      canEditPersonalInfoAuthorizations:     authorizations.compte.avecSaisieInfosPersoAutorisations,
+      canEditPersonalInfoCoordinates:        authorizations.compte.avecSaisieInfosPersoCoordonnees,
+      canChatWithParents:                    authorizations.AvecDiscussionParents,
+      canViewDefaultNotebook:                authorizations.AvecConsultationDefautCarnet,
+      canContactSchoolLife:                  authorizations.AvecContactVS,
+      canRecordAbsence:                      authorizations.AvecSaisieAbsence,
+      canRecordAttendanceAndSchoolLife:      authorizations.AvecSaisieAppelEtVS,
+      canRecordLessons:                      authorizations.AvecSaisieCours,
+      canRecordDefaultNotebook:              authorizations.AvecSaisieDefautCarnet,
+      canRecordExclusion:                    authorizations.AvecSaisieExclusion,
+      canRecordLatenessReason:               authorizations.AvecSaisieMotifRetard,
+      canRecordObservation:                  authorizations.AvecSaisieObservation,
+      canRecordNurseVisit:                   authorizations.AvecSaisiePassageInfirmerie,
+      canRecordPunishment:                   authorizations.AvecSaisiePunition,
+      canRecordLateness:                     authorizations.AvecSaisieRetard,
+      canRecordOnGrid:                       authorizations.AvecSaisieSurGrille,
+      canViewStudentMemos:                   authorizations.ConsulterMemosEleve,
+      canRecordMemos:                        authorizations.SaisirMemos,
+      canRecordExemption:                    authorizations.avecSaisieDispense
+    }
+  }
+
   public override get permissions(): TeacherPermissions {
     const common = super.permissions
     const authorizations = this.raw.data.autorisations
-    const permissions = SchoolLifeUserSettings.toPermissions(common, authorizations)
+    const permissions = TeacherUserSettings.toPermissions(common, authorizations)
     return {
       ...permissions,
       canDiscussWithStudents:            authorizations.AvecDiscussionEleves,
