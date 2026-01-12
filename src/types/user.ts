@@ -139,6 +139,8 @@ export type CommonPermissions = {
   canViewAdministrativeDataFromStudents: boolean;
   canViewPersonnalData:                  boolean;
   sizes:                                 CommonSizeLimits;
+  isChatDisabledBySchedule:              boolean;
+  chatDisabledByScheduleMessage:         string;
 }
 
 export type StudentPermissions = CommonPermissions & {
@@ -151,36 +153,39 @@ export type ParentPermissions = CommonPermissions & {
   canChatWithParents:                boolean;
 }
 
-export type StaffPermissions = CommonPermissions & {
+export type StaffPermissions = AdministrativePermissions & {
+  canViewDefaultNotebook:           boolean;
+  canContactSchoolLife:             boolean;
+  canRecordAbsence:                 boolean;
+  canRecordAttendanceAndSchoolLife: boolean;
+  canRecordLessons:                 boolean;
+  canRecordDefaultNotebook:         boolean;
+  canRecordExclusion:               boolean;
+  canRecordLatenessReason:          boolean;
+  canRecordObservation:             boolean;
+  canRecordNurseVisit:              boolean;
+  canRecordPunishment:              boolean;
+  canRecordLateness:                boolean;
+  canRecordOnGrid:                  boolean;
+  canViewStudentMemos:              boolean;
+  canRecordMemos:                   boolean;
+  canRecordExemption:               boolean;
+}
+
+export type AdministrativePermissions = CommonPermissions & {
   canCommunicateWithAllClasses:          boolean;
-  canViewDefaultNotebook:                boolean;
-  canContactSchoolLife:                  boolean;
   canUseAdvancedDiscussion:              boolean;
-  canRecordAbsence:                      boolean;
   canRecordNews:                         boolean;
   canRecordAgenda:                       boolean;
-  canRecordAttendanceAndSchoolLife:      boolean;
-  canRecordLessons:                      boolean;
-  canRecordDefaultNotebook:              boolean;
-  canRecordExclusion:                    boolean;
-  canRecordLatenessReason:               boolean;
-  canRecordObservation:                  boolean;
   canRecordParentObservations:           boolean;
-  canRecordNurseVisit:                   boolean;
-  canRecordPunishment:                   boolean;
-  canRecordLateness:                     boolean;
-  canRecordOnGrid:                       boolean;
   canViewGuardianFiles:                  boolean;
   canViewStudentIdentity:                boolean;
-  canViewStudentMemos:                   boolean;
   canViewStudentPhotos:                  boolean;
-  canRecordMemos:                        boolean;
   canCreateForumTopics:                  boolean;
   canDisconnectMessaging:                boolean;
   canUseInstantMessaging:                boolean;
   canModifyForumAfterPosting:            boolean;
   canPublishToMailingList:               boolean;
-  canRecordExemption:                    boolean;
   canRecordStaffCaseDocuments:           boolean;
   canCollectDocsFromStudents:            boolean;
   isChatRecipient:                       boolean;
@@ -198,8 +203,6 @@ export type SchoolLifePermissions = StaffPermissions & {
   canRecordAbsencesForAllStudyHalls:     boolean;
   canRecordOnTeacherCallGrid:            boolean;
   absenceRecordingDates:                 Date[];
-  isChatDisabledBySchedule:              boolean;
-  chatDisabledByScheduleMessage:         string;
 }
 
 export type TeacherPermissions = StudentPermissions & StaffPermissions & {
@@ -222,6 +225,10 @@ export type TeacherPermissions = StudentPermissions & StaffPermissions & {
   canVolunteerForReplacement:        boolean;
   course:                            TeacherCoursePermissions;
   bursar:                            TeacherBursarPermissions;
+}
+
+export type AdministratorPermissions = AdministrativePermissions & {
+  canViewAllStudents: boolean;
 }
 
 export type SchoolLifeCoursePermissions = {
@@ -263,4 +270,5 @@ export type UserPermissions = CommonPermissions
   | StudentPermissions
   | ParentPermissions
   | TeacherPermissions
-  | SchoolLifePermissions;
+  | SchoolLifePermissions
+  | AdministratorPermissions;

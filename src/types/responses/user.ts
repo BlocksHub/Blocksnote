@@ -14,8 +14,6 @@ export type ParentCompteAutorisation = CommunCompteAutorisation & {
   avecSaisieInfosPersoCoordonnees:   boolean;
 }
 
-export type CompteAutorisation= CommunCompteAutorisation | ParentCompteAutorisation
-
 export type CommunAutorisations = {
   AvecDiscussion:                              boolean;
   AvecDiscussionPersonnels:                    boolean;
@@ -27,6 +25,8 @@ export type CommunAutorisations = {
   tailleCommentaire:                           number;
   tailleMaxDocJointEtablissement:              number;
   tailleTravailAFaire:                         number;
+  discussionDesactiveeSelonHoraire:            boolean;
+  messageDiscussionDesactiveeSelonHoraire:     string;
 }
 
 export type VieScolaireAutorisations = ProfesseurAutorisations & {
@@ -36,9 +36,8 @@ export type VieScolaireAutorisations = ProfesseurAutorisations & {
   AvecSaisieSurGrilleAppelProf:             boolean;
   DateSaisieAbsence:                        Date[];
   avecSaisieDocumentsCasiersIntervenant:    boolean;
-  discussionDesactiveeSelonHoraire:         boolean;
-  messageDiscussionDesactiveeSelonHoraire:  string;
   intendance:                               VieScolaireIntendanceAutorisation;
+  cours:                                    VieScolaireCoursAutorisations;
 }
 
 export type ProfesseurAutorisations = EleveAutorisations & {
@@ -101,6 +100,14 @@ export type ProfesseurAutorisations = EleveAutorisations & {
   voirAbsencesEtRemplacementsProfs:        boolean;
 }
 
+export type AdministrateurAutorisations = VieScolaireAutorisations & {
+  PublierDossierVS:                       boolean;
+  avecCommissions:                        boolean;
+  VoirTousLesEleves:                      boolean;
+  avecCreerMotifIncidentPunitionSanction: boolean;
+  cours:                                  AdministrateurAutorisationsCours;
+}
+
 export type ParentAutorisations = CommunAutorisations & {
   AvecDeclarerDispenseLongue:              boolean;
   AvecDeclarerDispensePonctuelle:          boolean;
@@ -119,7 +126,7 @@ export type CommunCoursAutorisations = {
   domaineConsultationEDT: number[];
 }
 
-export type VieScolaireCoursAutorisations = CommunCoursAutorisations & {
+export type VieScolaireCoursAutorisations = ProfesseurAutorisations & {
   domaineModificationCours:                          number[];
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean;
 }
@@ -128,6 +135,11 @@ export type ProfesseurCoursAutorisations = CommunCoursAutorisations & {
   afficherElevesDetachesDansCours:                   boolean;
   avecMateriel:                                      boolean;
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean;
+}
+
+export type AdministrateurAutorisationsCours = VieScolaireCoursAutorisations & {
+  afficherElevesDetachesDansCours: boolean;
+  avecFicheCoursConseil:           boolean;
 }
 
 export type VieScolaireIntendanceAutorisation = {
@@ -165,6 +177,11 @@ export type VieScolaireParametresUtilisateurResponse = CommunParametresUtilisate
   listeClasses:  VieScolairePronoteClasse[];
   autorisations: VieScolaireAutorisations;
 }
+
+export type AdministrateurParametresUtilisateurResponse =
+  VieScolaireParametresUtilisateurResponse & {
+    autorisations: AdministrateurAutorisations;
+  }
 
 export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse
   | EleveParametresUtilisateurResponse

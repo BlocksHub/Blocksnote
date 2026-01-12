@@ -108,7 +108,9 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
         establishmentAttachmentMaxSize: authorizations.tailleMaxDocJointEtablissement,
         homeworkMaxSize:                authorizations.tailleTravailAFaire
       },
-      canViewPersonnalData: authorizations.compte.avecInformationsPersonnelles
+      canViewPersonnalData:          authorizations.compte.avecInformationsPersonnelles,
+      isChatDisabledBySchedule:              authorizations.discussionDesactiveeSelonHoraire,
+      chatDisabledByScheduleMessage:         authorizations.messageDiscussionDesactiveeSelonHoraire
     }
   }
 
