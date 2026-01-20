@@ -1,8 +1,7 @@
+import { Parent, ParentAuthenticator, Instance } from '../../src';
+import { askForCredentials } from './generic.exemple';
 import { input } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { Instance } from '../../src/structures/Instance';
-import { Parent, ParentAuthenticator } from '../../src';
-import { askForCredentials } from './generic.exemple';
 
 if (require.main === module) {
   ParentLogin();

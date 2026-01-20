@@ -1,8 +1,6 @@
+import { type User, Authenticator, Instance } from '../../src';
 import { input, password, select } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { Instance } from '../../src/structures/Instance';
-import { Authenticator } from '../../src/structures/authentication/Authenticator';
-import type { User } from '../../src';
 
 if (require.main === module) {
   main();

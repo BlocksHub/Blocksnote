@@ -1,7 +1,7 @@
+import { ParentLogin } from "../authentication/parent.exemple";
 import { select } from "@inquirer/prompts";
 import type { Timetable } from "../../src";
 import chalk from 'chalk';
-import { ParentLogin } from "../authentication/parent.exemple";
 
 if (require.main === module) {
   main();
