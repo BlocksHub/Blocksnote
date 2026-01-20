@@ -47,7 +47,7 @@ export class Request {
     return this;
   }
 
-  setPronotePayload(session: Session, fName: string, data: unknown): Request {
+  setPronotePayload(session: Session, fName: string, data: unknown, Signature?: unknown): Request {
     const encryptedNumber = session.aes.encrypt(String(session.manager.requestNumber + 1));
 
     this.method = "POST";
@@ -57,7 +57,7 @@ export class Request {
       session: Number(session.id),
       no:      encryptedNumber,
       id:      fName,
-      dataSec: this._processPayload(session, { data })
+      dataSec: this._processPayload(session, { Signature, data })
     }
 
     return this;
@@ -147,6 +147,7 @@ export class Request {
         headers,
         response.status,
         (this.endpoint.includes("appelfonction") && this.session) ? this._processResponse(this.session, text) as T : JSON.parse(text) as T,
+        JSON.parse(text).Signature,
         JSON.parse(text).dataNonSec
       );
     } else {

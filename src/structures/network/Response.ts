@@ -5,6 +5,7 @@ export class Response<T> {
     public headers: Record<string, string>,
     public status: number,
     public data: T,
+    public signature?: unknown,
     public ressources?: Ressources
   ) {
     if (typeof data === "object") {
