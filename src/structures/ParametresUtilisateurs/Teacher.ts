@@ -104,6 +104,8 @@ export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametres
 
   public get classes(): TeacherClass[] {
     return this.raw.data.listeClasses.map((i) => ({
+      kind:          i.G,
+      id:            i.id,
       label:         i.label,
       isTaught:      i.enseigne ?? false,
       isEndOfCycle:  i.estFinDeCycle ?? false,

@@ -33,7 +33,7 @@ export default defineConfig([
       "stylistic/line-comment-position": ["error", { "position": "above" }],
       "stylistic/linebreak-style": ["error", "unix"],
       "stylistic/lines-between-class-members": "error",
-      "stylistic/max-len": ["warn", { "code": 100, "ignoreComments": true, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignorePattern": "class .+ extends|^\\s*\\w+:\\s*\\w+" }],
+      "stylistic/max-len": ["warn", { "code": 105, "ignoreComments": true, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignorePattern": "class .+ extends|^\\s*\\w+:\\s*\\w+" }],
       "stylistic/member-delimiter-style": "error",
       "stylistic/multiline-comment-style": ["error", "starred-block"],
       "stylistic/new-parens": "error",

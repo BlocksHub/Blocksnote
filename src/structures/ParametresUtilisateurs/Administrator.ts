@@ -1,5 +1,5 @@
 import type { AdministrateurParametresUtilisateurResponse, ProfesseurAutorisations } from "../../types/responses/user";
-import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions } from "../../types/user";
+import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions, SchoolLifeClass } from "../../types/user";
 import type { Session } from "../Session";
 import type { Settings } from "../Settings";
 import { Response } from "../network/Response";
@@ -62,5 +62,15 @@ export class AdministratorUserSettings extends CommonUserSettings<Administrateur
       ...schoolLifePermissions,
       canViewAllStudents: authorizations.VoirTousLesEleves
     }
+  }
+
+  public get classes(): SchoolLifeClass[] {
+    return this.raw.data.listeClasses.map((i) => ({
+      kind:          i.G,
+      id:            i.id,
+      label:         i.label,
+      level:         i.niveau?.label,
+      isResponsible: i.estResponsable ?? false
+    }))
   }
 }

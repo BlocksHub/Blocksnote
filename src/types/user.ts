@@ -48,6 +48,8 @@ export type Location = {
 export type Base64<imageType extends string> = `data:image/${imageType};base64,${string}`
 
 export type CommonClass = {
+  kind:  number;
+  id:    string;
   label: string;
 }
 

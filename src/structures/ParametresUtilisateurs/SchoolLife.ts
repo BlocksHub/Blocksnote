@@ -41,6 +41,8 @@ export class SchoolLifeUserSettings extends CommonUserSettings<VieScolaireParame
 
   public get classes(): SchoolLifeClass[] {
     return this.raw.data.listeClasses.map((i) => ({
+      kind:          i.G,
+      id:            i.id,
       label:         i.label,
       level:         i.niveau?.label,
       isResponsible: i.estResponsable ?? false
