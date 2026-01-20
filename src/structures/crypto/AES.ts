@@ -34,7 +34,11 @@ export class AES {
     return inBytes ? decrypted : bytesToUtf8(decrypted);
   }
 
-  public updateKey(key: Uint8Array<ArrayBufferLike>) {
+  public updateKey(key: Uint8Array<ArrayBufferLike> | string) {
+    if (typeof key === "string") {
+      key = utf8ToBytes(key);
+    }
+
     this.key = key;
     this._dK = this._derivativeKey();
   }

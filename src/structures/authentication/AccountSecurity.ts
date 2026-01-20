@@ -1,168 +1,140 @@
-import type { LoginState } from "../../types/authentication";
-import { DoubleAuthModes, type DoubleAuthMode, PasswordRules } from "../../utils/constants";
-import type { Authenticator } from "./Authenticator";
+import type { AuthentificationResponse } from "../../types/responses/authentication";
 import { AuthenticationError } from "../errors/AuthenticationError";
-import { DoubleAuthError } from "../errors/DoubleAuthError";
 import { Request } from "../network/Request";
-import { Session } from "../Session";
+import type { Session } from "../Session";
 
 export class AccountSecurity {
+  private _password?: string;
+
+  private _pin?: string;
+
+  private _device?: string;
+
+  private _mode?: number;
+
   constructor(
-    public authenticator: Authenticator,
-    public session: Session,
-    public minPasswordLength = 0,
-    public maxPasswordLength = 0,
-    public rules: PasswordRules[] = [],
-    public availableModes: DoubleAuthMode[] = [],
-    public currentMode: number,
-    public requirePin: boolean,
-    public canUpdatePin: boolean = !this.requirePin,
-    public remainingRetry: number = 3
-  ) {
-    this.canUpdatePin = requirePin ? false : this.availableModes.includes(DoubleAuthModes.PIN);
+    public readonly session: Session,
+    private readonly raw: AuthentificationResponse
+  ){}
+
+  private get modes(): number[] {
+    return this.raw.modesPossibles ?? [];
   }
 
-  public setAuthMode(mode: DoubleAuthMode): AccountSecurity {
-    this.currentMode = mode;
+  private payload(action: number) {
+    const payload: Record<string, unknown> = {
+      action
+    }
+
+    if (this._mode !== undefined) payload.mode = this._mode;
+    if (this._pin !== undefined) payload.codePin = this._pin;
+    if (this._password) payload.nouveauMDP = this._password;
+    if (this._device !== undefined) {
+      payload.avecIdentification = true;
+      payload.strIdentification = this._device;
+    }
+
+    return payload
+  }
+
+  protected useMode(mode: number): this {
+    this._mode = mode;
     return this;
   }
 
-  public async updatePassword(
-    password: string,
-    options?: { deviceName: string; pin: string }
-  ): Promise<LoginState> {
-    this.validatePassword(password)
+  /** @internal */
+  public async execute(): Promise<this> {
+    if (!this._device && !this._pin && !this._mode && this._password) return this;
 
-    const encrypted = this.session.aes.encrypt(password)
-    if (this.requirePin) {
-      if (!options?.pin) throw new DoubleAuthError("A PIN is required to update password in this mode.", this);
-      await this._validePin(options.pin);
+    const _request = new Request()
+      .setPronotePayload(
+        this.session,
+        "SecurisationCompteDoubleAuth",
+        this.payload(3)
+      )
+
+    const _response = await this.session.manager.enqueueRequest(_request);
+    if ((_response.signature as { Erreur?: unknown })?.Erreur) {
+      throw new AuthenticationError("Unable to execute security actions")
     }
 
-    if (options) await this._registerDevice(options.deviceName);
-
-    await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({
-        action:     3,
-        password:   encrypted,
-        pin:        options?.pin ? this.session.aes.encrypt(options?.pin) : undefined,
-        deviceName: options?.deviceName
-      }))
-    )
-
-    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
-    return this.authenticator.state;
+    return this;
   }
 
-  public async submitPin(pin: string, deviceName: string): Promise<LoginState> {
-    if (pin.length < 4) throw new DoubleAuthError("You PIN must be at least 4 characters", this, { pin });
-    if (this.remainingRetry <= 0) throw new AuthenticationError("This session is no longer active");
-
-    const encrypted = this.session.aes.encrypt(pin);
-    await this._validePin(pin);
-
-    await this._registerDevice(deviceName);
-
-    await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 3, mode: DoubleAuthModes.PIN, pin: encrypted, deviceName }))
-    )
-
-    this.authenticator.state = { type: "LOGGED_IN", session: this.session };
-    return this.authenticator.state;
+  public get mustChangePassword(): boolean {
+    return this.raw?.actionsDoubleAuth?.includes(0) ?? false;
   }
 
-  public validatePassword(password: string): boolean {
-    const failedRules: PasswordRules[] = []
-    const validators: Record<PasswordRules, { test: () => boolean; message: string }> = {
-      [PasswordRules.LETTER]: {
-        test:    () => /[a-z]/i.test(password),
-        message: "Password must contain at least one letter"
-      },
-      [PasswordRules.NUMBER]: {
-        test:    () => /\d/.test(password),
-        message: "Password must contain at least one number"
-      },
-      [PasswordRules.UPPER_AND_LOWER_CASE]: {
-        test:    () => /[a-z]/.test(password) && /[A-Z]/.test(password),
-        message: "Password must contain both uppercase and lowercase letters"
-      },
-      [PasswordRules.SPECIAL_CHARACTER]: {
-        test:    () => /[^a-z0-9]/i.test(password),
-        message: "Password must contain at least one special character"
-      },
-      [PasswordRules.MINIMUM_CHARACTERS]: {
-        test:    () => password.length >= this.minPasswordLength,
-        message: `Password must be at least ${this.minPasswordLength} characters long`
-      },
-      [PasswordRules.MAXIMUM_CHARACTERS]: {
-        test:    () => password.length <= this.maxPasswordLength,
-        message: `Password must not exceed ${this.maxPasswordLength} characters`
-      }
-    };
+  public get mustEnterPIN(): boolean {
+    return this.raw?.actionsDoubleAuth?.includes(3) ?? false;
+  }
 
-    for (const rule of this.rules) {
-      const validator = validators[rule];
-      if (validator && !validator.test()) {
-        failedRules.push(rule);
-      }
+  public get mustUpdatePIN(): boolean {
+    return this.mustEnterPIN ? false : this.modes.includes(3);
+  }
+
+  public password(input: string): this {
+    this._password = this.session.aes.encrypt(input);
+    return this;
+  }
+
+  public pin(input: string): this {
+    this._pin = this.session.aes.encrypt(input);
+
+    if (this.mustUpdatePIN) {
+      this.useMode(3);
     }
 
-    if (failedRules.length > 0) {
-      throw new DoubleAuthError("The password does not meet the establishment's rules.", this, { failedRules });
+    return this;
+  }
+
+  public register(device: string): this {
+    this._device = device;
+    return this;
+  }
+
+  public validatePassword(input: string): boolean {
+    const rules = this.rules;
+    const length = input.length;
+
+    if (length < rules.minimumLength || length > rules.maximumLength) {
+      return false;
+    }
+
+    if (rules.atLeastOneLetter && !/[a-z]/i.test(input)) {
+      return false;
+    }
+    if (rules.atLeastOneNumber && !/\d/.test(input)) {
+      return false;
+    }
+    if (rules.atLeastOneSpecialCharacter && !/[^a-z0-9]/i.test(input)) {
+      return false;
+    }
+    if (rules.mustMixUpperAndLowerCase && (!/[a-z]/.test(input) || !/[A-Z]/.test(input))) {
+      return false;
     }
 
     return true;
   }
 
-  private _buildPayloadAuth(
-    options: { action: number; mode?: number; password?: string; pin?: string; deviceName?: string }
-  ) {
-    const payload: {
-      action:              number;
-      mode?:               number;
-      nouveauMDP?:         string;
-      codePin?:            string;
-      avecIdentification?: boolean;
-      strIdentification?:  string;
-      libelle?:            string;
-    } = { action: options.action };
-    if (
-      this.availableModes.length > 1 || options.mode ||
-      this.currentMode !== DoubleAuthModes.DISABLED
-    ) {
-      payload.mode = options.mode ?? this.currentMode;
-    }
-    if (options.password) payload.nouveauMDP = options.password;
-    if (options.pin) payload.codePin = options.pin;
-    if (options.deviceName && options.pin) {
-      payload.avecIdentification = true;
-      payload.strIdentification = options.deviceName;
-    } else if (options.deviceName && !options.pin) {
-      payload.libelle = options.deviceName;
-    }
-
-    return payload;
-  }
-
-  private async _validePin(pin: string) {
-    const verification = (
-      await this.session.manager.enqueueRequest<{ result: boolean }>(new Request()
-        .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 0, mode: this.currentMode, pin: this.session.aes.encrypt(pin) }))
-      )
-    ).data
-
-    if (!verification.result) {
-      this.remainingRetry--
-      throw new DoubleAuthError("The PIN you entered is invalid.", this, { pin })
+  public get rules(): PasswordRules {
+    const rawRules = this.raw?.reglesSaisieMDP?.regles
+    return {
+      atLeastOneLetter:              rawRules?.includes(0) ?? false,
+      atLeastOneNumber:              rawRules?.includes(1) ?? false,
+      atLeastOneSpecialCharacter:    rawRules?.includes(2) ?? false,
+      mustMixUpperAndLowerCase:      rawRules?.includes(3) ?? false,
+      minimumLength:                 this.raw?.reglesSaisieMDP?.min ?? 0,
+      maximumLength:                 this.raw?.reglesSaisieMDP?.max ?? 32
     }
   }
+}
 
-  private async _registerDevice(name: string) {
-    if (!this.availableModes.includes(DoubleAuthModes.PIN)) throw new Error("You doesn't have the rights to register a new device.")
-
-    const deviceName = name.slice(0, 30)
-    await this.session.manager.enqueueRequest(new Request()
-      .setPronotePayload(this.session, "SecurisationCompteDoubleAuth", this._buildPayloadAuth({ action: 2, deviceName }))
-    )
-  }
+export type PasswordRules = {
+  atLeastOneLetter:           boolean;
+  atLeastOneNumber:           boolean;
+  atLeastOneSpecialCharacter: boolean;
+  mustMixUpperAndLowerCase:   boolean;
+  minimumLength:              number;
+  maximumLength:              number;
 }

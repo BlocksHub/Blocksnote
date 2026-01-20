@@ -32,13 +32,13 @@ export class Challenge {
     return new Challenge(username, response.challenge, response.alea ?? "")
   }
 
-  public solveChallenge(session: Session, password: string): string {
+  public solve(session: Session, password: string): string {
     try {
       const tempKey = this.generateTempKey(password);
-      session.aes.updateKey(utf8ToBytes(tempKey));
+      session.aes.updateKey(tempKey);
 
       const decrypted = session.aes.decrypt(this.challenge);
-      const decoded = this.decodeChallenge(decrypted);
+      const decoded = this.decode(decrypted);
       const encrypted = session.aes.encrypt(decoded);
 
       session.aes.resetKey();
@@ -48,7 +48,7 @@ export class Challenge {
     }
   }
 
-  private decodeChallenge(challenge: string): string {
+  private decode(challenge: string): string {
     return challenge
       .split("")
       .filter((_, i) => i % 2 === 0)
@@ -62,6 +62,6 @@ export class Challenge {
       .update(utf8ToBytes(password.trim()))
       .digest();
 
-    return `${this.username}${bytesToHex(hash).toUpperCase()}`;
+    return `${this.username.toLowerCase()}${bytesToHex(hash).toUpperCase()}`;
   }
 }

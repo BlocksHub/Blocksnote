@@ -19,7 +19,7 @@ export class Session {
     public useHttps: boolean = false
   ){}
 
-  public static async createSession(source: string, workspace: Workspace) {
+  public static async create(source: string, workspace: Workspace) {
     const endpoint = `${source}${workspace.url}?fd=1&bydlg=${BYPASS_ID}`;
     const response = await new Request().setEndpoint(endpoint).send();
 
