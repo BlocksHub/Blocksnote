@@ -126,7 +126,7 @@ export type CommunCoursAutorisations = {
   domaineConsultationEDT: number[];
 }
 
-export type VieScolaireCoursAutorisations = ProfesseurAutorisations & {
+export type VieScolaireCoursAutorisations = ProfesseurCoursAutorisations & {
   domaineModificationCours:                          number[];
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean;
 }
@@ -190,6 +190,7 @@ export type ParametresUtilisateurResponse = CommunParametresUtilisateurResponse
 
 export type CommunParametresUtilisateurRessource = PronoteLabel & {
   Etablissement:             PronoteLabel;
+  G:                         number;
   listeNumerosUtiles?:       (PronoteLabel & NumeroUtile)[];
   avecPhoto:                 boolean;
   photoBase64?:              number;
@@ -204,7 +205,7 @@ export type EleveParametresUtilisateurRessource = CommunParametresUtilisateurRes
 }
 
 export type ParentParametresUtilisateurRessource = CommunParametresUtilisateurRessource & {
-  listeClassesDelegue: PronoteLabel[];
+  listeClassesDelegue: Array<PronoteKind & PronoteLabel>;
   listeRessources:     EleveParametresUtilisateurRessource[];
 }
 
@@ -250,20 +251,20 @@ export type PronotePeriode = PronoteLabel & {
   GenreNotation: number;
 }
 
-export type ElevePronoteClasse = PronoteLabel & {
+export type ElevePronoteClasse = PronoteKind & PronoteLabel & {
   AvecFiliere: boolean;
   AvecNote:    boolean;
   courant:     boolean;
 }
 
-export type ProfesseurPronoteClasse = PronoteLabel & {
+export type ProfesseurPronoteClasse = PronoteKind & PronoteLabel & {
   enseigne?:      boolean;
   estFinDeCycle?: boolean;
   niveau?:        PronoteLabel;
   estPrincipal?:  boolean;
 }
 
-export type VieScolairePronoteClasse = PronoteLabel & {
+export type VieScolairePronoteClasse = PronoteKind & PronoteLabel & {
   estResponsable?: boolean;
   niveau?:         PronoteLabel;
 }
@@ -277,6 +278,10 @@ export type NumeroUtile = {
   numeroTelBrut:    string;
   numeroTelFormate: string;
   url:              string;
+}
+
+export type PronoteKind = {
+  G: number;
 }
 
 export type PronoteLabel = {

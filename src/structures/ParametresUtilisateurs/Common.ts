@@ -93,6 +93,18 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     return { periods, cycle };
   }
 
+  public get fullName(): string {
+    return this.ressource.label;
+  }
+
+  public get id(): string {
+    return this.ressource.id;
+  }
+
+  public get kind(): number {
+    return this.ressource.G;
+  }
+
   public get permissions(): CommonPermissions {
     const authorizations = this.raw.data.autorisations
 

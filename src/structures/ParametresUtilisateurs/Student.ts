@@ -17,6 +17,8 @@ export class StudentUserSettings extends CommonUserSettings<EleveParametresUtili
 
   private static toStudentClass(item?: ElevePronoteClasse): StudentClass {
     return {
+      kind:        item?.G ?? 1,
+      id:          item?.id ?? "",
       withSectors: item?.AvecFiliere ?? false,
       withGrades:  item?.AvecNote ?? false,
       current:     item?.courant ?? false,

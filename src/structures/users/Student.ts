@@ -1,4 +1,6 @@
+import type { TimetableOptions } from "../../types/timetable";
 import type { Instance } from "../Instance";
+import { Timetable } from "../PageEmploiDuTemps/Common";
 import { StudentUserSettings } from "../ParametresUtilisateurs/Student";
 import type { Session } from "../Session";
 import type { Settings } from "../Settings";
@@ -23,5 +25,9 @@ export class Student extends User {
   ): Promise<Student> {
     const user = await StudentUserSettings.load<StudentUserSettings>(session, settings);
     return new this(session, user, instance, settings);
+  }
+
+  public timetable(options: TimetableOptions): Promise<Timetable> {
+    return super._timetable(this.user, options);
   }
 }

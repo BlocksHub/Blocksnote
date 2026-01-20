@@ -30,6 +30,8 @@ export class ParentUserSettings extends CommonUserSettings<ParentParametresUtili
 
   public get classes(): CommonClass[] {
     return this.ressource.listeClassesDelegue.map((i) => ({
+      kind:  i.G,
+      id:    i.id,
       label: i.label
     }))
   }

@@ -94,8 +94,8 @@ export class Timetable {
     return {
       withPublishedHomework: course.AvecTafPublie,
       backgroundColor:       course.CouleurFond,
-      startDate:             course.DateDuCours,
-      endDate:               new Date(course.DateDuCours.getTime() + durationMs),
+      from:                  course.DateDuCours,
+      to:                    new Date(course.DateDuCours.getTime() + durationMs),
       room:                  contents.get(17),
       subject:               contents.get(16),
       teacher:               contents.get(3)
@@ -113,7 +113,7 @@ export class Timetable {
     if (!this._days) {
       const lessonsMap = new Map<number, Lesson[]>();
       for (const lesson of this.lessons) {
-        const date = lesson.startDate;
+        const date = lesson.from;
         const key = new Date(date.setHours(0, 0)).getTime();
         const arr = lessonsMap.get(key) ?? [];
 
