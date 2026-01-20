@@ -1,0 +1,21 @@
+import { input } from '@inquirer/prompts';
+import chalk from 'chalk';
+import { Instance } from '../../src/structures/Instance';
+import { Parent, ParentAuthenticator } from '../../src';
+import { askForCredentials } from './generic.exemple';
+
+if (require.main === module) {
+  ParentLogin();
+}
+
+export async function ParentLogin(): Promise<Parent> {
+  const url = await input({ message: "Enter the school's instance URL:", required: true, default: "https://demo.index-education.net/pronote/" })
+  const instance = await Instance.createFromURL(url);
+  const authenticator =  new ParentAuthenticator(instance);
+
+  await askForCredentials(authenticator);
+
+  const account = await authenticator.finalize();
+  console.log(chalk.green("\n*"), "You're authenticated as", chalk.blue(account.user.fullName))
+  return account;
+}
