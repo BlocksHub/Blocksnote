@@ -32,7 +32,7 @@ export class SchoolLife extends User {
 
   public timetable(
     ressource: Class[] | StudentUserSettings | TeacherUserSettings,
-    options: TimetableOptions
+    options?: TimetableOptions
   ): Promise<Timetable> {
     return super._timetable(ressource, options);
   }

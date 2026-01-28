@@ -27,7 +27,7 @@ export class Teacher extends User {
     return new this(session, user, instance, settings);
   }
 
-  public timetable(options: TimetableOptions): Promise<Timetable> {
+  public timetable(options?: TimetableOptions): Promise<Timetable> {
     return super._timetable(this.user, options);
   }
 }
