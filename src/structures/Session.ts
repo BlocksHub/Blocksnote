@@ -19,7 +19,7 @@ export class Session {
     public useHttps: boolean = false
   ){}
 
-  public static async create(source: string, workspace: Workspace) {
+  public static async create(source: string, workspace: Workspace): Promise<Session> {
     const endpoint = `${source}${workspace.url}?fd=1&bydlg=${BYPASS_ID}`;
     const response = await new Request().setEndpoint(endpoint).send();
 
@@ -36,7 +36,6 @@ export class Session {
       throw new AuthenticationError("Unable to create a session for this instance");
     }
 
-    const session = new Session(sessionId, source, workspace, hasCoA, hasCrA, useHttps);
-    return session
+    return new Session(sessionId, source, workspace, hasCoA, hasCrA, useHttps);
   }
 }
