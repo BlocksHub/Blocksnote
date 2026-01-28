@@ -1,6 +1,9 @@
+import type { Lesson } from "../structures/PageEmploiDuTemps/Lesson";
+
 export type TimetableOptions = {
   withAbsences?:            boolean;
-  weekNumber:               number;
+  from?:                    Date;
+  to?:                      Date;
   withClassCouncil?:        boolean;
   withFieldTrips?:          boolean;
   withAvailabilities?:      boolean;
@@ -10,19 +13,14 @@ export type TimetableOptions = {
   isPermanenceTimetable?:   boolean;
 }
 
+export type TimetableRange = TimetableOptions & {
+  from: Date;
+  to:   Date;
+};
+
 export type TimetableDay = {
   date:    Date;
   lessons: Lesson[];
-}
-
-export type Lesson = {
-  withPublishedHomework: boolean;
-  backgroundColor:       string;
-  from:                  Date;
-  to:                    Date;
-  room?:                 string;
-  subject?:              string;
-  teacher?:              string;
 }
 
 export type Ressource = {
