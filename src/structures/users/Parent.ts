@@ -28,7 +28,7 @@ export class Parent extends User {
     return new this(session, user, instance, settings);
   }
 
-  public timetable(children: StudentUserSettings, options: TimetableOptions): Promise<Timetable> {
+  public timetable(children: StudentUserSettings, options?: TimetableOptions): Promise<Timetable> {
     return super._timetable(children, options);
   }
 }

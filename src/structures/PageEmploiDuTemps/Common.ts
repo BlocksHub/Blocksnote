@@ -1,10 +1,12 @@
-import type { CommunPageEmploiDuTempsResponse, PronoteCourse } from "../../types/responses/timetable";
-import type { Lesson, Ressource, TimetableDay, TimetableOptions } from "../../types/timetable";
+import type { CommunPageEmploiDuTempsResponse } from "../../types/responses/timetable";
+import { type TimetableRange, type Ressource, type TimetableDay, type TimetableOptions } from "../../types/timetable";
 import { Request } from "../network/Request";
 import { Response } from "../network/Response";
 import type { Session } from "../Session";
 import type { Settings } from "../Settings";
 import { NOTSpace } from "../../types/authentication";
+import { Lesson } from "./Lesson";
+import type { User } from "../users/User";
 
 export class Timetable {
   private _days?: TimetableDay[]
@@ -13,16 +15,18 @@ export class Timetable {
 
   constructor(
     protected readonly settings: Settings,
-    protected readonly raw: Response<CommunPageEmploiDuTempsResponse>
+    protected readonly raw: Response<CommunPageEmploiDuTempsResponse>[],
+    protected readonly options: TimetableRange
   ){}
 
-  protected static buildPayload(
+  private static buildPayload(
+    weeknumber: number,
     ressource: Ressource[] | Ressource,
-    options: TimetableOptions
+    options: TimetableRange
   ): Record<string, unknown> {
     const payload: Record<string, unknown> = {
-      NumeroSemaine:                  options.weekNumber,
-      numeroSemaine:                  options.weekNumber,
+      NumeroSemaine:                  weeknumber,
+      numeroSemaine:                  weeknumber,
       avecAbsencesEleve:              options.withAbsences ?? false,
       avecAbsencesRessource:          true,
       avecConseilDeClasse:            options.withClassCouncil ?? true,
@@ -44,67 +48,73 @@ export class Timetable {
     return payload;
   }
 
-  protected static buildSignature(
-    session: Session,
-    ressource: Ressource[] | Ressource
-  ) {
-    const payload: Record<string, unknown> = {
-      onglet: this.tab(session.workspace.type)
+  private static buildSignature(session: Session, ressource: Ressource[] | Ressource) {
+    const payload: Record<string, unknown> = { onglet: this.tab(session.workspace.type) };
+
+    if (session.workspace.type === NOTSpace.PARENT) {
+      payload.membre = ressource;
     }
 
-    if (ressource && session.workspace.type === NOTSpace.PARENT) {
-      payload.membre = ressource
-    }
-
-    return payload
+    return payload;
   }
 
-  protected static tab(space: NOTSpace): number {
-    switch (space) {
-      case NOTSpace.ADMINISTRATOR:
-        return 60
-      case NOTSpace.SCHOOL_LIFE:
-        return 171
-      default:
-        return 16
+  private static tab(space: NOTSpace): number {
+    const tabs: Partial<Record<NOTSpace, number>> = {
+      [NOTSpace.ADMINISTRATOR]: 60,
+      [NOTSpace.SCHOOL_LIFE]:   171
+    };
+
+    return tabs[space] ?? 16;
+  }
+
+  private static weeks(options: TimetableRange, user: User) {
+    const weeks: number[] = [];
+    const d = new Date(options.from!.getTime());
+    d.setDate(d.getDate() - ((d.getDay() || 7) - 1));
+
+    while (d <= options.to!) {
+      weeks.push(user.weeknumber(d));
+      d.setDate(d.getDate() + 7);
     }
+
+    return weeks;
   }
 
   public static async load(
-    session: Session,
+    user: User,
     ressource: Ressource[] | Ressource,
-    settings: Settings,
     options: TimetableOptions
   ): Promise<Timetable> {
-    const request =  new Request()
-      .setPronotePayload(
-        session,
-        "PageEmploiDuTemps",
-        this.buildPayload(ressource, options),
-        this.buildSignature(session, ressource)
-      )
-    const response = await session.manager.enqueueRequest<CommunPageEmploiDuTempsResponse>(request);
-    return new this(settings, response);
-  }
+    if (!options.from || !options.to) {
+      throw new Error("TimetableOptions.from and .to are required");
+    }
 
-  protected static toLesson(course: PronoteCourse, settings: Settings): Lesson {
-    const contents = new Map(course.ListeContenus?.map((item) => [item.G, item.label]));
-    const durationMs = (course.duree / settings.schedule.seatsPerHour) * 3_600_000;
-
-    return {
-      withPublishedHomework: course.AvecTafPublie,
-      backgroundColor:       course.CouleurFond,
-      from:                  course.DateDuCours,
-      to:                    new Date(course.DateDuCours.getTime() + durationMs),
-      room:                  contents.get(17),
-      subject:               contents.get(16),
-      teacher:               contents.get(3)
+    const normalized: TimetableRange = {
+      ...options,
+      from: options.from,
+      to:   options.to
     };
+
+    const responses = await Promise.all(
+      Timetable.weeks(normalized, user).map((weeknumber) => {
+        const request = new Request().setPronotePayload(
+          user.session,
+          "PageEmploiDuTemps",
+          this.buildPayload(weeknumber, ressource, normalized),
+          this.buildSignature(user.session, ressource)
+        );
+        return user.session.manager.enqueueRequest<CommunPageEmploiDuTempsResponse>(request);
+      })
+    );
+
+    return new this(user.settings, responses, normalized);
   }
 
   public get lessons(): readonly Lesson[] {
     if (!this._lessons) {
-      this._lessons = this.raw.data.ListeCours.map((c) => Timetable.toLesson(c, this.settings));
+      this._lessons = this.raw.flatMap((r) => r.data.ListeCours ?? [])
+        .map((c) => new Lesson(c, this.settings))
+        .sort((a, b) => a.from.getTime() - b.from.getTime())
     }
     return this._lessons;
   }
@@ -114,16 +124,14 @@ export class Timetable {
       const lessonsMap = new Map<number, Lesson[]>();
       for (const lesson of this.lessons) {
         const date = lesson.from;
-        const key = new Date(date.setHours(0, 0)).getTime();
-        const arr = lessonsMap.get(key) ?? [];
-
-        arr.push(lesson);
-        lessonsMap.set(key, arr);
+        const key = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+        (lessonsMap.get(key) ?? lessonsMap.set(key, []).get(key)!).push(lesson);
       }
-      this._days = Array.from(lessonsMap.entries()).map(([t, lessons]) => ({
-        date: new Date(t),
-        lessons
-      }));
+
+      this._days = Array.from(lessonsMap.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([t, lessons]) => ({ date: new Date(t), lessons }))
+        .filter((d) => d.date > this.options.from && d.date < this.options.to);
     }
     return this._days;
   }

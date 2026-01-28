@@ -9,7 +9,7 @@ export default defineConfig({
     "src/index.ts"
   ],
   format: ["cjs", "esm"],
-  minify: false,
+  minify: true,
   outDir: "dist",
   splitting: false,
   target: "browser"

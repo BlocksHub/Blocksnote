@@ -4,8 +4,6 @@ export * from "./utils/constants.ts";
 export * from "./types/authentication.ts";
 export * from "./types/geolocation.ts";
 
-export { PasswordRules } from "./utils/constants.ts";
-
 export * from "./structures/authentication/AccountSecurity.ts";
 export * from "./structures/authentication/StudentAuthenticator.ts";
 export * from "./structures/authentication/AdministratorAuthenticator.ts";
