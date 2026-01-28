@@ -1,4 +1,3 @@
-import type { PasswordRules } from "../../utils/constants";
 import type { AccountSecurity } from "../authentication/AccountSecurity";
 
 export class DoubleAuthError extends Error {
@@ -9,7 +8,7 @@ export class DoubleAuthError extends Error {
   constructor(
     message: string,
     context: AccountSecurity,
-    options?: { pin?: string; failedRules?: PasswordRules[] }
+    options?: { pin?: string }
   ) {
     super(message);
     this.name = "DoubleAuthError";
