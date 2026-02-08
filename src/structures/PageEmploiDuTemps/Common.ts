@@ -115,6 +115,7 @@ export class Timetable {
       this._lessons = this.raw.flatMap((r) => r.data.ListeCours ?? [])
         .map((c) => new Lesson(c, this.settings))
         .sort((a, b) => a.from.getTime() - b.from.getTime())
+        .filter((d) => d.from > this.options.from && d.to < this.options.to);
     }
     return this._lessons;
   }
@@ -130,8 +131,7 @@ export class Timetable {
 
       this._days = Array.from(lessonsMap.entries())
         .sort(([a], [b]) => a - b)
-        .map(([t, lessons]) => ({ date: new Date(t), lessons }))
-        .filter((d) => d.date > this.options.from && d.date < this.options.to);
+        .map(([t, lessons]) => ({ date: new Date(t), lessons }));
     }
     return this._days;
   }
