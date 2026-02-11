@@ -2,6 +2,7 @@ import { ParentLogin } from "../authentication/parent.exemple";
 import { select } from "@inquirer/prompts";
 import type { Timetable } from "../../src";
 import chalk from 'chalk';
+import { Detention } from "../../src/structures/PageEmploiDuTemps/Detention";
 
 if (require.main === module) {
   main();
@@ -27,14 +28,21 @@ async function main(): Promise<Timetable> {
   })
   console.log("\n")
   for (const lesson of day.lessons) {
-    console.log(
-      chalk.cyan('┌─ ') + chalk.bold.yellow(lesson.from.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit"})) + 
-      chalk.cyan(' → ') + chalk.bold.yellow(lesson.to.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit"}))
-    );
-    console.log(
-      chalk.cyan('│  ') + chalk.bold.blue(lesson.subject ?? chalk.gray("Unknown"))
-    );
-    console.log(chalk.cyan('└─') + " " + chalk.gray((lesson.room ?? "Unknown") + chalk.white(' - ')  + (lesson.teachers?.join(", ") ?? "Unknown")) + '\n');
+    const timeFrom = lesson.from.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    const timeTo = lesson.to.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    console.log(chalk.cyan('┌─ ') + chalk.bold.yellow(timeFrom) + chalk.cyan(' → ') + chalk.bold.yellow(timeTo));
+
+    const isCanceled = 'canceled' in lesson && lesson.canceled;
+    const isDetention = lesson instanceof Detention;
+    const subject = ('subject' in lesson ? lesson.subject : null) ?? "Unknown";
+    const subjectFormatted = isCanceled 
+      ? chalk.bold.red(`${subject} (canceled)`)
+      : chalk.bold.blue(subject === "Unknown" ? chalk.gray(subject) : subject);
+    console.log(chalk.cyan('│  ') + (isDetention ? chalk.red("Detention"): subjectFormatted));
+
+    const rooms = lesson.rooms?.join(", ") ?? "Unknown";
+    const teachers = ('teachers' in lesson ? lesson.teachers?.join(", ") : null) ?? "Unknown";
+    console.log(chalk.cyan('└─ ') + chalk.gray(`${rooms} - ${teachers}`) + '\n');
   }
 
   return timetable;
