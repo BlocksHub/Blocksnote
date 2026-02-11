@@ -3,6 +3,23 @@ import { DateParser } from "./DateParser";
 import { NumberSet } from "./NumberSet";
 
 export class Parser {
+  private static createDualCaseKey(key: string, value: unknown) {
+    const capitalized = key.charAt(0).toUpperCase() + key.substring(1);
+    return { [key]: value, [capitalized]: value };
+  }
+
+  static encodeValue(key: string, value: string) {
+    return this.createDualCaseKey(key, value);
+  }
+
+  static encodeType(key: string, type: number, value: string) {
+    return this.createDualCaseKey(key, { _T: type, V: value });
+  }
+
+  static encodeKind(key: string, kind: number, id: string) {
+    return this.createDualCaseKey(key, { G: kind, N: id });
+  }
+
   static parse<T>(obj: unknown): T {
     if (obj === null || typeof obj !== "object") {
       return obj as T;
