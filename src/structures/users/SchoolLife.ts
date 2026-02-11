@@ -12,15 +12,6 @@ import { User } from "./User";
 export class SchoolLife extends User {
   declare public user: SchoolLifeUserSettings;
 
-  constructor(
-    session: Session,
-    user: SchoolLifeUserSettings,
-    instance: Instance,
-    settings: Settings
-  ) {
-    super(session, user, instance, settings);
-  }
-
   public static override async load(
     session: Session,
     settings: Settings,

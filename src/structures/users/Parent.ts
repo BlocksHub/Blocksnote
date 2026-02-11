@@ -10,15 +10,6 @@ import { User } from "./User";
 export class Parent extends User {
   declare public user: ParentUserSettings;
 
-  constructor(
-    session: Session,
-    user: ParentUserSettings,
-    instance: Instance,
-    settings: Settings
-  ) {
-    super(session, user, instance, settings);
-  }
-
   public static override async load(
     session: Session,
     settings: Settings,
