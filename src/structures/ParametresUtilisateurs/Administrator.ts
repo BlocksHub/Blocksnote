@@ -1,20 +1,8 @@
 import type { AdministrateurParametresUtilisateurResponse, ProfesseurAutorisations } from "../../types/responses/user";
 import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions, SchoolLifeClass } from "../../types/user";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
-import { Response } from "../network/Response";
 import { CommonUserSettings } from "./Common";
 
 export class AdministratorUserSettings extends CommonUserSettings<AdministrateurParametresUtilisateurResponse> {
-  constructor(
-    session: Session,
-    raw: Response<AdministrateurParametresUtilisateurResponse>,
-    ressource: AdministrateurParametresUtilisateurResponse["ressource"],
-    settings: Settings
-  ) {
-    super(session, raw, ressource, settings)
-  }
-
   public static toPermissions(
     common: CommonPermissions,
     authorizations: ProfesseurAutorisations

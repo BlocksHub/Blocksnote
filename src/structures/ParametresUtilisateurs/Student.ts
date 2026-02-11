@@ -1,20 +1,8 @@
 import { CommonUserSettings } from "./Common";
-import { Response } from "../network/Response";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
 import type { EleveParametresUtilisateurResponse, ElevePronoteClasse } from "../../types/responses/user";
 import type { Base64, StudentClass, StudentPermissions } from "../../types/user";
 
 export class StudentUserSettings extends CommonUserSettings<EleveParametresUtilisateurResponse> {
-  constructor(
-    session: Session,
-    raw: Response<EleveParametresUtilisateurResponse>,
-    ressource: EleveParametresUtilisateurResponse["ressource"],
-    settings: Settings
-  ){
-    super(session, raw, ressource, settings)
-  }
-
   private static toStudentClass(item?: ElevePronoteClasse): StudentClass {
     return {
       kind:        item?.G ?? 1,

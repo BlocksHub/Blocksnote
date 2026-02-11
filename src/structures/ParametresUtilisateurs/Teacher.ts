@@ -1,21 +1,9 @@
 import { CommonUserSettings } from "./Common";
-import { Response } from "../network/Response";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
 import type { Base64, CommonPermissions, Level, Subject, TeacherClass, TeacherPermissions } from "../../types/user";
 import type { ProfesseurAutorisations, ProfesseurParametresUtilisateurResponse } from "../../types/responses/user";
 import { AdministratorUserSettings } from "./Administrator";
 
 export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametresUtilisateurResponse> {
-  constructor(
-    session: Session,
-    raw: Response<ProfesseurParametresUtilisateurResponse>,
-    ressource: ProfesseurParametresUtilisateurResponse["ressource"],
-    settings: Settings
-  ){
-    super(session, raw, ressource, settings)
-  }
-
   public static toPermissions(common: CommonPermissions, authorizations: ProfesseurAutorisations) {
     const adminPermissions = AdministratorUserSettings.toPermissions(common, authorizations)
     return {

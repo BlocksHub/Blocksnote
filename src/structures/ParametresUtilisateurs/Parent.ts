@@ -1,21 +1,10 @@
 import { CommonUserSettings } from "./Common";
 import { Response } from "../network/Response";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
 import { StudentUserSettings } from "./Student";
 import type { EleveParametresUtilisateurResponse, ParentParametresUtilisateurResponse } from "../../types/responses/user";
 import type { CommonClass, ParentPermissions } from "../../types/user";
 
 export class ParentUserSettings extends CommonUserSettings<ParentParametresUtilisateurResponse> {
-  constructor(
-    session: Session,
-    raw: Response<ParentParametresUtilisateurResponse>,
-    ressource: ParentParametresUtilisateurResponse["ressource"],
-    settings: Settings
-  ){
-    super(session, raw, ressource, settings)
-  }
-
   public override get permissions(): ParentPermissions {
     const common = super.permissions
     const authorizations = this.raw.data.autorisations as ParentParametresUtilisateurResponse["autorisations"]
