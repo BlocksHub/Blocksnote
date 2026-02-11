@@ -1,7 +1,9 @@
+import type { Detention } from "../structures/PageEmploiDuTemps/Detention";
 import type { Lesson } from "../structures/PageEmploiDuTemps/Lesson";
 
 export type TimetableOptions = {
   withAbsences?:            boolean;
+  weekNumber?:              string;
   from?:                    Date;
   to?:                      Date;
   withClassCouncil?:        boolean;
@@ -13,17 +15,18 @@ export type TimetableOptions = {
   isPermanenceTimetable?:   boolean;
 }
 
-export type TimetableRange = TimetableOptions & {
-  from: Date;
-  to:   Date;
-};
-
 export type TimetableDay = {
   date:    Date;
-  lessons: Lesson[];
+  lessons: Lesson[] | Detention[];
 }
 
 export type Ressource = {
   G: number;
   N: string;
 };
+
+export type Videoconference = {
+  comment?: string;
+  label?:   string;
+  url:      URL;
+}
