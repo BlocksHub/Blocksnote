@@ -5,6 +5,7 @@ export type CommunPageEmploiDuTempsResponse = {
 }
 
 export type PronoteCourse = {
+  estRetenue?:     string;
   AvecCdT:         boolean;
   AvecTafPublie:   boolean;
   CouleurFond:     string;
@@ -15,6 +16,15 @@ export type PronoteCourse = {
   Statut?:         string;
   estAnnule?:      boolean;
   cahierDeTextes?: PronoteCDT;
+  listeVisios?:    PronoteVisio[];
+  hintRealise?:    string;
+}
+
+export type PronoteVisio = {
+  id:           string;
+  commentaire?: string;
+  libelleLien?: string;
+  url:          string;
 }
 
 export type PronoteContent = PronoteLabel & {

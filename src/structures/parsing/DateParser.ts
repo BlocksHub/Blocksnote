@@ -15,6 +15,18 @@ export class DateParser {
     dimanche: 0
   };
 
+  static encode(v: Date): string {
+    const day = v.getDate();
+    const month = (v.getMonth() + 1);
+    const year = v.getFullYear();
+
+    const hours = v.getHours();
+    const minutes = v.getMinutes();
+    const seconds = v.getSeconds();
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  }
+
   static parse(v: string) {
     if (DateParser.shortDateRegex.test(v)) {
       return DateParser.shortDate(v)
