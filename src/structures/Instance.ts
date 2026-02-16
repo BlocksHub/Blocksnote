@@ -1,6 +1,6 @@
-import { NOTSpace, type CAS, type Workspace } from "../types/authentication";
-import { type InfoMobileResponse } from "../types/responses/authentication";
-import { Request } from "./network/Request";
+import { NOTSpace, type CAS, type Workspace } from "@/types/authentication";
+import { type InfoMobileResponse } from "@/types/responses/authentication";
+import { Request } from "@/structures/network/Request";
 
 export class Instance {
   constructor(

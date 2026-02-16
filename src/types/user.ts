@@ -1,5 +1,5 @@
-import type { Attachment } from "../structures/Attachment"
-import type { Period } from "./instance"
+import type { Attachment } from "@/structures/Attachment"
+import type { Period } from "@/types/instance"
 
 export type Establishment = {
   label:             string;

@@ -1,6 +1,6 @@
 import type { AuthentificationResponse } from "../../types/responses/authentication";
 import { AuthenticationError } from "../errors/AuthenticationError";
-import { Request } from "../network/Request";
+import { Request } from "../../structures/network/Request";
 import type { Session } from "../Session";
 
 export class AccountSecurity {

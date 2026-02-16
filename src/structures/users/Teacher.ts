@@ -1,10 +1,10 @@
-import type { TimetableOptions } from "../../types/timetable";
-import type { Instance } from "../Instance";
-import { Timetable } from "../PageEmploiDuTemps/Common";
-import { TeacherUserSettings } from "../ParametresUtilisateurs/Teacher";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
-import { User } from "./User";
+import type { TimetableOptions } from "@/types/timetable";
+import type { Instance } from "@/structures/Instance";
+import { Timetable } from "@/routes/PageEmploiDuTemps/Common";
+import { TeacherUserSettings } from "@/routes/ParametresUtilisateurs/Teacher";
+import type { Session } from "@/structures/Session";
+import type { Settings } from "@/structures/Settings";
+import { User } from "@/structures/users/User";
 
 export class Teacher extends User {
   declare public user: TeacherUserSettings;

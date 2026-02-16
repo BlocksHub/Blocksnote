@@ -1,4 +1,4 @@
-import { CryptographicError } from "../errors/CryptographicError.ts";
+import { CryptographicError } from "@/structures/errors/CryptographicError.ts";
 import { md5 } from "@noble/hashes/legacy.js";
 import { cbc } from "@noble/ciphers/aes.js";
 import {type CipherWithOutput, utf8ToBytes, bytesToHex, bytesToUtf8} from "@noble/ciphers/utils.js";

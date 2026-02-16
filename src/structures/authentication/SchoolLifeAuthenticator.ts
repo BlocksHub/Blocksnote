@@ -1,7 +1,7 @@
-import { NOTSpace } from "../../types/authentication";
-import type { Instance } from "../Instance";
-import { SchoolLife } from "../users/SchoolLife";
-import { Authenticator } from "./Authenticator";
+import { NOTSpace } from "@/types/authentication";
+import type { Instance } from "@/structures/Instance";
+import { SchoolLife } from "@/structures/users/SchoolLife";
+import { Authenticator } from "@/structures/authentication/Authenticator";
 
 export class SchoolLifeAuthenticator extends Authenticator {
   constructor(instance: Instance) {

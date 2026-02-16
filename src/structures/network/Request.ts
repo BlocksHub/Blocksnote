@@ -1,13 +1,13 @@
-import { USER_AGENT } from "../../utils/constants.ts";
-import { NetworkError } from "../errors/NetworkError.ts";
-import { isExecutedWithBun } from "../../utils/runtime.ts";
-import { Response } from "./Response.ts";
-import type { Session } from "../Session.ts";
+import { USER_AGENT } from "@/utils/constants.ts";
+import { NetworkError } from "@/structures/errors/NetworkError.ts";
+import { isExecutedWithBun } from "@/utils/runtime.ts";
+import { Response } from "@/structures/network/Response.ts";
+import type { Session } from "@/structures/Session.ts";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 import { inflateSync, deflateSync } from "fflate";
 import { bytesToUtf8 } from "@noble/ciphers/utils.js";
-import { Parser } from "../parsing/Parser.ts";
-import { ParsingError } from "../errors/ParsingError.ts";
+import { Parser } from "@/structures/parsing/Parser.ts";
+import { ParsingError } from "@/structures/errors/ParsingError.ts";
 
 export class Request {
   public headers: Record<string, string> = {

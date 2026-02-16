@@ -1,9 +1,9 @@
-import { type Workspace } from "../types/authentication";
-import { BYPASS_ID } from "../utils/constants";
-import { AES } from "./crypto/AES";
-import { AuthenticationError } from "./errors/AuthenticationError";
-import { Request } from "./network/Request";
-import { RequestManager } from "./network/RequestManager";
+import { type Workspace } from "@/types/authentication";
+import { BYPASS_ID } from "@/utils/constants";
+import { AES } from "@/structures/crypto/AES";
+import { AuthenticationError } from "@/structures/errors/AuthenticationError";
+import { Request } from "@/structures/network/Request";
+import { RequestManager } from "@/structures/network/RequestManager";
 
 export class Session {
   public manager = new RequestManager();

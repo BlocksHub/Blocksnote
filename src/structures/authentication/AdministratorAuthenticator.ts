@@ -1,7 +1,7 @@
-import { NOTSpace } from "../../types/authentication";
-import type { Instance } from "../Instance";
-import { Administrator } from "../users/Administrator";
-import { Authenticator } from "./Authenticator";
+import { NOTSpace } from "@/types/authentication";
+import type { Instance } from "@/structures/Instance";
+import { Administrator } from "@/structures/users/Administrator";
+import { Authenticator } from "@/structures/authentication/Authenticator";
 
 export class AdministratorAuthenticator extends Authenticator {
   constructor(instance: Instance) {

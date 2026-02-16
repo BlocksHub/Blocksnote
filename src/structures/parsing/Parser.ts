@@ -1,6 +1,6 @@
-import { ParsingError } from "../errors/ParsingError";
-import { DateParser } from "./DateParser";
-import { NumberSet } from "./NumberSet";
+import { ParsingError } from "@/structures/errors/ParsingError";
+import { DateParser } from "@/structures/parsing/DateParser";
+import { NumberSet } from "@/structures/parsing/NumberSet";
 
 export class Parser {
   private static createDualCaseKey(key: string, value: unknown) {

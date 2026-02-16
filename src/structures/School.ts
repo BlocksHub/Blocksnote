@@ -1,4 +1,4 @@
-import { searchSchoolsWithGeo } from "../routes/geolocation";
+import { searchSchoolsWithGeo } from "@/routes/geolocation";
 
 export class School {
   constructor(

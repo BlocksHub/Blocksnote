@@ -1,6 +1,6 @@
-import type { Session } from "./Session";
-import { Request } from "./network/Request";
-import type { IdentificationResponse } from "../types/responses/authentication";
+import type { Session } from "@/structures/Session";
+import { Request } from "@/structures/network/Request";
+import type { IdentificationResponse } from "@/types/responses/authentication";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { AuthenticationError } from "./errors/AuthenticationError";

@@ -1,11 +1,11 @@
-import type { TimetableOptions } from "../../types/timetable";
-import type { Instance } from "../Instance";
-import { Timetable } from "../PageEmploiDuTemps/Common";
-import { ParentUserSettings } from "../ParametresUtilisateurs/Parent";
-import type { StudentUserSettings } from "../ParametresUtilisateurs/Student";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
-import { User } from "./User";
+import type { TimetableOptions } from "@/types/timetable";
+import type { Instance } from "@/structures/Instance";
+import { Timetable } from "@/routes/PageEmploiDuTemps/Common";
+import { ParentUserSettings } from "@/routes/ParametresUtilisateurs/Parent";
+import type { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
+import type { Session } from "@/structures/Session";
+import type { Settings } from "@/structures/Settings";
+import { User } from "@/structures/users/User";
 
 export class Parent extends User {
   declare public user: ParentUserSettings;

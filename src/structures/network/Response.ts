@@ -1,4 +1,4 @@
-import { Parser } from "../parsing/Parser";
+import { Parser } from "../../structures/parsing/Parser";
 
 export class Response<T> {
   constructor(

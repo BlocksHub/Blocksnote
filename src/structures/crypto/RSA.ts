@@ -1,5 +1,5 @@
 import { PKCS1_KEM, type PublicKey } from "micro-rsa-dsa-dh/rsa.js";
-import { EXPONENT_1024, MODULUS_1024 } from "../../utils/constants";
+import { EXPONENT_1024, MODULUS_1024 } from "@/utils/constants";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 export class RSA {

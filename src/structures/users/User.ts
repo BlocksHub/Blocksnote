@@ -1,13 +1,13 @@
-import type { TimetableOptions } from "../../types/timetable";
-import type { Class } from "../../types/user";
-import type { Instance } from "../Instance";
-import { Timetable } from "../PageEmploiDuTemps/Common";
-import { CommonUserSettings } from "../ParametresUtilisateurs/Common";
-import type { StudentUserSettings } from "../ParametresUtilisateurs/Student";
-import type { TeacherUserSettings } from "../ParametresUtilisateurs/Teacher";
-import type { Ressource } from "../../types/timetable";
-import { Session } from "../Session";
-import type { Settings } from "../Settings";
+import type { TimetableOptions } from "@/types/timetable";
+import type { Class } from "@/types/user";
+import type { Instance } from "@/structures/Instance";
+import { Timetable } from "@/routes/PageEmploiDuTemps/Common";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import type { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
+import type { TeacherUserSettings } from "@/routes/ParametresUtilisateurs/Teacher";
+import type { Ressource } from "@/types/timetable";
+import { Session } from "@/structures/Session";
+import type { Settings } from "@/structures/Settings";
 
 export class User {
   constructor(

@@ -1,4 +1,4 @@
-import { ParsingError } from "../errors/ParsingError";
+import { ParsingError } from "@/structures/errors/ParsingError";
 
 export class DateParser {
   private static readonly shortDateRegex = /^\w+\s\d{2}h\d{2}/;

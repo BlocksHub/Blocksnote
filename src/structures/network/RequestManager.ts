@@ -1,5 +1,5 @@
-import {Request} from "./Request.ts";
-import { Response } from "./Response.ts";
+import {Request} from "@/structures/network/Request.ts";
+import { Response } from "@/structures/network/Response.ts";
 
 export class RequestManager {
   public requestNumber: number = 0;

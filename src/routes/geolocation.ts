@@ -1,7 +1,7 @@
-import { Request } from "../structures/network/Request";
-import { School } from "../structures/School";
-import type { RawPronoteGeolocation } from "../types/geolocation";
-import { GEOLOCATION_SEARCH_SCHOOLS } from "./endpoints";
+import { Request } from "@/structures/network/Request";
+import { School } from "@/structures/School";
+import type { RawPronoteGeolocation } from "@/types/geolocation";
+import { GEOLOCATION_SEARCH_SCHOOLS } from "@/routes/endpoints";
 
 export async function searchSchoolsWithGeo(
   lat: number,

@@ -1,13 +1,13 @@
 import type { TimetableOptions } from "../../types/timetable";
 import type { Class } from "../../types/user";
 import type { Instance } from "../Instance";
-import { Timetable } from "../PageEmploiDuTemps/Common";
-import { AdministratorUserSettings } from "../ParametresUtilisateurs/Administrator";
-import type { StudentUserSettings } from "../ParametresUtilisateurs/Student";
-import type { TeacherUserSettings } from "../ParametresUtilisateurs/Teacher";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
-import { User } from "./User";
+import { Timetable } from "../../routes/PageEmploiDuTemps/Common";
+import { AdministratorUserSettings } from "@/routes/ParametresUtilisateurs/Administrator";
+import type { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
+import type { TeacherUserSettings } from "@/routes/ParametresUtilisateurs/Teacher";
+import type { Session } from "@/structures/Session";
+import type { Settings } from "@/structures/Settings";
+import { User } from "@/structures/users/User";
 
 export class Administrator extends User {
   declare public user: AdministratorUserSettings;

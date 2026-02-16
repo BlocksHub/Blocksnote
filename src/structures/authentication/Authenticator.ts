@@ -4,7 +4,7 @@ import type { AuthentificationResponse } from "../../types/responses/authenticat
 import { Challenge } from "../Challenge";
 import { AuthenticationError } from "../errors/AuthenticationError";
 import type { Instance } from "../Instance";
-import { Request } from "../network/Request";
+import { Request } from "../../structures/network/Request";
 import { Session } from "../Session";
 import { Settings } from "../Settings";
 import { AccountSecurity } from "./AccountSecurity";

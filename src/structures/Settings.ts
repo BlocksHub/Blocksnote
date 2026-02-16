@@ -10,11 +10,11 @@ import type {
   Ressources,
   ScheduleSettings,
   SchoolInfo
-} from "../types/instance";
-import type { Session } from "./Session";
-import { RSA } from "./crypto/RSA";
-import { Request } from "./network/Request";
-import type { FonctionsParametresRawResponse } from "../types/responses/instance";
+} from "@/types/instance";
+import type { Session } from "@/structures/Session";
+import { RSA } from "@/structures/crypto/RSA";
+import { Request } from "@/structures/network/Request";
+import type { FonctionsParametresRawResponse } from "@/types/responses/instance";
 
 export class Settings {
   constructor(

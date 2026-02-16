@@ -1,5 +1,5 @@
-import type { Detention } from "../structures/PageEmploiDuTemps/Detention";
-import type { Lesson } from "../structures/PageEmploiDuTemps/Lesson";
+import type { Detention } from "@/routes/PageEmploiDuTemps/Detention";
+import type { Lesson } from "@/routes/PageEmploiDuTemps/Lesson";
 
 export type TimetableOptions = {
   withAbsences?:            boolean;

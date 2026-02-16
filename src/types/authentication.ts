@@ -1,5 +1,5 @@
-import type { AccountSecurity } from "../structures/authentication/AccountSecurity"
-import type { Session } from "../structures/Session"
+import type { AccountSecurity } from "@/structures/authentication/AccountSecurity"
+import type { Session } from "@/structures/Session"
 
 export enum NOTSpace {
   ADMINISTRATOR = 17,

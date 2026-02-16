@@ -1,5 +1,5 @@
-import type { FileTypeValue } from "../types/attachments";
-import { Session } from "./Session";
+import type { FileTypeValue } from "@/types/attachments";
+import { Session } from "@/structures/Session";
 
 export class Attachment {
   constructor(
