@@ -2,7 +2,7 @@ import { select } from "@inquirer/prompts";
 import type { Timetable } from "../../src";
 import chalk from 'chalk';
 import { StudentLogin } from "../authentication/student.exemple";
-import { Detention } from "../../src/structures/PageEmploiDuTemps/Detention";
+import { Detention } from "../../src/routes/PageEmploiDuTemps/Detention";
 
 if (require.main === module) {
   main();
