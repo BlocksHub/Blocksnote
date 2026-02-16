@@ -3,7 +3,7 @@ import { TimeSlot } from "@/routes/PageEmploiDuTemps/TimeSlot";
 
 export class Lesson extends TimeSlot {
   public get videoconference(): Videoconference[] {
-    return this._raw.listeVisios?.map((i) => ({
+    return this.raw.listeVisios?.map((i) => ({
       comment: i.commentaire,
       label:   i.libelleLien,
       url:     new URL(i.url)
@@ -23,18 +23,18 @@ export class Lesson extends TimeSlot {
   }
 
   public get backgroundColor(): string {
-    return this._raw.CouleurFond;
+    return this.raw.CouleurFond;
   }
 
   public get canceled(): boolean {
-    return this._raw.estAnnule ?? false;
+    return Boolean(this.raw.estAnnule);
   }
 
   public get evaluation(): boolean {
-    return this._raw.cahierDeTextes?.estEval ?? false;
+    return Boolean(this.raw.cahierDeTextes?.estEval);
   }
 
   public get status(): string | undefined {
-    return this._raw.Statut;
+    return this.raw.Statut;
   }
 }

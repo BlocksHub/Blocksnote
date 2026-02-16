@@ -85,9 +85,13 @@ export class Timetable {
     return tabs[space] ?? 16;
   }
 
-  private static addTimeSlot(course: PronoteCourse, settings: Settings): TimeSlot {
-    if (course.estRetenue) return new Detention(course, settings);
-    return new Lesson(course, settings);
+  private static addTimeSlot(
+    course: PronoteCourse,
+    timetable: CommunPageEmploiDuTempsResponse,
+    settings: Settings
+  ): TimeSlot {
+    if (course.estRetenue) return new Detention(course, timetable, settings);
+    return new Lesson(course, timetable, settings);
   }
 
   public static async load(
@@ -109,7 +113,7 @@ export class Timetable {
   public get lessons(): readonly TimeSlot[] {
     if (!this._lessons) {
       this._lessons = this.raw.data.ListeCours
-        .map((c) => Timetable.addTimeSlot(c, this.settings))
+        .map((c) => Timetable.addTimeSlot(c, this.raw.data, this.settings))
         .sort((a, b) => a.from.getTime() - b.from.getTime());
     }
     return this._lessons;
