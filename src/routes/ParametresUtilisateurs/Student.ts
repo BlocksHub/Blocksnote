@@ -1,6 +1,6 @@
-import { CommonUserSettings } from "./Common";
-import type { EleveParametresUtilisateurResponse, ElevePronoteClasse } from "../../types/responses/user";
-import type { Base64, StudentClass, StudentPermissions } from "../../types/user";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import type { EleveParametresUtilisateurResponse, ElevePronoteClasse } from "@/types/responses/user";
+import type { Base64, StudentClass, StudentPermissions } from "@/types/user";
 
 export class StudentUserSettings extends CommonUserSettings<EleveParametresUtilisateurResponse> {
   private static toStudentClass(item?: ElevePronoteClasse): StudentClass {

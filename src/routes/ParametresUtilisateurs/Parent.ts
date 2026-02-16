@@ -1,8 +1,8 @@
-import { CommonUserSettings } from "./Common";
-import { Response } from "../network/Response";
-import { StudentUserSettings } from "./Student";
-import type { EleveParametresUtilisateurResponse, ParentParametresUtilisateurResponse } from "../../types/responses/user";
-import type { CommonClass, ParentPermissions } from "../../types/user";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import { Response } from "@/structures/network/Response";
+import { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
+import type { EleveParametresUtilisateurResponse, ParentParametresUtilisateurResponse } from "@/types/responses/user";
+import type { CommonClass, ParentPermissions } from "@/types/user";
 
 export class ParentUserSettings extends CommonUserSettings<ParentParametresUtilisateurResponse> {
   public override get permissions(): ParentPermissions {

@@ -1,7 +1,7 @@
-import { CommonUserSettings } from "./Common";
-import type { Base64, CommonPermissions, Level, Subject, TeacherClass, TeacherPermissions } from "../../types/user";
-import type { ProfesseurAutorisations, ProfesseurParametresUtilisateurResponse } from "../../types/responses/user";
-import { AdministratorUserSettings } from "./Administrator";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import type { Base64, CommonPermissions, Level, Subject, TeacherClass, TeacherPermissions } from "@/types/user";
+import type { ProfesseurAutorisations, ProfesseurParametresUtilisateurResponse } from "@/types/responses/user";
+import { AdministratorUserSettings } from "@/routes/ParametresUtilisateurs/Administrator";
 
 export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametresUtilisateurResponse> {
   public static toPermissions(common: CommonPermissions, authorizations: ProfesseurAutorisations) {

@@ -1,5 +1,5 @@
-import type { PronoteCourse } from "../../types/responses/timetable";
-import type { Settings } from "../Settings";
+import type { PronoteCourse } from "@/types/responses/timetable";
+import type { Settings } from "@/structures/Settings";
 
 export class TimeSlot {
   constructor(

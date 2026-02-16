@@ -1,7 +1,7 @@
-import { CommonUserSettings } from "./Common";
-import type { VieScolaireAutorisations, VieScolaireParametresUtilisateurResponse } from "../../types/responses/user";
-import type { CommonPermissions, SchoolLifeClass, SchoolLifePermissions } from "../../types/user";
-import { TeacherUserSettings } from "./Teacher";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import type { VieScolaireAutorisations, VieScolaireParametresUtilisateurResponse } from "@/types/responses/user";
+import type { CommonPermissions, SchoolLifeClass, SchoolLifePermissions } from "@/types/user";
+import { TeacherUserSettings } from "@/routes/ParametresUtilisateurs/Teacher";
 
 export class SchoolLifeUserSettings extends CommonUserSettings<VieScolaireParametresUtilisateurResponse> {
   public static toPermissions(

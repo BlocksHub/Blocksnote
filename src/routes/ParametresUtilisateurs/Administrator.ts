@@ -1,6 +1,6 @@
-import type { AdministrateurParametresUtilisateurResponse, ProfesseurAutorisations } from "../../types/responses/user";
-import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions, SchoolLifeClass } from "../../types/user";
-import { CommonUserSettings } from "./Common";
+import type { AdministrateurParametresUtilisateurResponse, ProfesseurAutorisations } from "@/types/responses/user";
+import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions, SchoolLifeClass } from "@/types/user";
+import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
 
 export class AdministratorUserSettings extends CommonUserSettings<AdministrateurParametresUtilisateurResponse> {
   public static toPermissions(

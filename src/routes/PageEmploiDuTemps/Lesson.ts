@@ -1,5 +1,5 @@
-import type { Videoconference } from "../../types/timetable";
-import { TimeSlot } from "./TimeSlot";
+import type { Videoconference } from "@/types/timetable";
+import { TimeSlot } from "@/routes/PageEmploiDuTemps/TimeSlot";
 
 export class Lesson extends TimeSlot {
   public get videoconference(): Videoconference[] {

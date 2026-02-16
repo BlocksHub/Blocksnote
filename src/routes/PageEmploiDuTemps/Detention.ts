@@ -1,4 +1,4 @@
-import { TimeSlot } from "./TimeSlot";
+import { TimeSlot } from "@/routes/PageEmploiDuTemps/TimeSlot";
 
 export class Detention extends TimeSlot {
   public get state(): string {

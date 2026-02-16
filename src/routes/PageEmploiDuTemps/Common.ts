@@ -1,16 +1,16 @@
-import type { CommunPageEmploiDuTempsResponse, PronoteCourse } from "../../types/responses/timetable";
-import { type Ressource, type TimetableDay, type TimetableOptions } from "../../types/timetable";
-import { Request } from "../network/Request";
-import { Response } from "../network/Response";
-import type { Session } from "../Session";
-import type { Settings } from "../Settings";
-import { NOTSpace } from "../../types/authentication";
-import { TimeSlot } from "./TimeSlot";
-import type { User } from "../users/User";
-import { Detention } from "./Detention";
-import { Lesson } from "./Lesson";
-import { Parser } from "../parsing/Parser";
-import { DateParser } from "../parsing/DateParser";
+import type { CommunPageEmploiDuTempsResponse, PronoteCourse } from "@/types/responses/timetable";
+import { type Ressource, type TimetableDay, type TimetableOptions } from "@/types/timetable";
+import { Request } from "@/structures/network/Request";
+import { Response } from "@/structures/network/Response";
+import type { Session } from "@/structures/Session";
+import type { Settings } from "@/structures/Settings";
+import { NOTSpace } from "@/types/authentication";
+import { TimeSlot } from "@/routes/PageEmploiDuTemps/TimeSlot";
+import type { User } from "@/structures/users/User";
+import { Detention } from "@/routes/PageEmploiDuTemps/Detention";
+import { Lesson } from "@/routes/PageEmploiDuTemps/Lesson";
+import { Parser } from "@/structures/parsing/Parser";
+import { DateParser } from "@/structures/parsing/DateParser";
 
 export class Timetable {
   private _days?: TimetableDay[]

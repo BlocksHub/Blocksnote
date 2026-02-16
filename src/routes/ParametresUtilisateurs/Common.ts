@@ -1,12 +1,12 @@
-import { FileType, type FileTypeValue } from "../../types/attachments";
-import type { Period } from "../../types/instance";
-import type { InformationsEtablissement, MailEtablissement, NumeroEtablissement, ParametresUtilisateurResponse, PronoteOnglet } from "../../types/responses/user";
-import type { CommonPermissions, Cycle, Establishment, EstablishmentContact, HarassmentPolicy, Location, Tab, TabType } from "../../types/user";
-import { Attachment } from "../Attachment";
-import { Request } from "../network/Request";
-import { Response } from "../network/Response";
-import type { Session } from "../Session";
-import { Settings } from "../Settings";
+import { FileType, type FileTypeValue } from "@/types/attachments";
+import type { Period } from "@/types/instance";
+import type { InformationsEtablissement, MailEtablissement, NumeroEtablissement, ParametresUtilisateurResponse, PronoteOnglet } from "@/types/responses/user";
+import type { CommonPermissions, Cycle, Establishment, EstablishmentContact, HarassmentPolicy, Location, Tab, TabType } from "@/types/user";
+import { Attachment } from "@/structures/Attachment";
+import { Request } from "@/structures/network/Request";
+import { Response } from "@/structures/network/Response";
+import type { Session } from "@/structures/Session";
+import { Settings } from "@/structures/Settings";
 
 export class CommonUserSettings<T extends ParametresUtilisateurResponse = ParametresUtilisateurResponse> {
   private _tabs?: Partial<Record<TabType, Tab>>;
