@@ -1,6 +1,5 @@
-<p align="center" style="display: flex; flex-direction: column;">
-  <img src="./assets/logo.svg" alt="Blocksnote Logo" style="width: 50%;" />
-</p>
+<img width="1500" height="375" alt="image" src="https://github.com/user-attachments/assets/32116960-e463-4dbe-bf44-5f8d18d4c3e4" />
+
 <p align="center">A <strong>perfect wrapper</strong> for interacting with <strong>PRONOTE instances.</strong></p>
 <p align="center">
   <img src="https://img.shields.io/npm/v/blockshub@blocksnote?style=flat-square&color=cb3837" alt="Blocksnote Logo" />
