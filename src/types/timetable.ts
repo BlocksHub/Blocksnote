@@ -1,5 +1,6 @@
 import type { Detention } from "@/routes/PageEmploiDuTemps/Detention";
 import type { Lesson } from "@/routes/PageEmploiDuTemps/Lesson";
+import type { PronoteKind } from "./responses/user";
 
 export type TimetableOptions = {
   withAbsences?:            boolean;
@@ -20,8 +21,7 @@ export type TimetableDay = {
   lessons: Lesson[] | Detention[];
 }
 
-export type Ressource = {
-  G: number;
+export type Ressource = PronoteKind & {
   N: string;
 };
 

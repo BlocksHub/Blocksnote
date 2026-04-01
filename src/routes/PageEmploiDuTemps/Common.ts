@@ -1,7 +1,6 @@
 import type { CommunPageEmploiDuTempsResponse, PronoteCourse } from "@/types/responses/timetable";
 import { type Ressource, type TimetableDay, type TimetableOptions } from "@/types/timetable";
 import { Request } from "@/structures/network/Request";
-import { Response } from "@/structures/network/Response";
 import type { Session } from "@/structures/Session";
 import type { Settings } from "@/structures/Settings";
 import { NOTSpace } from "@/types/authentication";
@@ -19,7 +18,7 @@ export class Timetable {
 
   constructor(
     protected readonly settings: Settings,
-    protected readonly raw: Response<CommunPageEmploiDuTempsResponse>,
+    protected readonly raw: CommunPageEmploiDuTempsResponse,
     protected readonly options: TimetableOptions
   ){}
 
@@ -107,13 +106,13 @@ export class Timetable {
     );
     const response = await user.session.manager.enqueueRequest<CommunPageEmploiDuTempsResponse>(request);
 
-    return new this(user.settings, response, options);
+    return new this(user.settings, response.data, options);
   }
 
   public get lessons(): readonly TimeSlot[] {
     if (!this._lessons) {
-      this._lessons = this.raw.data.ListeCours
-        .map((c) => Timetable.addTimeSlot(c, this.raw.data, this.settings))
+      this._lessons = this.raw.ListeCours
+        .map((c) => Timetable.addTimeSlot(c, this.raw, this.settings))
         .sort((a, b) => a.from.getTime() - b.from.getTime());
     }
     return this._lessons;

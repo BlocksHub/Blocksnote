@@ -5,6 +5,7 @@ import { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
 import type { Session } from "@/structures/Session";
 import type { Settings } from "@/structures/Settings";
 import { User } from "@/structures/users/User";
+import { Homework } from "@/routes/PageCahierDeTexte/Common";
 
 export class Student extends User {
   declare public user: StudentUserSettings;
@@ -20,5 +21,9 @@ export class Student extends User {
 
   public timetable(options?: TimetableOptions): Promise<Timetable> {
     return super._timetable(this.user, options);
+  }
+
+  public homeworks(): Promise<Array<Homework>> {
+    return Homework.load(this);
   }
 }
