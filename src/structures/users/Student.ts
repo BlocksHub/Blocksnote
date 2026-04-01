@@ -23,7 +23,7 @@ export class Student extends User {
     return super._timetable(this.user, options);
   }
 
-  public homeworks(): Promise<Array<Homework>> {
-    return Homework.load(this);
+  public homeworks(from?: Date, to?: Date): Promise<Array<Homework>> {
+    return Homework.load(this, from, to);
   }
 }

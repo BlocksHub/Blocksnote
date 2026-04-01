@@ -11,9 +11,9 @@ export class Homework {
   public static async load(
     user: User,
     from: Date = new Date(),
-    to?: Date
+    to: Date = new Date()
   ) {
-    const domains: string = `[${user.weeknumber(from)}..${user.weeknumber(to ?? user.settings.schedule.lastDate)}]`;
+    const domains: string = `[${user.weeknumber(from)}..${user.weeknumber(to)}]`;
     const request = new Request().setPronotePayload(
       user.session,
       "PageCahierDeTexte",
