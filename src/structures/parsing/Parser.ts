@@ -1,6 +1,9 @@
+import type { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Student";
 import { ParsingError } from "@/structures/errors/ParsingError";
 import { DateParser } from "@/structures/parsing/DateParser";
 import { NumberSet } from "@/structures/parsing/NumberSet";
+import type { Ressource } from "@/types/timetable";
+import type { Class } from "@/types/user";
 
 export class Parser {
   private static createDualCaseKey(key: string, value: unknown) {
@@ -18,6 +21,10 @@ export class Parser {
 
   static encodeKind(key: string, kind: number, id: string) {
     return this.createDualCaseKey(key, { G: kind, N: id });
+  }
+
+  static toRessource(value: Class | StudentUserSettings): Ressource {
+    return { G: value.kind, N: value.id}
   }
 
   static parse<T>(obj: unknown): T {

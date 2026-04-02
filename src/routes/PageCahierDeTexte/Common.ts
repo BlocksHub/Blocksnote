@@ -1,7 +1,9 @@
 import { Request } from "@/structures/network/Request";
+import { Parser } from "@/structures/parsing/Parser";
 import type { User } from "@/structures/users/User";
 import type { DifficultyLevel, SubmissionType } from "@/types/homework";
 import type { CommunDevoirResponse, Devoir } from "@/types/responses/notebook";
+import type { Ressource } from "@/types/timetable";
 
 export class Homework {
   constructor(
@@ -11,14 +13,15 @@ export class Homework {
   public static async load(
     user: User,
     from: Date = new Date(),
-    to?: Date
+    to?: Date,
+    ressource?: Ressource
   ) {
-    const domains: string = `[${user.weeknumber(from)}..${user.weeknumber(to ?? from)}]`;
+    const domains: string = `[${user.weeknumber(from)}]`;
     const request = new Request().setPronotePayload(
       user.session,
       "PageCahierDeTexte",
-      { domaine: { _T: 8, V: domains } },
-      { onglet: 88 }
+      { ...Parser.encodeType("domaine", 8, domains) },
+      { onglet: 88, membre: ressource }
     );
     const response = await user.session.manager.enqueueRequest<CommunDevoirResponse>(request);
     return response.data.ListeTravauxAFaire.map((h) => new this(h))

@@ -6,6 +6,8 @@ import type { StudentUserSettings } from "@/routes/ParametresUtilisateurs/Studen
 import type { Session } from "@/structures/Session";
 import type { Settings } from "@/structures/Settings";
 import { User } from "@/structures/users/User";
+import { Homework } from "@/routes/PageCahierDeTexte/Common";
+import { Parser } from "../parsing/Parser";
 
 export class Parent extends User {
   declare public user: ParentUserSettings;
@@ -21,5 +23,9 @@ export class Parent extends User {
 
   public timetable(children: StudentUserSettings, options?: TimetableOptions): Promise<Timetable> {
     return super._timetable(children, options);
+  }
+
+  public homeworks(children: StudentUserSettings, from?: Date, to?: Date): Promise<Array<Homework>> {
+    return Homework.load(this, from, to, Parser.toRessource(children));
   }
 }
