@@ -40,12 +40,24 @@ export type VieScolaireAutorisations = ProfesseurAutorisations & {
   cours:                                    VieScolaireCoursAutorisations;
 }
 
-export type ProfesseurAutorisations = EleveAutorisations & {
-  AvecDiscussionParents:                   boolean;
+export type AssistantAutorisations = EleveAutorisations & {
+  AvecDiscussionParents:          boolean;
+  ConsulterFichesResponsables:    boolean;
+  ConsulterIdentiteEleve:         boolean;
+  ConsulterPhotosEleves:          boolean;
+  avecMessageInstantane:          boolean;
+  estDestinataireChat:            boolean;
+  AvecDiscussionAvancee:          boolean;
+  AvecSaisieObservationsParents:  boolean;
+  avecDroitDeconnexionMessagerie: boolean;
+  cours:                          AssistantCoursAutorisations;
+  compte:                         ParentCompteAutorisation;
+}
+
+export type ProfesseurAutorisations = AssistantAutorisations & {
   AutoriserCommunicationsToutesClasses:    boolean;
   AvecConsultationDefautCarnet:            boolean;
   AvecContactVS:                           boolean;
-  AvecDiscussionAvancee:                   boolean;
   AvecDiscussionEleves:                    boolean;
   AvecPublicationPunitions:                boolean;
   AvecSaisieAbsence:                       boolean;
@@ -62,24 +74,18 @@ export type ProfesseurAutorisations = EleveAutorisations & {
   AvecSaisieHorsCours:                     boolean;
   AvecSaisieMotifRetard:                   boolean;
   AvecSaisieObservation:                   boolean;
-  AvecSaisieObservationsParents:           boolean;
   AvecSaisiePassageInfirmerie:             boolean;
   AvecSaisieProjetIndividuel:              boolean;
   AvecSaisiePunition:                      boolean;
   AvecSaisieRetard:                        boolean;
   AvecSaisieSurGrille:                     boolean;
-  ConsulterFichesResponsables:             boolean;
-  ConsulterIdentiteEleve:                  boolean;
   ConsulterMemosEleve:                     boolean;
-  ConsulterPhotosEleves:                   boolean;
   SaisirMemos:                             boolean;
   autoriserImpressionBulletinReleveBrevet: boolean;
   avecAccesALaListeDesDocumentEleve:       boolean;
   avecAccesRemplacementsProfs:             boolean;
   avecAnciennesFeuilleDAppel:              boolean;
   avecCreationSujetForum:                  boolean;
-  avecDroitDeconnexionMessagerie:          boolean;
-  avecMessageInstantane:                   boolean;
   avecModificationForumAPosteriori:        boolean;
   avecPublicationListeDiffusion:           boolean;
   avecPublicationPageEtablissement:        boolean;
@@ -90,9 +96,7 @@ export type ProfesseurAutorisations = EleveAutorisations & {
   avecSaisiePieceJointeCahierDeTexte:      boolean;
   collecterDocsAupresDesEleves:            boolean;
   collecterDocsAupresDesResponsables:      boolean;
-  compte:                                  ParentCompteAutorisation;
   cours:                                   ProfesseurCoursAutorisations;
-  estDestinataireChat:                     boolean;
   gererLaCollecteDeDocuments:              boolean;
   intendance:                              ProfesseurIntendanceAutorisation;
   lancerAlertesPPMS:                       boolean;
@@ -131,10 +135,13 @@ export type VieScolaireCoursAutorisations = ProfesseurCoursAutorisations & {
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean;
 }
 
-export type ProfesseurCoursAutorisations = CommunCoursAutorisations & {
+export type AssistantCoursAutorisations = CommunCoursAutorisations & {
   afficherElevesDetachesDansCours:                   boolean;
-  avecMateriel:                                      boolean;
   modifierElevesDetachesSurCoursDeplaceCreneauLibre: boolean;
+}
+
+export type ProfesseurCoursAutorisations = AssistantCoursAutorisations & {
+  avecMateriel: boolean;
 }
 
 export type AdministrateurAutorisationsCours = VieScolaireCoursAutorisations & {
@@ -164,6 +171,11 @@ export type EleveParametresUtilisateurResponse = CommunParametresUtilisateurResp
 export type ParentParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
   ressource:     ParentParametresUtilisateurRessource;
   autorisations: ParentAutorisations;
+}
+
+export type AssistantParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  ressource:     ParentParametresUtilisateurRessource;
+  autorisations: AssistantAutorisations;
 }
 
 export type ProfesseurParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {

@@ -1,6 +1,7 @@
 import type { AdministrateurParametresUtilisateurResponse, ProfesseurAutorisations } from "@/types/responses/user";
 import type { AdministrativePermissions, AdministratorPermissions, CommonPermissions, SchoolLifeClass } from "@/types/user";
 import { CommonUserSettings } from "@/routes/ParametresUtilisateurs/Common";
+import { AssistantUserSettings } from "./Assistant";
 
 export class AdministratorUserSettings extends CommonUserSettings<AdministrateurParametresUtilisateurResponse> {
   public static toPermissions(
@@ -9,31 +10,21 @@ export class AdministratorUserSettings extends CommonUserSettings<Administrateur
   ): AdministrativePermissions {
     return {
       ...common,
+      ...AssistantUserSettings.toPermissions(common, authorizations),
       canCommunicateWithAllClasses:          authorizations.AutoriserCommunicationsToutesClasses,
       canUseAdvancedDiscussion:              authorizations.AvecDiscussionAvancee,
       canRecordNews:                         authorizations.AvecSaisieActualite,
       canRecordAgenda:                       authorizations.AvecSaisieAgenda,
       canRecordParentObservations:           authorizations.AvecSaisieObservationsParents,
-      canViewGuardianFiles:                  authorizations.ConsulterFichesResponsables,
-      canViewStudentIdentity:                authorizations.ConsulterIdentiteEleve,
-      canViewStudentPhotos:                  authorizations.ConsulterPhotosEleves,
       canCreateForumTopics:                  authorizations.avecCreationSujetForum,
-      canDisconnectMessaging:                authorizations.avecDroitDeconnexionMessagerie,
-      canUseInstantMessaging:                authorizations.avecMessageInstantane,
       canModifyForumAfterPosting:            authorizations.avecModificationForumAPosteriori,
       canPublishToMailingList:               authorizations.avecPublicationListeDiffusion,
       canRecordStaffCaseDocuments:           authorizations.avecSaisieDocumentsCasiersIntervenant,
       canCollectDocsFromStudents:            authorizations.collecterDocsAupresDesEleves,
-      isChatRecipient:                       authorizations.estDestinataireChat,
       canManageDocumentCollection:           authorizations.gererLaCollecteDeDocuments,
       canLaunchPPMSAlerts:                   authorizations.lancerAlertesPPMS,
       canViewTeacherAbsencesAndReplacements: authorizations.voirAbsencesEtRemplacementsProfs,
-      course:                                {
-        canDisplayDetachedStudentsInCourse:     authorizations.cours.afficherElevesDetachesDansCours,
-        canModifyDetachedStudentsOnMovedCourse: authorizations.cours.modifierElevesDetachesSurCoursDeplaceCreneauLibre,
-        scheduleViewDomains:                    authorizations.cours.domaineConsultationEDT
-      },
-      bursar: {
+      bursar:                                {
         canRequestITTasks:         authorizations.intendance.avecDemandeTachesInformatique,
         canRequestIntendanceTasks: authorizations.intendance.avecDemandeTravauxIntendance,
         canExecuteITTasks:         authorizations.intendance.avecExecutionTachesInformatique,

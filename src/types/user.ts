@@ -174,28 +174,31 @@ export type StaffPermissions = AdministrativePermissions & {
   canRecordExemption:               boolean;
 }
 
-export type AdministrativePermissions = CommonPermissions & {
+export type AssistantPermissions = CommonPermissions & {
+  canChatWithParents:          boolean;
+  canUseAdvancedDiscussion:    boolean;
+  canViewGuardianFiles:        boolean;
+  canViewStudentIdentity:      boolean;
+  isChatRecipient:             boolean;
+  canViewStudentPhotos:        boolean;
+  canDisconnectMessaging:      boolean;
+  canUseInstantMessaging:      boolean;
+  canRecordParentObservations: boolean;
+  course:                      SchoolLifeCoursePermissions;
+}
+
+export type AdministrativePermissions = CommonPermissions & AssistantPermissions & {
   canCommunicateWithAllClasses:          boolean;
-  canUseAdvancedDiscussion:              boolean;
   canRecordNews:                         boolean;
   canRecordAgenda:                       boolean;
-  canRecordParentObservations:           boolean;
-  canViewGuardianFiles:                  boolean;
-  canViewStudentIdentity:                boolean;
-  canViewStudentPhotos:                  boolean;
   canCreateForumTopics:                  boolean;
-  canDisconnectMessaging:                boolean;
-  canUseInstantMessaging:                boolean;
   canModifyForumAfterPosting:            boolean;
   canPublishToMailingList:               boolean;
   canRecordStaffCaseDocuments:           boolean;
   canCollectDocsFromStudents:            boolean;
-  isChatRecipient:                       boolean;
   canManageDocumentCollection:           boolean;
   canLaunchPPMSAlerts:                   boolean;
   canViewTeacherAbsencesAndReplacements: boolean;
-  sizes:                                 CommonSizeLimits;
-  course:                                SchoolLifeCoursePermissions;
   bursar:                                SchoolLifeBursarPermissions;
 }
 
@@ -208,7 +211,7 @@ export type SchoolLifePermissions = StaffPermissions & {
 }
 
 export type TeacherPermissions = StudentPermissions & StaffPermissions & {
-  canDiscussWithStudents:            boolean;
+  canChatWithStudents:               boolean;
   canPublishPunishments:             boolean;
   canRecordCertificates:             boolean;
   canRecordHomework:                 boolean;

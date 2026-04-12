@@ -41,7 +41,7 @@ export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametres
     const permissions = TeacherUserSettings.toPermissions(common, authorizations)
     return {
       ...permissions,
-      canDiscussWithStudents:            authorizations.AvecDiscussionEleves,
+      canChatWithStudents:               authorizations.AvecDiscussionEleves,
       canPublishPunishments:             authorizations.AvecPublicationPunitions,
       canRecordCertificates:             authorizations.avecSaisieDispense,
       canRecordHomework:                 authorizations.AvecSaisieDevoirs,
