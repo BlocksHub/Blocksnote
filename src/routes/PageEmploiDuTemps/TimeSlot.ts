@@ -35,7 +35,7 @@ export class TimeSlot {
 
   public get excluded(): boolean {
     const dayIndex = this.from.getDay() || 7 - 1
-    const day = this.timetable.absences.joursCycle.find((d) => d.jourCycle === dayIndex);
+    const day = this.timetable.absences?.joursCycle.find((d) => d.jourCycle === dayIndex);
     return Boolean(
       day?.exclusionsEtab
       && day.exclusionsEtab.placeDebut <= this.raw.place

@@ -2,7 +2,7 @@ import type { PronoteLabel } from "./user";
 
 export type CommunPageEmploiDuTempsResponse = {
   ListeCours: PronoteCourse[];
-  absences: {
+  absences?: {
     joursCycle: JourAbsence[];
   };
 }
