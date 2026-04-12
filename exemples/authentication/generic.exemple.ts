@@ -35,8 +35,8 @@ async function main(): Promise<User> {
   return account;
 }
 
-export async function askForCredentials(authenticator: Authenticator) {
-  const username = await input({ message: "Username:", required: true, default: "demonstration" })
+export async function askForCredentials(authenticator: Authenticator, defaultUsername = "demonstration") {
+  const username = await input({ message: "Username:", required: true, default: defaultUsername })
   const pwd = await password({ message: "Password:", mask: "*" })
   await authenticator.credentials(username, pwd)
 

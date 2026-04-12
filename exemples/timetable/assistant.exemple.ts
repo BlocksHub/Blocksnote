@@ -1,14 +1,14 @@
-import { ParentLogin } from "../authentication/parent.exemple";
 import { select } from "@inquirer/prompts";
 import type { Timetable } from "../../src";
 import { printLessons } from "./global.helper";
+import { AssistantLogin } from "exemples/authentication/assistant.exemple";
 
 if (require.main === module) {
   main();
 }
 
 async function main(): Promise<Timetable> {
-  const account = await ParentLogin();
+  const account = await AssistantLogin();
   const children = await select({
     message: "Choose the child whose timetable you want to view",
     choices: account.user.childrens.map((children) => ({
