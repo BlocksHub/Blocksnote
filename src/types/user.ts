@@ -134,7 +134,6 @@ export type StudentSizeLimits = CommonSizeLimits & {
 export type SizeLimits = CommonSizeLimits | StudentSizeLimits;
 
 export type CommonPermissions = {
-  canChat:                               boolean;
   canChatWithStaff:                      boolean;
   canChatWithTeachers:                   boolean;
   canPrintGradesReport:                  boolean;
@@ -145,11 +144,16 @@ export type CommonPermissions = {
   chatDisabledByScheduleMessage:         string;
 }
 
+export type CompanyPermissions = CommonPermissions & {
+  canEditTraineeshipOffers: boolean;
+}
+
 export type StudentPermissions = CommonPermissions & {
   sizes: StudentSizeLimits;
 }
 
 export type ParentPermissions = CommonPermissions & {
+  canChat:                           boolean;
   canEditPersonalInfoAuthorizations: boolean;
   canEditPersonalInfoCoordinates:    boolean;
   canChatWithParents:                boolean;
@@ -175,6 +179,7 @@ export type StaffPermissions = AdministrativePermissions & {
 }
 
 export type AssistantPermissions = CommonPermissions & {
+  canChat:                     boolean;
   canChatWithParents:          boolean;
   canUseAdvancedDiscussion:    boolean;
   canViewGuardianFiles:        boolean;
@@ -188,6 +193,7 @@ export type AssistantPermissions = CommonPermissions & {
 }
 
 export type AdministrativePermissions = CommonPermissions & AssistantPermissions & {
+  canChat:                               boolean;
   canCommunicateWithAllClasses:          boolean;
   canRecordNews:                         boolean;
   canRecordAgenda:                       boolean;

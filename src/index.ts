@@ -10,6 +10,7 @@ export * from "@/structures/authentication/AdministratorAuthenticator.ts";
 export * from "@/structures/authentication/Authenticator.ts";
 export * from "@/structures/authentication/ParentAuthenticator.ts";
 export * from "@/structures/authentication/AssistantAuthenticator.ts";
+export * from "@/structures/authentication/CompanyAuthenticator.ts";
 export * from "@/structures/authentication/SchoolLifeAuthenticator.ts";
 export * from "@/structures/authentication/StudentAuthenticator.ts";
 export * from "@/structures/authentication/TeacherAuthenticator.ts";
@@ -34,6 +35,7 @@ export * from "@/routes/ParametresUtilisateurs/Common.ts";
 export * from "@/routes/ParametresUtilisateurs/Parent.ts";
 export * from "@/routes/ParametresUtilisateurs/SchoolLife.ts";
 export * from "@/routes/ParametresUtilisateurs/Student.ts";
+export * from "@/routes/ParametresUtilisateurs/Company.ts";
 export * from "@/routes/ParametresUtilisateurs/Teacher.ts";
 
 export * from "@/structures/parsing/DateParser.ts";
@@ -45,6 +47,7 @@ export * from "@/structures/users/Parent.ts";
 export * from "@/structures/users/SchoolLife.ts";
 export * from "@/structures/users/Student.ts";
 export * from "@/structures/users/Assistant";
+export * from "@/structures/users/Company";
 export * from "@/structures/users/Teacher.ts";
 
 export * from "@/structures/Attachment.ts";

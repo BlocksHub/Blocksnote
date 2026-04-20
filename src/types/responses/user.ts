@@ -5,6 +5,15 @@ export type CommunParametresUtilisateurResponse = {
   autorisations:                    CommunAutorisations;
 }
 
+export type CompanyParametresUtilisateurResponse = CommunParametresUtilisateurResponse & {
+  ressource:     ParentParametresUtilisateurRessource;
+  autorisations: CompanyAutorisations;
+}
+
+export type CompanyAutorisations = CommunAutorisations & {
+  autoriserEditionToutesOffresStages: boolean;
+}
+
 export type CommunCompteAutorisation = {
   avecInformationsPersonnelles: boolean;
 }

@@ -68,7 +68,7 @@ export class Timetable {
   private static buildSignature(session: Session, ressource: Ressource[] | Ressource) {
     const payload: Record<string, unknown> = { onglet: this.tab(session.workspace.type) };
 
-    if ([NOTSpace.PARENT, NOTSpace.ACCOMPANYING].includes(session.workspace.type)) {
+    if ([NOTSpace.PARENT, NOTSpace.ACCOMPANYING, NOTSpace.ENTERPRISE].includes(session.workspace.type)) {
       payload.membre = ressource;
     }
 

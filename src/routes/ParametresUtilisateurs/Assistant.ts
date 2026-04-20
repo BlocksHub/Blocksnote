@@ -45,7 +45,6 @@ export class AssistantUserSettings extends CommonUserSettings<AssistantParametre
   }
 
   public get childrens(): StudentUserSettings[] {
-    console.log("childrens assistant")
     return this.ressource.listeRessources.map((children) => new StudentUserSettings(
       this.session,
       {

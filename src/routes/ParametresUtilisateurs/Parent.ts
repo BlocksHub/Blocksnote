@@ -11,6 +11,7 @@ export class ParentUserSettings extends CommonUserSettings<ParentParametresUtili
 
     return {
       ...common,
+      canChat:                           authorizations.AvecDiscussion,
       canEditPersonalInfoAuthorizations: authorizations.compte.avecSaisieInfosPersoAutorisations,
       canEditPersonalInfoCoordinates:    authorizations.compte.avecSaisieInfosPersoCoordonnees,
       canChatWithParents:                authorizations.AvecDiscussionParents

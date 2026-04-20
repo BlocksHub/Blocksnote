@@ -109,7 +109,6 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
     const authorizations = this.raw.data.autorisations
 
     return {
-      canChat:                               authorizations.AvecDiscussion,
       canChatWithStaff:                      authorizations.AvecDiscussionPersonnels,
       canChatWithTeachers:                   authorizations.AvecDiscussionProfesseurs,
       canPrintGradesReport:                  authorizations.autoriserImpressionBulletinReleveBrevet,
