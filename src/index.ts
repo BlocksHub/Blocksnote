@@ -30,6 +30,9 @@ export * from "@/structures/network/Response.ts";
 
 export * from "@/routes/PageEmploiDuTemps/Common.ts";
 
+export * from "@/routes/PageCahierDeTexte/Common";
+export * from "@/routes/PageCahierDeTexte/Student";
+
 export * from "@/routes/ParametresUtilisateurs/Administrator.ts";
 export * from "@/routes/ParametresUtilisateurs/Common.ts";
 export * from "@/routes/ParametresUtilisateurs/Parent.ts";
