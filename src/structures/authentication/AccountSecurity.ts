@@ -44,7 +44,7 @@ export class AccountSecurity {
 
   /** @internal */
   public async execute(): Promise<this> {
-    if (!this._device && !this._pin && !this._mode && this._password) return this;
+    if ((this._device && !this._pin && !this._mode) || !this._password) return this;
 
     const _request = new Request()
       .setPronotePayload(

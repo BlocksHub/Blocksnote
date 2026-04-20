@@ -86,7 +86,9 @@ export class Request {
 
   private _processResponse(session: Session, data: string) {
     let processed = JSON.parse(data).dataSec;
+    const isError = Boolean(JSON.parse(data).Erreur);
 
+    if (isError) return {};
     if (!processed) throw new ParsingError(-1, "Unable to parse the JSON returned by PRONOTE");
 
     if (session.useEncryption) {
@@ -101,7 +103,7 @@ export class Request {
     const parsed = Parser.parse(processed);
 
     if (!parsed || typeof parsed !== "object" || !("data" in parsed) || parsed.data == null) {
-      throw new ParsingError(-1, "Unable to parse the JSON returned by PRONOTE");
+      return {}
     }
 
     return parsed.data;
@@ -139,11 +141,12 @@ export class Request {
     const contentType = headers["content-type"]
     const text = await response.text();
 
-    if (contentType?.includes("json")) {
+    if (contentType?.includes("json") || this.endpoint.includes("appelfonction")) {
       if (this.session) {
         this._processResponse(this.session, text)
       }
       return new Response(
+        JSON.parse(text),
         headers,
         response.status,
         (this.endpoint.includes("appelfonction") && this.session) ? this._processResponse(this.session, text) as T : JSON.parse(text) as T,
@@ -151,7 +154,7 @@ export class Request {
         JSON.parse(text).dataNonSec
       );
     } else {
-      return new Response(headers, response.status, text as T)
+      return new Response(text, headers, response.status, text as T)
     }
   }
 }
