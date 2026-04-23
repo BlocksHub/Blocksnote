@@ -1,8 +1,6 @@
 import { select } from "@inquirer/prompts";
 import type { Timetable } from "../../src";
-import chalk from 'chalk';
 import { TeacherLogin } from "../authentication/teacher.exemple";
-import { Detention } from "../../src/routes/PageEmploiDuTemps/Detention";
 import { printLessons } from "./global.helper";
 
 if (require.main === module) {
