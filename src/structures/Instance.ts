@@ -15,7 +15,6 @@ export class Instance {
     const { data } = await new Request()
       .setEndpoint(`${source}InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4`)
       .send<InfoMobileResponse>();
-
     const availableWorkspaces = data.espaces
       .filter((raw) => raw.genreEspace !== undefined)
       .map((raw) => ({

@@ -28,3 +28,8 @@ export type Devoir = PronoteId & {
   libelleCBTheme:   string;
   documentRendu?:   PronoteLabel & PronoteKind;
 }
+
+export type FileUploadReponse = {
+  numeroOrdre: string;
+  etat:        number;
+}
