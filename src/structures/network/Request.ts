@@ -8,6 +8,7 @@ import { inflateSync, deflateSync } from "fflate";
 import { bytesToUtf8 } from "@noble/ciphers/utils.js";
 import { Parser } from "@/structures/parsing/Parser.ts";
 import { ParsingError } from "@/structures/errors/ParsingError.ts";
+import { md5 } from "@noble/hashes/legacy.js";
 
 export class Request {
   public headers: Record<string, string> = {
@@ -47,15 +48,43 @@ export class Request {
     return this;
   }
 
+  async setPronoteUploadPayload(
+    session: Session,
+    fName: string,
+    attachment: File,
+    fileId: string
+  ): Promise<this> {
+    const nextRequestNumber = String(session.manager.requestNumber + 1);
+    const no = session.aes.encrypt(nextRequestNumber);
+
+    const bytes = await attachment.arrayBuffer();
+    const hash = md5(new Uint8Array(bytes)).toHex();
+
+    this.method = "POST";
+    this.endpoint = `${session.source}/uploadfilesession/${session.workspace.type}/${session.id}`;
+
+    const payload = new FormData();
+    payload.append("u_no", no);
+    payload.append("u_ns", session.id);
+    payload.append("u_idR", fName);
+    payload.append("u_idF", fileId);
+    payload.append("u_md5", hash);
+    payload.append("files[]", attachment, attachment.name);
+    this.payload = payload;
+
+    return this;
+  }
+
   setPronotePayload(session: Session, fName: string, data: unknown, Signature?: unknown): Request {
-    const encryptedNumber = session.aes.encrypt(String(session.manager.requestNumber + 1));
+    const nextRequestNumber = String(session.manager.requestNumber + 1);
+    const no = session.aes.encrypt(nextRequestNumber);
 
     this.method = "POST";
     this.session = session;
-    this.endpoint = session.source + ["appelfonction", session.workspace.type, session.id, encryptedNumber].join("/")
+    this.endpoint = `${session.source}/appelfonction/${session.workspace.type}/${session.id}/${no}`
     this.payload = {
       session: Number(session.id),
-      no:      encryptedNumber,
+      no,
       id:      fName,
       dataSec: this._processPayload(session, { Signature, data })
     }
