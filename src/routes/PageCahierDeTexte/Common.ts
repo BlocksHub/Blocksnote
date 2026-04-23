@@ -1,3 +1,4 @@
+import { Attachment } from "@/structures/Attachment";
 import { Request } from "@/structures/network/Request";
 import { Parser } from "@/structures/parsing/Parser";
 import type { Session } from "@/structures/Session";
@@ -62,4 +63,16 @@ export class Homework {
   public get dueDate(): Date { return this.raw.PourLe; }
 
   public get done(): boolean { return this.raw.TAFFait; }
+
+  public get submittedAttachment(): Attachment | undefined {
+    const attachment: typeof this.raw["documentRendu"] = this.raw.documentRendu
+    if (!attachment) return;
+
+    return Attachment.create(
+      this.session,
+      attachment.label,
+      String(attachment.G),
+      attachment.id
+    )
+  }
 }
