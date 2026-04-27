@@ -1,6 +1,7 @@
 import { NOTSpace, type CAS, type Workspace } from "@/types/authentication";
 import { type InfoMobileResponse } from "@/types/responses/authentication";
 import { Request } from "@/structures/network/Request";
+import { INFO_MOBILE_ID } from "@/utils/constants";
 
 export class Instance {
   constructor(
@@ -13,7 +14,7 @@ export class Instance {
   public static async createFromURL(source: string | URL): Promise<Instance> {
     source = this.cleanUrl(source);
     const { data } = await new Request()
-      .setEndpoint(`${source}InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4`)
+      .setEndpoint(`${source}InfoMobileApp.json?id=${INFO_MOBILE_ID}`)
       .send<InfoMobileResponse>();
     const availableWorkspaces = data.espaces
       .filter((raw) => raw.genreEspace !== undefined)
