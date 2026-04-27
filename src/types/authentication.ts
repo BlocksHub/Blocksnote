@@ -1,6 +1,3 @@
-import type { AccountSecurity } from "@/structures/authentication/AccountSecurity"
-import type { Session } from "@/structures/Session"
-
 export enum NOTSpace {
   ADMINISTRATOR = 17,
   SCHOOL_LIFE = 14,
@@ -22,10 +19,3 @@ export interface CAS {
   url:   string;
   token: string;
 }
-
-export type LoginState =
-  | { type: "WORKSPACE_SELECTION"; available: Workspace[] }
-  | { type: "WAITING_CREDENTIALS" }
-  | { type: "DOUBLE_AUTH"; security: AccountSecurity }
-  | { type: "CREDENTIALS_CHANGE"; security: AccountSecurity }
-  | { type: "LOGGED_IN"; session: Session }
