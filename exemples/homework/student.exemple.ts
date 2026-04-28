@@ -1,14 +1,14 @@
 import { input, select } from "@inquirer/prompts";
-import type { Homework } from "../../src";
 import { StudentLogin } from "../authentication/student.exemple";
 import chalk from "chalk";
 import { SubmissionTypes } from "@/types/homework";
+import { handleMCQ } from "./helper";
 
 if (require.main === module) {
   main();
 }
 
-async function main(): Promise<Homework[]> {
+async function main() {
   const account = await StudentLogin();
   const homeworks = await account.homeworks();
   const homework = await select({
@@ -18,6 +18,10 @@ async function main(): Promise<Homework[]> {
       value: item
     }))
   })
+
+  if (homework.mcq) {
+    return handleMCQ(homework.mcq)
+  }
 
   if (homework.submissionType === SubmissionTypes.PRONOTE) {
     if (!homework.submittedAttachment && homework.canSubmit) {
@@ -32,8 +36,8 @@ async function main(): Promise<Homework[]> {
       }
 
       const file = new File(
-        [await fileRaw.arrayBuffer()], 
-        fileRaw.name ?? "attachment", 
+        [await fileRaw.arrayBuffer()],
+        fileRaw.name ?? "attachment",
         { type: fileRaw.type }
       );
 
@@ -43,7 +47,7 @@ async function main(): Promise<Homework[]> {
       } catch {
         console.log(chalk.red("!"), "Oops, an error occured during the file upload");
         process.exit(1);
-      } 
+      }
     } else if (homework.canSubmit) {
       console.log("")
       await homework.deleteAttachment();
