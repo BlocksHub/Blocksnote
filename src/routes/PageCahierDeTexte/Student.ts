@@ -1,6 +1,7 @@
 import { Request } from "@/structures/network/Request";
 import { Homework } from "./Common";
 import type { FileUploadReponse } from "@/types/responses/notebook";
+import { MCQ } from "../MCQ/Common";
 
 export class StudentHomework extends Homework {
   public async deleteAttachment(): Promise<this> {
@@ -59,5 +60,11 @@ export class StudentHomework extends Homework {
 
     this.raw.TAFFait = done;
     return this;
+  }
+
+  public get mcq(): MCQ | undefined {
+    return this.raw.executionQCM
+      ? new MCQ(this.raw.executionQCM, this.session)
+      : undefined;
   }
 }

@@ -45,7 +45,7 @@ export type Location = {
   address:    string;
 }
 
-export type Base64<imageType extends string> = `data:image/${imageType};base64,${string}`
+export type Base64<fileType extends string> = `data:${fileType};base64,${string}`
 
 export type CommonClass = {
   kind:  number;

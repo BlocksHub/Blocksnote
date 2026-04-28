@@ -102,10 +102,10 @@ export class TeacherUserSettings extends CommonUserSettings<ProfesseurParametres
     }))
   }
 
-  public get profilePicture(): Base64<"png"> | undefined {
+  public get profilePicture(): Base64<"image/png"> | undefined {
     const key = this.ressource.photoBase64;
     const file = key !== undefined ? this.raw.ressources?.fichiers?.[key] : undefined;
 
-    return ["data:image/png;base64", file].join(",") as Base64<"png">
+    return ["data:image/png;base64", file].join(",") as Base64<"image/png">
   }
 }
