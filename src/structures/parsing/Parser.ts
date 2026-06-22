@@ -71,7 +71,9 @@ export class Parser {
   static handleType(t: number, v: unknown): unknown {
     switch (t) {
       case 10:
-        return Number(v);
+        // eslint-disable-next-line no-case-declarations
+        const r = Number((v as string).replaceAll(",", "."));
+        return isNaN(r) ? v : r;
       case 26:
       case 11:
       case 8:

@@ -6,6 +6,8 @@ import type { Session } from "@/structures/Session";
 import type { Settings } from "@/structures/Settings";
 import { User } from "@/structures/users/User";
 import { StudentHomework } from "@/routes/PageCahierDeTexte/Student";
+import { Grades } from "@/routes/DernieresNotes/Common";
+import type { Period } from "@/types/instance";
 
 export class Student extends User {
   declare public user: StudentUserSettings;
@@ -25,5 +27,9 @@ export class Student extends User {
 
   public homeworks(from?: Date, to?: Date): Promise<Array<StudentHomework>> {
     return StudentHomework.load(this, from, to);
+  }
+
+  public grades(period?: Period): Promise<Grades> {
+    return Grades.load(this, period);
   }
 }

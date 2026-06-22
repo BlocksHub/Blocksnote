@@ -90,7 +90,9 @@ export class CommonUserSettings<T extends ParametresUtilisateurResponse = Parame
       }))
     })) ?? [];
 
-    return { periods, cycle };
+    const defaultPeriod = tabPeriods?.periodeParDefaut.id ?? ""
+
+    return { defaultPeriod, periods, cycle };
   }
 
   public get fullName(): string {

@@ -3,7 +3,7 @@ import type { Lesson } from "@/routes/PageEmploiDuTemps/Lesson";
 import chalk from 'chalk';
 
 export function printLessons(lessons: Lesson[] | Detention []) {
-      for (const lesson of lessons) {
+  for (const lesson of lessons) {
     const timeFrom = lesson.from.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     const timeTo = lesson.to.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     console.log(chalk.cyan('┌─ ') + chalk.bold.yellow(timeFrom) + chalk.cyan(' → ') + chalk.bold.yellow(timeTo));
