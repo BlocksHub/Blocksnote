@@ -87,8 +87,9 @@ export type Level = {
 }
 
 export type Tab = {
-  periods: Period[];
-  cycle:   Cycle[];
+  defaultPeriod: string;
+  periods:       Period[];
+  cycle:         Cycle[];
 }
 
 export type Cycle = {
